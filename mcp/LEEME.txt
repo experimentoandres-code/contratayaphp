@@ -1,0 +1,79 @@
+CONECTOR MCP — CONTRATÁ YA  (para Grok web)
+============================================
+
+Qué es
+------
+Un servidor para Grok web que puede:
+
+  WEB (archivos de public/ + FTP a www.contrataya.pro)
+    listar_web, leer_web, escribir_web, reemplazar_web,
+    bump_cache, publicar_web, set_whatsapp
+
+  BASE (Supabase, las mismas acciones del panel)
+    usuarios, pedidos, matches, trabajos, chats, avisos,
+    planes, denuncias, anunciantes
+
+Para cambiar la home o la app desde grok.com: Grok edita el archivo
+y después llama publicar_web. Sin publicar, el cambio queda sólo en
+esta PC.
+
+Grok web no puede pegarle a localhost. Tiene que ser una URL https
+pública (ngrok u otro túnel).
+
+
+1. Clave de Supabase (una sola vez)
+-----------------------------------
+En Supabase → Project Settings → API → service_role (secret).
+NUNCA la subas a Hostinger ni al repo.
+
+En PowerShell, en la carpeta del proyecto:
+
+  $env:SUPABASE_SERVICE_ROLE = "eyJ...."
+  $env:MCP_TOKEN = "elige-una-clave-larga"
+
+MCP_TOKEN es un candado: Grok la manda y nadie más usa el conector.
+
+
+2. Arrancar el servidor
+-----------------------
+  cd C:\Users\Andres\contrataya1-main
+  node mcp/server.js
+
+Queda en http://localhost:3847/mcp
+Probá:  http://localhost:3847/salud
+
+
+3. Túnel público (ngrok)
+------------------------
+  ngrok http 3847
+
+Copiá la URL https://xxxxx.ngrok-free.app
+
+
+4. Engancharlo en Grok web
+--------------------------
+  https://grok.com/connectors  →  New Connector  →  Custom
+
+  Nombre:      Contratá Ya
+  Server URL:  https://xxxxx.ngrok-free.app/mcp
+
+Si pide token / header:
+  Authorization: Bearer TU_MCP_TOKEN
+
+Si no pide header, podés usar:
+  https://xxxxx.ngrok-free.app/mcp?token=TU_MCP_TOKEN
+
+
+5. Probar en el chat de grok.com
+--------------------------------
+  "Leé public/index.html y cambiá el texto del hero"
+  "Publicá index.html, sw.js y css/landing.css"
+  "Poné el WhatsApp 54911... y publicá"
+  "Listá profesionales de San Bernardo"
+
+
+El ngrok y el node mcp/server.js tienen que quedar abiertos
+mientras uses el conector. Si se cierran, Grok deja de ver las tools.
+
+El lunes, el número de WhatsApp NO va acá: va en public/js/data.js
+(WHATSAPP_CONTRATA).

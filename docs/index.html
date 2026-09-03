@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docs · Contratá Ya</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1e1e1e">
+<link rel="icon" href="/img/isotipo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.5/dist/purify.min.js"></script>
+<style>
+:root {
+  --bg: #1e1e1e;
+  --bg-0: #141414;
+  --bg-1: #191919;
+  --bg-2: #252525;
+  --bg-3: #2e2e2e;
+  --line: #333;
+  --text: #dadada;
+  --muted: #8b8b8b;
+  --faint: #5a5a5a;
+  --accent: #8b7cf7;
+  --accent-2: #c4b5fd;
+  --amber: #f0a63a;
+  --danger: #e4574c;
+  --ok: #4ade80;
+  --wiki: #a78bfa;
+  --sidebar: 272px;
+  --font: "Inter", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  overflow: hidden;
+}
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: var(--accent-2); }
+
+/* ── sidebar ── */
+#lado {
+  width: var(--sidebar);
+  min-width: var(--sidebar);
+  height: 100%;
+  background: var(--bg-1);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+}
+.marca {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 14px 10px;
+}
+.marca img { width: 20px; height: 20px; }
+.marca strong { font-size: 13px; letter-spacing: .04em; font-weight: 700; }
+.marca span { display: block; color: var(--muted); font-size: 11px; font-weight: 500; }
+.marca a { color: inherit; text-decoration: none; }
+
+#buscar {
+  margin: 0 12px 8px;
+  width: calc(100% - 24px);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 10px;
+  outline: none;
+}
+#buscar:focus { border-color: var(--accent); }
+
+.acciones {
+  display: flex; gap: 6px; padding: 0 12px 10px;
+}
+.acciones button, .ico {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 5px 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.acciones button:hover, .ico:hover { color: var(--text); border-color: #555; }
+
+#arbol {
+  flex: 1;
+  overflow: auto;
+  padding: 4px 8px 24px;
+  font-size: 13px;
+}
+.carpeta > .fila, .nota {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  user-select: none;
+}
+.nota { cursor: pointer; color: var(--text); }
+.nota:hover, .carpeta > .fila:hover { background: var(--bg-2); }
+.nota.activa { background: var(--accent-2); color: #1a1428; }
+.nota.activa { background: #3b3358; color: #efeaff; }
+.chev { width: 10px; color: var(--faint); font-size: 10px; }
+.kids { padding-left: 12px; }
+.carpeta.cerrada > .kids { display: none; }
+.etiq { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+.vacio { color: var(--faint); padding: 16px; font-size: 12px; }
+
+/* ── main ── */
+#main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+#barra {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-1);
+  min-height: 46px;
+}
+#migas { flex: 1; font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#migas b { color: var(--text); font-weight: 600; }
+.modos { display: flex; background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.modos button { background: none; border: 0; padding: 5px 10px; font-size: 11px; color: var(--muted); }
+.modos button.ok { background: var(--bg-3); color: var(--text); }
+#estado { font-size: 11px; color: var(--muted); min-width: 92px; text-align: right; }
+#estado.sucio { color: var(--amber); }
+#estado.ok { color: var(--ok); }
+
+#cuerpo {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+#editor, #vista {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+}
+#editor {
+  display: none;
+  border: 0;
+  resize: none;
+  background: var(--bg-0);
+  padding: 28px 24px 80px;
+  line-height: 1.55;
+  font-family: var(--mono);
+  font-size: 13.5px;
+  outline: none;
+  border-right: 1px solid var(--line);
+  tab-size: 2;
+}
+body.edit #editor, body.split #editor { display: block; }
+body.edit #vista { display: none; }
+body.read #editor { display: none; }
+body.split #editor, body.split #vista { flex: 1; }
+
+#vista { padding: 32px 40px 96px; max-width: 860px; }
+body.split #vista { max-width: none; }
+
+/* ── markdown ── */
+.md { font-size: 15.5px; line-height: 1.7; }
+.md h1, .md h2, .md h3, .md h4 {
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 1.6em 0 .5em;
+}
+.md h1 { font-size: 1.9em; margin-top: 0; letter-spacing: -.02em; }
+.md h2 { font-size: 1.35em; border-bottom: 1px solid var(--line); padding-bottom: .25em; }
+.md h3 { font-size: 1.12em; color: #eee; }
+.md p { margin: .75em 0; }
+.md a { text-decoration: none; border-bottom: 1px solid #5b4d9a; }
+.md a:hover { color: #fff; }
+.md .wiki { color: var(--wiki); border-bottom: 1px solid #5b4d9a; cursor: pointer; text-decoration: none; }
+.md .wiki.roto { color: var(--danger); border-bottom-style: dashed; }
+.md ul, .md ol { padding-left: 1.4em; }
+.md li { margin: .25em 0; }
+.md blockquote {
+  margin: 1em 0;
+  padding: .2em 0 .2em 1em;
+  border-left: 3px solid var(--accent);
+  color: var(--muted);
+}
+.md code {
+  font-family: var(--mono);
+  font-size: .86em;
+  background: var(--bg-2);
+  padding: .12em .35em;
+  border-radius: 4px;
+}
+.md pre {
+  background: var(--bg-0);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow: auto;
+}
+.md pre code { background: none; padding: 0; font-size: 12.5px; }
+.md table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 14px; }
+.md th, .md td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; }
+.md th { background: var(--bg-2); font-weight: 600; }
+.md tr:nth-child(even) td { background: #202020; }
+.md hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
+.md strong { color: #fff; }
+
+#vacio-main {
+  margin: auto;
+  color: var(--muted);
+  text-align: center;
+  padding: 40px;
+}
+#vacio-main kbd {
+  font-family: var(--mono);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 12px;
+}
+
+/* ── overlay ── */
+.velo {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.55);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+  z-index: 20;
+}
+.velo.abierto { display: flex; }
+.caja {
+  width: min(560px, 92vw);
+  background: var(--bg-2);
+  border: 1px solid #444;
+  border-radius: 12px;
+  box-shadow: 0 24px 80px #000a;
+  overflow: hidden;
+}
+.caja h2 { margin: 0; padding: 14px 16px 8px; font-size: 14px; }
+.caja .campo { width: calc(100% - 32px); margin: 0 16px 10px; background: var(--bg-0); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; outline: none; }
+.caja .pies { display: flex; justify-content: flex-end; gap: 8px; padding: 8px 16px 14px; }
+.caja .pies button { border: 1px solid var(--line); background: var(--bg-3); border-radius: 7px; padding: 6px 12px; font-size: 12px; }
+.caja .pies .pri { background: #4c3d99; border-color: #6d5bd0; }
+#lista-cmd { max-height: 50vh; overflow: auto; }
+.item-cmd { padding: 8px 16px; cursor: pointer; font-size: 13px; display: flex; justify-content: space-between; gap: 12px; }
+.item-cmd:hover, .item-cmd.sel { background: #3b3358; }
+.item-cmd small { color: var(--muted); }
+
+#grafo-caja { width: min(920px, 94vw); height: min(640px, 78vh); display: flex; flex-direction: column; }
+#grafo-caja svg { flex: 1; background: var(--bg-0); }
+#grafo-caja .pies { margin-top: auto; }
+
+#menu {
+  display: none;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  width: 36px; height: 32px;
+  color: var(--text);
+}
+#aviso-api {
+  display: none;
+  margin: 0 12px 8px;
+  padding: 7px 8px;
+  font-size: 11px;
+  color: var(--amber);
+  background: #2a2110;
+  border-radius: 6px;
+}
+
+@media (max-width: 800px) {
+  #lado { position: fixed; z-index: 10; height: 100%; transform: translateX(-100%); transition: transform .2s; }
+  body.lado #lado { transform: none; }
+  #menu { display: inline-flex; align-items: center; justify-content: center; }
+  #vista { padding: 20px 16px 80px; }
+  #editor { padding: 16px; }
+}
+</style>
+</head>
+<body class="read">
+
+<aside id="lado">
+  <div class="marca">
+    <img src="/img/isotipo.svg" alt="">
+    <a href="/docs">
+      <strong>CONTRATÁ YA</strong>
+      <span>Vault de documentación</span>
+    </a>
+  </div>
+  <input id="buscar" type="search" placeholder="Buscar  ·  Ctrl+K" autocomplete="off">
+  <div id="aviso-api">Sin API: podés leer, no guardar en disco.</div>
+  <div class="acciones">
+    <button type="button" id="btnNueva">+ Nota</button>
+    <button type="button" id="btnCarpeta">+ Carpeta</button>
+    <button type="button" id="btnGrafo">Grafo</button>
+  </div>
+  <nav id="arbol"><p class="vacio">Cargando…</p></nav>
+</aside>
+
+<section id="main">
+  <header id="barra">
+    <button type="button" id="menu" aria-label="Menú">☰</button>
+    <div id="migas">Contratá Ya · docs</div>
+    <div class="modos">
+      <button type="button" data-modo="read" class="ok">Lectura</button>
+      <button type="button" data-modo="edit">Edición</button>
+      <button type="button" data-modo="split">Dividido</button>
+    </div>
+    <button type="button" class="ico" id="btnGuardar">Guardar</button>
+    <button type="button" class="ico" id="btnBorrar">Borrar</button>
+    <div id="estado">listo</div>
+  </header>
+  <div id="cuerpo">
+    <textarea id="editor" spellcheck="false" placeholder="Escribí markdown…"></textarea>
+    <article id="vista">
+      <div id="vacio-main">
+        <p>Elegí una nota del árbol o abrí la paleta.</p>
+        <p><kbd>Ctrl</kbd>+<kbd>K</kbd> buscar · <kbd>Ctrl</kbd>+<kbd>S</kbd> guardar · <kbd>Ctrl</kbd>+<kbd>E</kbd> editar</p>
+      </div>
+      <div class="md" id="md" hidden></div>
+    </article>
+  </div>
+</section>
+
+<div class="velo" id="paleta">
+  <div class="caja">
+    <h2>Abrir nota</h2>
+    <input class="campo" id="cmdQ" placeholder="Nombre o carpeta…">
+    <div id="lista-cmd"></div>
+  </div>
+</div>
+
+<div class="velo" id="modalNueva">
+  <div class="caja">
+    <h2 id="modalTitulo">Nueva nota</h2>
+    <input class="campo" id="nuevaCarpeta" placeholder="Carpeta  (ej. 01-producto)">
+    <input class="campo" id="nuevaNombre" placeholder="Nombre de la nota">
+    <div class="pies">
+      <button type="button" data-cerrar>Cancelar</button>
+      <button type="button" class="pri" id="crearOk">Crear</button>
+    </div>
+  </div>
+</div>
+
+<div class="velo" id="modalGrafo">
+  <div class="caja" id="grafo-caja">
+    <h2>Grafo de enlaces</h2>
+    <svg id="svgGrafo" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="pies">
+      <button type="button" data-cerrar>Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  const state = {
+    tree: [],
+    files: [],
+    actual: null,
+    bruto: '',
+    sucio: false,
+    api: true,
+    cache: new Map(),
+    modo: 'read',
+    creando: 'nota'
+  };
+
+  const FALLBACK = [
+    { type:'dir', name:'00-inicio', path:'00-inicio', children:[
+      {type:'file', name:'Analisis de la documentacion', path:'00-inicio/Analisis de la documentacion.md'},
+      {type:'file', name:'Bienvenida', path:'00-inicio/Bienvenida.md'},
+      {type:'file', name:'Como usar este vault', path:'00-inicio/Como usar este vault.md'},
+      {type:'file', name:'Mapa del vault', path:'00-inicio/Mapa del vault.md'}
+    ]},
+    { type:'dir', name:'01-producto', path:'01-producto', children:[
+      {type:'file', name:'Flujos de usuario', path:'01-producto/Flujos de usuario.md'},
+      {type:'file', name:'Marca e identidad', path:'01-producto/Marca e identidad.md'},
+      {type:'file', name:'Modelo de negocio', path:'01-producto/Modelo de negocio.md'},
+      {type:'file', name:'Riesgos', path:'01-producto/Riesgos.md'},
+      {type:'file', name:'Vision', path:'01-producto/Vision.md'}
+    ]},
+    { type:'dir', name:'02-arquitectura', path:'02-arquitectura', children:[
+      {type:'file', name:'Estado y persistencia', path:'02-arquitectura/Estado y persistencia.md'},
+      {type:'file', name:'Estructura del repo', path:'02-arquitectura/Estructura del repo.md'},
+      {type:'file', name:'PWA e instalacion', path:'02-arquitectura/PWA e instalacion.md'},
+      {type:'file', name:'Servidor Express', path:'02-arquitectura/Servidor Express.md'},
+      {type:'file', name:'Vision tecnica', path:'02-arquitectura/Vision tecnica.md'}
+    ]},
+    { type:'dir', name:'03-modulos', path:'03-modulos', children:[
+      {type:'file', name:'Aplicacion', path:'03-modulos/Aplicacion.md'},
+      {type:'file', name:'Canje comercial', path:'03-modulos/Canje comercial.md'},
+      {type:'file', name:'Despachador de avisos', path:'03-modulos/Despachador de avisos.md'},
+      {type:'file', name:'Landing', path:'03-modulos/Landing.md'},
+      {type:'file', name:'Panel admin', path:'03-modulos/Panel admin.md'}
+    ]},
+    { type:'dir', name:'04-datos', path:'04-datos', children:[
+      {type:'file', name:'API HTTP', path:'04-datos/API HTTP.md'},
+      {type:'file', name:'Catalogo demo', path:'04-datos/Catalogo demo.md'},
+      {type:'file', name:'RPCs y storage', path:'04-datos/RPCs y storage.md'},
+      {type:'file', name:'Tablas Supabase', path:'04-datos/Tablas Supabase.md'},
+      {type:'file', name:'Variables de entorno', path:'04-datos/Variables de entorno.md'}
+    ]},
+    { type:'dir', name:'05-diseno', path:'05-diseno', children:[
+      {type:'file', name:'Decisiones', path:'05-diseno/Decisiones.md'},
+      {type:'file', name:'Sistema visual', path:'05-diseno/Sistema visual.md'}
+    ]},
+    { type:'dir', name:'06-operacion', path:'06-operacion', children:[
+      {type:'file', name:'Arranque local', path:'06-operacion/Arranque local.md'},
+      {type:'file', name:'Despliegue', path:'06-operacion/Despliegue.md'},
+      {type:'file', name:'Invariantes', path:'06-operacion/Invariantes.md'},
+      {type:'file', name:'Pendientes', path:'06-operacion/Pendientes.md'}
+    ]},
+    { type:'dir', name:'07-auditoria', path:'07-auditoria', children:[
+      {type:'file', name:'00-Indice', path:'07-auditoria/00-Indice.md'},
+      {type:'file', name:'01-Dictamen', path:'07-auditoria/01-Dictamen.md'},
+      {type:'file', name:'02-Superficies', path:'07-auditoria/02-Superficies.md'},
+      {type:'file', name:'03-Invariantes', path:'07-auditoria/03-Invariantes.md'},
+      {type:'file', name:'04-Inventario', path:'07-auditoria/04-Inventario.md'},
+      {type:'file', name:'05-Hallazgos', path:'07-auditoria/05-Hallazgos.md'},
+      {type:'file', name:'06-Lanzamiento', path:'07-auditoria/06-Lanzamiento.md'}
+    ]}
+  ];
+
+  const etiq = (n) => n.replace(/^\d{2}-/, '').replace(/-/g, ' ');
+  const esc = (t) => String(t ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  function aplanar(nodos, acc = []) {
+    for (const n of nodos) {
+      if (n.type === 'file') acc.push(n);
+      if (n.children) aplanar(n.children, acc);
+    }
+    return acc;
+  }
+
+  function buscarNota(q) {
+    const s = q.replace(/\\/g, '/').replace(/\.md$/i, '').trim().toLowerCase();
+    if (!s) return null;
+    return state.files.find(f => f.path.toLowerCase() === s + '.md')
+      || state.files.find(f => f.path.toLowerCase().endsWith('/' + s + '.md'))
+      || state.files.find(f => f.name.toLowerCase() === s)
+      || state.files.find(f => f.name.toLowerCase().includes(s));
+  }
+
+  function wiki(src) {
+    return src.replace(/\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|([^\]]+))?\]\]/g, (_, target, alias) => {
+      const nota = buscarNota(target.trim());
+      const texto = alias || target.trim();
+      if (!nota) return `<span class="wiki roto" title="No existe">${esc(texto)}</span>`;
+      return `<a class="wiki" href="#${encodeURI(nota.path)}">${esc(texto)}</a>`;
+    });
+  }
+
+  function renderMd(src) {
+    const preparado = wiki(src);
+    let html;
+    if (window.marked) {
+      marked.setOptions({ gfm: true, breaks: false });
+      html = marked.parse(preparado);
+    } else {
+      html = '<pre>' + esc(src) + '</pre>';
+    }
+    if (window.DOMPurify) html = DOMPurify.sanitize(html);
+    $('#md').innerHTML = html;
+  }
+
+  function pintarArbol(nodos, q = '') {
+    const filtro = q.trim().toLowerCase();
+    function ok(n) {
+      if (!filtro) return true;
+      if (n.type === 'file') return (n.name + n.path).toLowerCase().includes(filtro);
+      return (n.children || []).some(ok);
+    }
+    function html(lista) {
+      return lista.filter(ok).map(n => {
+        if (n.type === 'dir') {
+          return `<div class="carpeta" data-dir="${esc(n.path)}">
+            <div class="fila"><span class="chev">▾</span><span class="etiq">${esc(etiq(n.name))}</span></div>
+            <div class="kids">${html(n.children || [])}</div>
+          </div>`;
+        }
+        const act = state.actual === n.path ? ' activa' : '';
+        return `<div class="nota${act}" data-path="${esc(n.path)}">${esc(n.name)}</div>`;
+      }).join('');
+    }
+    const marcado = html(nodos);
+    $('#arbol').innerHTML = marcado || '<p class="vacio">Sin coincidencias</p>';
+  }
+
+  function setSucio(v) {
+    state.sucio = v;
+    const el = $('#estado');
+    if (v) { el.textContent = 'sin guardar'; el.className = 'sucio'; }
+    else { el.textContent = 'guardado'; el.className = 'ok'; }
+  }
+
+  function setModo(m) {
+    state.modo = m;
+    document.body.classList.remove('read', 'edit', 'split');
+    document.body.classList.add(m);
+    $$('.modos button').forEach(b => b.classList.toggle('ok', b.dataset.modo === m));
+    if (m !== 'read') $('#editor').focus();
+  }
+
+  async function leer(path) {
+    if (state.api) {
+      const r = await fetch('/api/docs/file?path=' + encodeURIComponent(path));
+      if (!r.ok) throw new Error('no se pudo leer');
+      const j = await r.json();
+      return j.contenido;
+    }
+    const r = await fetch(path);
+    if (!r.ok) throw new Error('no se pudo leer');
+    return r.text();
+  }
+
+  async function abrir(path, { skipHash } = {}) {
+    if (state.sucio && state.actual && state.actual !== path) {
+      if (!confirm('Hay cambios sin guardar. ¿Descartarlos?')) return;
+    }
+    const nota = state.files.find(f => f.path === path);
+    if (!nota) return;
+    try {
+      const contenido = state.cache.has(path) && state.sucio && state.actual === path
+        ? state.cache.get(path)
+        : await leer(path);
+      state.actual = path;
+      state.bruto = contenido;
+      state.cache.set(path, contenido);
+      $('#editor').value = contenido;
+      $('#vacio-main').hidden = true;
+      $('#md').hidden = false;
+      renderMd(contenido);
+      $('#migas').innerHTML = path.split('/').map((p, i, a) =>
+        i === a.length - 1 ? `<b>${esc(p.replace(/\.md$/, ''))}</b>` : esc(etiq(p))
+      ).join(' / ');
+      setSucio(false);
+      pintarArbol(state.tree, $('#buscar').value);
+      if (!skipHash) history.replaceState(null, '', '#' + encodeURI(path));
+      document.body.classList.remove('lado');
+    } catch (e) {
+      $('#estado').textContent = e.message;
+      $('#estado').className = 'sucio';
+    }
+  }
+
+  async function guardar() {
+    if (!state.actual) return;
+    if (!state.api) {
+      alert('Abrí el vault en http://localhost:3000/docs para guardar en disco.');
+      return;
+    }
+    const contenido = $('#editor').value;
+    const r = await fetch('/api/docs/file', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: state.actual, contenido })
+    });
+    if (!r.ok) {
+      const j = await r.json().catch(() => ({}));
+      alert(j.error || 'No se pudo guardar');
+      return;
+    }
+    state.bruto = contenido;
+    state.cache.set(state.actual, contenido);
+    setSucio(false);
+    renderMd(contenido);
+  }
+
+  let tAuto;
+  function onEdit() {
+    const v = $('#editor').value;
+    if (v === state.bruto) setSucio(false);
+    else setSucio(true);
+    state.cache.set(state.actual, v);
+    if (state.modo === 'split') renderMd(v);
+    clearTimeout(tAuto);
+    tAuto = setTimeout(() => { if (state.sucio) guardar(); }, 1200);
+  }
+
+  async function cargarArbol() {
+    try {
+      const r = await fetch('/api/docs/tree');
+      if (!r.ok) throw new Error('sin api');
+      const j = await r.json();
+      state.tree = j.tree;
+      state.api = true;
+    } catch {
+      state.tree = FALLBACK;
+      state.api = false;
+      $('#aviso-api').style.display = 'block';
+    }
+    state.files = aplanar(state.tree);
+    pintarArbol(state.tree);
+  }
+
+  function abrirPaleta() {
+    $('#paleta').classList.add('abierto');
+    $('#cmdQ').value = '';
+    pintarCmd('');
+    $('#cmdQ').focus();
+  }
+
+  function pintarCmd(q) {
+    const s = q.trim().toLowerCase();
+    const lista = state.files.filter(f => !s || (f.name + f.path).toLowerCase().includes(s)).slice(0, 30);
+    $('#lista-cmd').innerHTML = lista.map((f, i) =>
+      `<div class="item-cmd${i === 0 ? ' sel' : ''}" data-path="${esc(f.path)}">
+        <span>${esc(f.name)}</span><small>${esc(f.path)}</small>
+      </div>`
+    ).join('') || '<div class="item-cmd">Sin resultados</div>';
+  }
+
+  function abrirModal(tipo) {
+    state.creando = tipo;
+    $('#modalTitulo').textContent = tipo === 'nota' ? 'Nueva nota' : 'Nueva carpeta';
+    $('#nuevaNombre').placeholder = tipo === 'nota' ? 'Nombre de la nota' : 'Nombre de la carpeta';
+    const actualDir = state.actual ? state.actual.split('/').slice(0, -1).join('/') : '00-inicio';
+    $('#nuevaCarpeta').value = tipo === 'nota' ? actualDir : '';
+    $('#nuevaNombre').value = '';
+    $('#modalNueva').classList.add('abierto');
+    $('#nuevaNombre').focus();
+  }
+
+  function slug(s) {
+    return s.trim().replace(/[\\/:*?"<>|]/g, '').replace(/\s+/g, ' ');
+  }
+
+  async function crear() {
+    const carpeta = slug($('#nuevaCarpeta').value).replace(/\\/g, '/');
+    const nombre = slug($('#nuevaNombre').value);
+    if (!nombre) return;
+    if (!state.api) { alert('Necesitás el servidor para crear archivos.'); return; }
+    if (state.creando === 'carpeta') {
+      const path = [carpeta, nombre].filter(Boolean).join('/');
+      const r = await fetch('/api/docs/folder', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path })
+      });
+      if (!r.ok) return alert('No se pudo crear la carpeta');
+      $('#modalNueva').classList.remove('abierto');
+      await cargarArbol();
+      return;
+    }
+    const path = [carpeta, nombre + '.md'].filter(Boolean).join('/');
+    const r = await fetch('/api/docs/file', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path, contenido: `# ${nombre}\n\n` })
+    });
+    if (r.status === 409) return alert('Esa nota ya existe');
+    if (!r.ok) return alert('No se pudo crear');
+    $('#modalNueva').classList.remove('abierto');
+    await cargarArbol();
+    await abrir(path);
+    setModo('edit');
+  }
+
+  async function borrar() {
+    if (!state.actual) return;
+    if (!state.api) return alert('Necesitás el servidor para borrar.');
+    if (!confirm('¿Borrar «' + state.actual + '»? No se puede deshacer.')) return;
+    const r = await fetch('/api/docs/file?path=' + encodeURIComponent(state.actual), { method: 'DELETE' });
+    if (!r.ok) return alert('No se pudo borrar');
+    state.actual = null;
+    state.sucio = false;
+    $('#md').hidden = true;
+    $('#vacio-main').hidden = false;
+    $('#editor').value = '';
+    $('#migas').textContent = 'Contratá Ya · docs';
+    history.replaceState(null, '', '#');
+    await cargarArbol();
+  }
+
+  function extraerLinks(src) {
+    const out = [];
+    src.replace(/\[\[([^\]|#]+)(?:\|[^\]]+)?\]\]/g, (_, t) => { out.push(t.trim()); return _; });
+    return out;
+  }
+
+  async function pintarGrafo() {
+    $('#modalGrafo').classList.add('abierto');
+    const svg = $('#svgGrafo');
+    const W = svg.clientWidth || 880, H = (svg.clientHeight || 520);
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const nodos = state.files;
+    const pos = new Map();
+    const n = nodos.length || 1;
+    nodos.forEach((f, i) => {
+      const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+      const rx = W * 0.38, ry = H * 0.38;
+      pos.set(f.path, { x: W / 2 + Math.cos(a) * rx, y: H / 2 + Math.sin(a) * ry, f });
+    });
+    const edges = [];
+    for (const f of nodos) {
+      let src = state.cache.get(f.path);
+      if (src == null) {
+        try { src = await leer(f.path); state.cache.set(f.path, src); }
+        catch { src = ''; }
+      }
+      for (const t of extraerLinks(src)) {
+        const dest = buscarNota(t);
+        if (dest) edges.push([f.path, dest.path]);
+      }
+    }
+    let lines = edges.map(([a, b]) => {
+      const A = pos.get(a), B = pos.get(b);
+      if (!A || !B) return '';
+      return `<line x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" stroke="#3d3560" stroke-width="1"/>`;
+    }).join('');
+    let dots = [...pos.values()].map(({ x, y, f }) => {
+      const on = f.path === state.actual;
+      return `<g data-path="${esc(f.path)}" style="cursor:pointer">
+        <circle cx="${x}" cy="${y}" r="${on ? 7 : 5}" fill="${on ? '#f0a63a' : '#8b7cf7'}"/>
+        <text x="${x}" y="${y + 16}" fill="#9a9a9a" font-size="10" text-anchor="middle" font-family="Inter,sans-serif">${esc(f.name)}</text>
+      </g>`;
+    }).join('');
+    svg.innerHTML = lines + dots;
+    svg.querySelectorAll('g[data-path]').forEach(g => {
+      g.addEventListener('click', () => {
+        $('#modalGrafo').classList.remove('abierto');
+        abrir(g.getAttribute('data-path'));
+      });
+    });
+  }
+
+  /* events */
+  $('#arbol').addEventListener('click', (e) => {
+    const nota = e.target.closest('.nota');
+    if (nota) return abrir(nota.dataset.path);
+    const fila = e.target.closest('.carpeta > .fila');
+    if (fila) fila.parentElement.classList.toggle('cerrada');
+  });
+
+  $('#buscar').addEventListener('input', () => pintarArbol(state.tree, $('#buscar').value));
+  $('#editor').addEventListener('input', onEdit);
+  $('#editor').addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const a = e.target.selectionStart, b = e.target.selectionEnd;
+      e.target.setRangeText('  ', a, b, 'end');
+      onEdit();
+    }
+  });
+
+  $$('.modos button').forEach(b => b.addEventListener('click', () => {
+    setModo(b.dataset.modo);
+    if (b.dataset.modo !== 'edit') renderMd($('#editor').value || state.bruto);
+  }));
+
+  $('#btnGuardar').addEventListener('click', guardar);
+  $('#btnBorrar').addEventListener('click', borrar);
+  $('#btnNueva').addEventListener('click', () => abrirModal('nota'));
+  $('#btnCarpeta').addEventListener('click', () => abrirModal('carpeta'));
+  $('#btnGrafo').addEventListener('click', pintarGrafo);
+  $('#crearOk').addEventListener('click', crear);
+  $('#menu').addEventListener('click', () => document.body.classList.toggle('lado'));
+
+  $$('[data-cerrar]').forEach(b => b.addEventListener('click', () => {
+    b.closest('.velo').classList.remove('abierto');
+  }));
+  $$('.velo').forEach(v => v.addEventListener('click', (e) => {
+    if (e.target === v) v.classList.remove('abierto');
+  }));
+
+  $('#cmdQ').addEventListener('input', () => pintarCmd($('#cmdQ').value));
+  $('#lista-cmd').addEventListener('click', (e) => {
+    const it = e.target.closest('.item-cmd');
+    if (!it || !it.dataset.path) return;
+    $('#paleta').classList.remove('abierto');
+    abrir(it.dataset.path);
+  });
+  $('#cmdQ').addEventListener('keydown', (e) => {
+    const items = $$('.item-cmd', $('#lista-cmd'));
+    const i = items.findIndex(x => x.classList.contains('sel'));
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      items.forEach(x => x.classList.remove('sel'));
+      items[Math.min(items.length - 1, i + 1)]?.classList.add('sel');
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      items.forEach(x => x.classList.remove('sel'));
+      items[Math.max(0, i - 1)]?.classList.add('sel');
+    } else if (e.key === 'Enter') {
+      const sel = $('.item-cmd.sel');
+      if (sel?.dataset.path) {
+        $('#paleta').classList.remove('abierto');
+        abrir(sel.dataset.path);
+      }
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const meta = e.ctrlKey || e.metaKey;
+    if (meta && e.key.toLowerCase() === 's') { e.preventDefault(); guardar(); }
+    if (meta && e.key.toLowerCase() === 'k') { e.preventDefault(); abrirPaleta(); }
+    if (meta && e.key.toLowerCase() === 'e') {
+      e.preventDefault();
+      setModo(state.modo === 'read' ? 'edit' : 'read');
+      if (state.modo === 'read') renderMd($('#editor').value || state.bruto);
+    }
+    if (meta && e.key.toLowerCase() === 'n') { e.preventDefault(); abrirModal('nota'); }
+    if (e.key === 'Escape') $$('.velo.abierto').forEach(v => v.classList.remove('abierto'));
+  });
+
+  window.addEventListener('beforeunload', (e) => {
+    if (state.sucio) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  async function arrancar() {
+    await cargarArbol();
+    const hash = decodeURIComponent((location.hash || '').replace(/^#/, ''));
+    if (hash && state.files.some(f => f.path === hash)) await abrir(hash, { skipHash: true });
+    else {
+      const home = state.files.find(f => f.path.endsWith('Bienvenida.md'));
+      if (home) await abrir(home.path);
+    }
+  }
+
+  arrancar();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# El vault no se lista ni se descarga por URL. Sólo docs-api.php / Express.
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Deny from all
+</IfModule>

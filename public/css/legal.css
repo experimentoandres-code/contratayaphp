@@ -1,0 +1,119 @@
+/* ============================================================
+   CONTRATÁ YA — Páginas legales
+   Se leen, no se navegan. Columna angosta, texto grande,
+   nada que distraiga.
+   ============================================================ */
+
+.legal-body {
+  background: var(--tinta);
+  color: var(--cal-2);
+  font-family: var(--texto);
+  font-size: 16.5px;
+  line-height: 1.65;
+}
+
+.legal {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--s5) var(--s4) var(--s7);
+}
+
+.legal-volver {
+  display: inline-block;
+  margin-bottom: var(--s5);
+  color: var(--cal-3);
+  font-family: var(--dato);
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.legal-volver:hover { color: var(--plomo); }
+
+.legal-rotulo {
+  display: block;
+  color: var(--plomo);
+  font-family: var(--dato);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.legal h1 {
+  margin-top: var(--s2);
+  color: var(--cal);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 34px;
+  line-height: .98;
+  letter-spacing: -.015em;
+}
+
+.legal-fecha {
+  margin-top: var(--s2);
+  color: var(--cal-3);
+  font-family: var(--dato);
+  font-size: 11px;
+}
+
+/* El resumen honesto arriba de todo: lo que la gente lee de verdad */
+.legal-resumen {
+  margin: var(--s5) 0;
+  padding: var(--s4);
+  background: var(--tinta-2);
+  border-left: 3px solid var(--plomo);
+  border-radius: var(--r-md);
+}
+.legal-resumen b {
+  display: block;
+  margin-bottom: var(--s2);
+  color: var(--plomo);
+  font-family: var(--dato);
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.legal-resumen p { color: var(--cal); margin: 0; }
+
+.legal h2 {
+  margin: var(--s6) 0 var(--s3);
+  color: var(--cal);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 21px;
+  line-height: 1.1;
+  letter-spacing: -.015em;
+}
+
+.legal p { margin-bottom: var(--s3); text-wrap: pretty; }
+.legal p:last-child { margin-bottom: 0; }
+.legal b { color: var(--cal); font-weight: 600; }
+
+.legal ul { margin: 0 0 var(--s3) var(--s4); }
+.legal li { margin-bottom: var(--s2); }
+
+.legal a { color: var(--plomo); }
+
+.legal-pie {
+  display: flex;
+  gap: var(--s5);
+  flex-wrap: wrap;
+  margin-top: var(--s7);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--linea);
+}
+.legal-pie a {
+  color: var(--cal-3);
+  font-family: var(--dato);
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.legal-pie a:hover { color: var(--plomo); }
+
+@media (max-width: 480px) {
+  .legal h1 { font-size: 28px; }
+  .legal h2 { font-size: 19px; }
+}

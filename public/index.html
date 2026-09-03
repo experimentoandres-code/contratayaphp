@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contratá Ya — Oficios de la construcción en el Partido de la Costa</title>
+<meta name="description" content="Encontrá albañiles, electricistas, plomeros y contratistas verificados en las 14 localidades del Partido de la Costa. Deslizás, hay match, arreglás el trabajo.">
+<meta name="theme-color" content="#0B1620">
+
+<meta property="og:title" content="Contratá Ya — Oficios de la construcción en el Partido de la Costa">
+<meta property="og:description" content="Deslizás, hay match, arreglás el trabajo. Oficios verificados de San Clemente a Costa Esmeralda.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/img/icon-512.png">
+
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/img/isotipo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Contratá Ya">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/landing.css?v=73">
+</head>
+<body>
+
+<!-- Cinta de instalación: la arma landing.js según el dispositivo.
+     No aparece si ya la tiene instalada o si la cerró antes. -->
+<div id="cintaInstalar"></div>
+
+<!-- ══════ RIEL DE LA COSTA — elemento firma ══════
+     Reproduce la geografía real: 14 localidades en línea, de norte a sur.
+     Acompaña el scroll como una gota que baja por la costa. -->
+<aside class="riel" aria-hidden="true">
+  <div class="riel-linea"><span class="riel-plomo" id="rielPlomo"></span></div>
+  <ol class="riel-lista" id="rielLista"></ol>
+</aside>
+
+<header class="nav">
+  <a class="nav-marca" href="#top">
+    <img src="/img/isotipo.svg" alt="" width="22" height="22">
+    <span>CONTRATÁ <b>YA</b></span>
+  </a>
+  <nav class="nav-links">
+    <a href="#como">Cómo funciona</a>
+    <a href="#confianza">Confianza</a>
+    <a href="#comercios">Comercios</a>
+    <a href="#planes">Planes</a>
+  </nav>
+  <a class="btn btn-plomo btn-sm" href="/app.html">Entrar a la app</a>
+</header>
+
+<!-- ══════ HERO ══════ -->
+<section class="hero" id="top">
+  <div class="hero-texto">
+    <p class="eyebrow hero-eyebrow"><span class="punto"></span> 14 localidades · Partido de la Costa</p>
+    <h1>El oficio que<br>necesitás está<br><em>a 8 cuadras.</em></h1>
+    <p class="hero-bajada">
+      Albañiles, electricistas, plomeros, gasistas, limpieza, mantenimiento, caseros, fumigación, fletes y mudanzas, técnicos electrónicos, cerrajeros y contratistas de la costa.
+      Contás qué necesitás, deslizás, y cuando hay match arreglás directo con la persona.
+      Sin comisiones y sin intermediarios.
+    </p>
+    <div class="hero-acciones">
+      <a class="btn btn-plomo" href="/app.html">Buscar un oficio</a>
+      <a class="btn btn-fantasma" href="/app.html?rol=pro">Ofrecer mi trabajo</a>
+    </div>
+    <ul class="hero-cifras">
+      <li>
+        <strong class="dato" id="cifraPros">—</strong>
+        <span>profesionales registrados</span>
+      </li>
+      <li><strong class="dato">14</strong><span>localidades activas</span></li>
+      <li><strong class="dato">0%</strong><span>de comisión por trabajo</span></li>
+    </ul>
+    <div class="cinta-aviso" role="status">
+      <div class="cinta-aviso-pista">
+        <span class="cinta-aviso-texto">IMPORTANTE: VAS A PODER DISFRUTAR DE ESTE SERVICIO SI DESCARGAS LA APP EN TU CELULAR Y PERMITIS LAS NOTIFICACIONES</span>
+        <span class="cinta-aviso-texto" aria-hidden="true">IMPORTANTE: VAS A PODER DISFRUTAR DE ESTE SERVICIO SI DESCARGAS LA APP EN TU CELULAR Y PERMITIS LAS NOTIFICACIONES</span>
+      </div>
+    </div>
+    <div class="hero-invitar">
+      <p>Estamos creando un lugar seguro para que convivan profesionales y clientes verificados y calificados. Compartile la app a tu colega profesional o a esa persona que necesita realizar un trabajo.</p>
+      <a class="btn btn-plomo" href="https://wa.me/?text=Contrat%C3%A1%20Ya%20%E2%80%94%20oficios%20de%20la%20costa.%20https%3A%2F%2Fwww.contrataya.pro%2F" target="_blank" rel="noopener noreferrer">Compartir por WhatsApp</a>
+      <button class="btn btn-tutorial-guia" type="button" id="btnTutorial">Cómo se usa la app</button>
+    </div>
+  </div>
+
+  <!-- Mazo real y arrastrable: el producto demostrándose a sí mismo -->
+  <div class="hero-mazo">
+    <div class="mazo-marco">
+      <div class="mazo-header">
+        <span class="eyebrow">Buscando · Plomería · San Bernardo</span>
+      </div>
+      <div class="mazo" id="mazoDemo"></div>
+      <div class="mazo-controles">
+        <button class="disco disco-no" data-demo="no" aria-label="Descartar">✕</button>
+        <button class="disco disco-si" data-demo="si" aria-label="Me sirve">✓</button>
+      </div>
+      <p class="mazo-pista">Arrastrá la tarjeta o usá los botones</p>
+      <p class="mazo-aviso">Perfiles de ejemplo. Las fotos están generadas con inteligencia artificial; en la app vas a ver profesionales reales de tu localidad.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ CÓMO FUNCIONA ══════ -->
+<section class="seccion" id="como" data-riel="Las Toninas">
+  <div class="seccion-cabeza">
+    <p class="eyebrow">Cómo funciona</p>
+    <h2>Tres pasos de cada lado.</h2>
+  </div>
+
+  <div class="doble">
+    <div class="columna">
+      <p class="columna-rol">Si necesitás un trabajo</p>
+      <ol class="pasos">
+        <li><span class="paso-n dato">1</span><div><h3>Contá qué pasa</h3><p>Rubro, localidad y si corre apuro. Treinta segundos, sin registrarte.</p></div></li>
+        <li><span class="paso-n dato">2</span><div><h3>Deslizá</h3><p>Ves solo gente que trabaja en tu localidad, con su puntaje y sus trabajos hechos.</p></div></li>
+        <li><span class="paso-n dato">3</span><div><h3>Arreglá directo</h3><p>Cuando hay match se abre el chat. El precio lo arreglan ustedes dos.</p></div></li>
+      </ol>
+    </div>
+
+    <div class="columna">
+      <p class="columna-rol">Si tenés un oficio</p>
+      <ol class="pasos">
+        <li><span class="paso-n dato">1</span><div><h3>Armá tu perfil</h3><p>Rubro, zona, tu foto y a qué precio arrancás.</p></div></li>
+        <li><span class="paso-n dato">2</span><div><h3>Elegí los trabajos</h3><p>Te llegan pedidos de tu zona. Aceptás los que te sirven y descartás el resto.</p></div></li>
+        <li><span class="paso-n dato">3</span><div><h3>Construí tu puntaje</h3><p>Cada trabajo bien hecho te sube. El puntaje es tuyo y te sigue.</p></div></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="como-mas">
+    <button class="btn btn-tutorial-guia" type="button">Cómo se usa la app</button>
+  </div>
+</section>
+
+<!-- ══════ DOBLE CALIFICACIÓN ══════ -->
+<section class="seccion franja" id="confianza" data-riel="Santa Teresita">
+  <div class="seccion-cabeza">
+    <p class="eyebrow">Confianza</p>
+    <h2>Acá se califican<br>los dos.</h2>
+    <p class="seccion-bajada">
+      El cliente puntúa el trabajo. El profesional puntúa al cliente.
+      Si alguien paga tarde, cambia la obra a mitad de camino o no deja entrar a trabajar, queda registrado.
+      Las dos partes entran con cuenta propia y foto, así que atrás de cada estrella hay una persona.
+    </p>
+  </div>
+
+  <div class="tarjetas-doble">
+    <article class="calif calif-cliente">
+      <p class="eyebrow">El cliente califica</p>
+      <ul class="criterios">
+        <li><span>Calidad del trabajo</span><span class="estrellas" data-n="5"></span></li>
+        <li><span>Cumplió el plazo</span><span class="estrellas" data-n="5"></span></li>
+        <li><span>Respetó el precio</span><span class="estrellas" data-n="4"></span></li>
+        <li><span>Dejó limpio</span><span class="estrellas" data-n="5"></span></li>
+      </ul>
+    </article>
+    <article class="calif calif-pro">
+      <p class="eyebrow">El profesional califica</p>
+      <ul class="criterios">
+        <li><span>Pagó en fecha</span><span class="estrellas" data-n="5"></span></li>
+        <li><span>Fue claro con el pedido</span><span class="estrellas" data-n="4"></span></li>
+        <li><span>Dio acceso a la obra</span><span class="estrellas" data-n="5"></span></li>
+        <li><span>Trato</span><span class="estrellas" data-n="5"></span></li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+
+<!-- ══════ CUENTA ══════ -->
+<section class="seccion" data-riel="Mar del Tuyú">
+  <div class="seccion-cabeza">
+    <p class="eyebrow">Para entrar</p>
+    <h2>Los dos lados se<br>registran igual.</h2>
+    <p class="seccion-bajada">
+      Con Google o con correo, en menos de un minuto. No hay perfiles anónimos ni de un solo uso:
+      es lo que hace que las calificaciones valgan algo y que la foto que ves sea de quien va a golpear la puerta.
+    </p>
+  </div>
+  <div class="cuenta-grilla">
+    <article class="cuenta-item">
+      <span class="cuenta-glifo">◉</span>
+      <h3>Google o correo</h3>
+      <p>Dos toques con Google, o nombre y correo con código de confirmación.</p>
+    </article>
+    <article class="cuenta-item">
+      <span class="cuenta-glifo">☺</span>
+      <h3>Foto real</h3>
+      <p>Obligatoria para profesionales. Un perfil con cara recibe más del doble de contactos, y se le quitan los datos de ubicación antes de subirla.</p>
+    </article>
+    <article class="cuenta-item">
+      <span class="cuenta-glifo">★</span>
+      <h3>Calificación en los dos</h3>
+      <p>Tu puntaje te sigue, seas quien contrata o quien trabaja.</p>
+    </article>
+    <article class="cuenta-item">
+      <span class="cuenta-glifo">⌦</span>
+      <h3>Lo que no publicamos</h3>
+      <p>Tu teléfono y tu dirección quedan reservados hasta que haya match.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ══════ VERIFICACIÓN ══════ -->
+<section class="seccion" data-riel="Costa del Este">
+  <div class="seccion-cabeza">
+    <p class="eyebrow">Verificación</p>
+    <h2>Te activamos<br>por WhatsApp.</h2>
+    <p class="seccion-bajada">
+      Después de crear la cuenta nos escribís y una persona del equipo te activa y verifica. Así sabemos que hay alguien atrás, te podemos contactar si hace falta, y no quedan perfiles fantasma en el mazo.
+    </p>
+  </div>
+</section>
+
+<!-- ══════ COMERCIOS / SPONSORS ══════ -->
+<section class="seccion franja" id="comercios" data-riel="San Bernardo">
+  <div class="seccion-cabeza">
+    <p class="eyebrow">Para comercios</p>
+    <h2>Un corralón por<br>localidad. Nada más.</h2>
+    <p class="seccion-bajada">
+      Cuando un profesional está por agarrar un trabajo, la app le muestra dónde comprar los materiales cerca.
+      Ese lugar es exclusivo por rubro y por localidad: si lo tomó una ferretería de Santa Teresita, no entra otra.
+    </p>
+  </div>
+
+  <div class="comercios-grilla" id="comerciosGrilla"></div>
+
+  <div class="comercios-pitch">
+    <div>
+      <h3>Lo que recibe el comercio</h3>
+      <ul class="lista-check">
+        <li>Aparecer como proveedor sugerido cuando un profesional de su rubro busca trabajo en su localidad</li>
+        <li>Un beneficio propio para los profesionales, canjeable sólo dentro de la app</li>
+        <li>Su propio panel: cuántos profesionales pasaron por el local, cuáles son nuevos y quién vuelve más seguido</li>
+        <li>Exclusividad mientras dure el acuerdo</li>
+      </ul>
+    </div>
+    <a class="btn btn-plomo" id="btnZonaComercio" href="https://wa.me/5492246552086?text=Hola%2C%20quiero%20la%20zona%20de%20mi%20comercio%20en%20Contrat%C3%A1%20Ya." target="_blank" rel="noopener noreferrer">Quiero la zona de mi comercio</a>
+  </div>
+</section>
+
+<!-- ══════ PLANES ══════ -->
+<section class="seccion" id="planes" data-riel="Mar de Ajó">
+  <div class="seccion-cabeza">
+    <p class="eyebrow">Planes para profesionales</p>
+    <h2>Gratis Verificado<br>o plan Pro.</h2>
+    <p class="seccion-bajada">
+      El Gratis Verificado es el de todos, con sello y beneficios de comercio. El Pro, a $15.000 por mes, te pone primero en el mazo, te deja cubrir más localidades y te avisa al toque cuando entra un pedido. Se pide por WhatsApp.
+    </p>
+  </div>
+  <div class="planes-grilla" id="planesGrilla"></div>
+</section>
+
+<!-- ══════ INSTALACIÓN ══════ -->
+<section class="seccion franja" id="instalar" data-riel="Punta Médanos">
+  <div class="instalar-caja">
+    <div class="instalar-texto">
+      <p class="eyebrow">Instalación</p>
+      <h2 id="instalarTitulo">Tenela en la pantalla de inicio.</h2>
+      <p class="seccion-bajada" id="instalarPorque">
+        Instalada te avisa cuando entra un trabajo cerca tuyo. Sin instalar, te enterás cuando abrís el navegador.
+      </p>
+      <div id="instalarAccion"></div>
+    </div>
+
+    <!-- Instructivo iOS: se despliega solo si el visitante entra desde iPhone -->
+    <div class="instalar-guia" id="guiaIOS" hidden>
+      <p class="eyebrow">¿Tenés iPhone? Instalala en 3 pasos</p>
+      <ol class="pasos-ios">
+        <li><span class="paso-n dato">1</span><p>Abrí esta página en <strong>Safari</strong></p></li>
+        <li><span class="paso-n dato">2</span><p>Tocá el ícono <strong>Compartir</strong>
+          <svg class="icono-compartir" viewBox="0 0 24 24" aria-label="ícono compartir" role="img">
+            <path d="M12 3v12M12 3l-3.5 3.5M12 3l3.5 3.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 11H4.5v9.5h15V11H18" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </p></li>
+        <li><span class="paso-n dato">3</span><p>Elegí <strong>Agregar a inicio</strong></p></li>
+      </ol>
+      <p class="instalar-cierre">Listo. Queda como una app más y te avisa cuando tenés un match.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ CIERRE ══════ -->
+<section class="cierre" id="contacto" data-riel="Costa Esmeralda">
+  <img src="/img/isotipo.svg" alt="" width="44" height="44" class="cierre-marca">
+  <h2>De San Clemente<br>a Costa Esmeralda.</h2>
+  <p>Una sola app para toda la costa. Entrá y probala, no hace falta registrarse para mirar.</p>
+  <div class="hero-acciones">
+    <a class="btn btn-plomo" href="/app.html">Abrir la app</a>
+    <a class="btn btn-fantasma" href="https://wa.me/5492246552086?text=Hola%2C%20te%20escribo%20desde%20la%20web%20de%20Contrat%C3%A1%20Ya." target="_blank" rel="noopener noreferrer">Escribirnos</a>
+  </div>
+</section>
+
+<footer class="pie">
+  <div class="pie-fila">
+    <span class="dato">CONTRATÁ YA · Partido de la Costa · Buenos Aires</span>
+    <span class="pie-legales">
+      <a href="https://www.instagram.com/contrataya.pro/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a href="https://www.facebook.com/people/Contrata-ya-pro/61593293355517/" target="_blank" rel="noopener noreferrer">Facebook</a>
+      <a href="/terminos.html">Términos</a>
+      <a href="/privacidad.html">Privacidad</a>
+      <a href="https://wa.me/5492246552086?text=Hola%2C%20te%20escribo%20desde%20la%20web%20de%20Contrat%C3%A1%20Ya." target="_blank" rel="noopener noreferrer">Contacto</a>
+    </span>
+  </div>
+</footer>
+
+<div class="hoja" id="hoja" hidden>
+  <div class="hoja-fondo" data-cerrar></div>
+  <div class="hoja-panel" id="hojaPanel"></div>
+</div>
+
+<script src="/js/data.js?v=81"></script>
+<script src="/js/instalar.js?v=2"></script>
+<script src="/js/landing.js?v=65"></script>
+<script src="/js/tutorial.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# Contratá Ya — Apache (Hostinger)
+# El vault no se sirve crudo. mcp-config no se baja.
+
+<Files "mcp-config.php">
+  Require all denied
+</Files>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteCond %{HTTP:Authorization} .
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+  RewriteRule ^vault(/.*)?$ - [R=404,L]
+  RewriteRule ^api/admin/docs(?:/(.*))?$ docs-api.php?recurso=$1 [L,QSA]
+</IfModule>

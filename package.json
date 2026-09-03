@@ -1,0 +1,21 @@
+{
+  "name": "contrata-ya",
+  "version": "1.0.0",
+  "description": "Contratá Ya — plataforma de oficios de la construcción para el Partido de la Costa",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "mcp": "node mcp/server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "web-push": "^3.6.7"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}

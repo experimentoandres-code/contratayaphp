@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canje · Contratá Ya</title>
+<meta name="theme-color" content="#0B1620">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/img/isotipo.svg" type="image/svg+xml">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/canje.css">
+</head>
+<body class="canje-body">
+
+<div class="canje" id="canje" hidden>
+
+  <header class="canje-cabeza">
+    <div>
+      <div class="canje-marca">CONTRATÁ YA</div>
+      <h1 id="comercioNombre">—</h1>
+      <p id="comercioBeneficio">—</p>
+    </div>
+    <div class="canje-zonas" id="comercioZonas"></div>
+  </header>
+
+  <!-- ══════ BUSCADOR ══════ -->
+  <section class="buscador">
+    <label for="campoCodigo">Código del profesional</label>
+    <div class="buscador-fila">
+      <input id="campoCodigo" placeholder="AB-482137" autocomplete="off"
+             autocapitalize="characters" spellcheck="false" enterkeyhint="search">
+      <button class="btn-canje" id="btnBuscar">Buscar</button>
+    </div>
+    <p class="buscador-nota" id="notaBuscador">Pedile el código al profesional. No importan los guiones ni las mayúsculas.</p>
+  </section>
+
+  <div id="resultado"></div>
+
+  <!-- ══════ NÚMEROS ══════ -->
+  <section class="numeros">
+    <h2>Tus números</h2>
+    <div class="numeros-grilla" id="numeros"></div>
+  </section>
+
+  <section class="visitas">
+    <h2>Quiénes vinieron</h2>
+    <div id="listaVisitas"></div>
+  </section>
+
+  <footer class="canje-pie">
+    <p>Se registra la visita, no la compra. No vemos qué vendiste ni a qué precio.</p>
+    <p>Guardá esta dirección en favoritos: es tu acceso.</p>
+  </footer>
+</div>
+
+<div class="porton" id="porton">
+  <div class="porton-caja">
+    <div class="canje-marca">CONTRATÁ YA</div>
+    <p id="portonTexto">Verificando el acceso…</p>
+  </div>
+</div>
+
+<div class="brindis" id="brindis" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/supabase.js"></script>
+<script src="/js/canje.js?v=4"></script>
+</body>
+</html>

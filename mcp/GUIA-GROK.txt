@@ -1,0 +1,173 @@
+GUÍA — Conector Contratá Ya en el chat de grok.com
+==================================================
+
+Objetivo: que en grok.com puedas decir “cambiá el texto de la home” o
+“listá los profesionales de San Bernardo” y Grok lo haga.
+
+Hay 4 pasos. El 1 y el 2 tienen que quedar ABIERTOS mientras uses
+el conector. Si cerrás esas ventanas, Grok deja de ver las tools.
+
+
+────────────────────────────────────────
+ANTES
+────────────────────────────────────────
+
+1. Node ya lo tenés (v24).
+2. Cuenta en grok.com (la misma donde ya conectaste Gmail y Drive).
+3. Para cambios en la WEB: no hace falta nada más (el FTP ya está
+   cargado en el conector).
+4. Para cambios en la BASE (usuarios, pedidos, etc.): una clave de
+   Supabase. Se pide en el paso 1b.
+
+
+────────────────────────────────────────
+PASO 1 — Arrancar el conector en la PC
+────────────────────────────────────────
+
+Abrí PowerShell y copiá ESTO, línea por línea.
+
+  cd C:\Users\Andres\contrataya1-main
+
+Si también querés que toque la base de datos, pegá tu service_role
+de Supabase (Project Settings → API → service_role). Si solo vas a
+editar la web, saltá estas dos líneas:
+
+  $env:SUPABASE_SERVICE_ROLE = "eyJ....pegá-acá-la-clave...."
+  $env:MCP_TOKEN = "contrataya-grok-2026"
+
+El token es un candado. Elegí cualquier frase larga y acordate:
+la vas a pegar otra vez en grok.com.
+
+Arranque:
+
+  node mcp/server.js
+
+Tiene que decir:
+
+  MCP Contratá Ya en http://localhost:3847/mcp
+
+NO CIERRES esa ventana.
+
+
+Comprobación: abrí en el navegador
+
+  http://localhost:3847/salud
+
+Tiene que mostrar ok y un número de tools. Si supabase:false,
+solo van a andar las tools de la WEB, no las de la base.
+
+
+────────────────────────────────────────
+PASO 2 — URL pública (túnel)
+────────────────────────────────────────
+
+Grok no puede pegarle a tu localhost. Hay que abrir un túnel.
+
+Abrí OTRA PowerShell (dejá la del paso 1 intacta) y escribí:
+
+  npx --yes cloudflared tunnel --url http://127.0.0.1:3847
+
+Esperá 10–20 segundos. Va a imprimir algo como:
+
+  https://random-words.trycloudflare.com
+
+Copiá esa URL https. NO CIERRES esta ventana tampoco.
+
+(Si preferís ngrok: creá cuenta en ngrok.com, instalá, y corré
+  ngrok http 3847
+Es más estable. Cloudflared no pide cuenta.)
+
+
+────────────────────────────────────────
+PASO 3 — Engancharlo en grok.com
+────────────────────────────────────────
+
+1. Entrá a  https://grok.com/connectors
+2. New Connector  →  Custom
+3. Completá:
+
+   Nombre:       Contratá Ya
+   Server URL:   https://LA-URL-DEL-PASO-2/mcp
+                 ejemplo: https://random-words.trycloudflare.com/mcp
+
+   Si pide token / Authorization:
+                 Bearer contrataya-grok-2026
+                 (el mismo MCP_TOKEN del paso 1)
+
+   Si no hay campo de token, usá esta URL:
+                 https://LA-URL-DEL-PASO-2/mcp?token=contrataya-grok-2026
+
+4. Guardá / conectá. Grok tiene que descubrir las tools
+   (listar_web, publicar_web, listar_usuarios, etc.).
+
+
+────────────────────────────────────────
+PASO 4 — Probar en el chat
+────────────────────────────────────────
+
+Abrí un chat nuevo en grok.com y pedile, en este orden:
+
+  1. "Usá el conector Contratá Ya y listá los archivos de la web"
+     → tiene que devolver index.html, app.html, css/..., js/...
+
+  2. "Leé index.html y decime qué dice el título"
+     → “El oficio que necesitás está a ocho cuadras”
+
+  3. Si cargaste SUPABASE_SERVICE_ROLE:
+     "Dame un resumen de la plataforma"
+
+
+Si el 1 falla: se cerró node o el túnel, o la URL no termina en /mcp.
+
+
+────────────────────────────────────────
+DÍA A DÍA
+────────────────────────────────────────
+
+Cada vez que quieras usarlo:
+
+  Ventana A:  cd C:\Users\Andres\contrataya1-main
+              $env:SUPABASE_SERVICE_ROLE = "eyJ...."   (si vas a tocar la base)
+              $env:MCP_TOKEN = "contrataya-grok-2026"
+              node mcp/server.js
+
+  Ventana B:  npx --yes cloudflared tunnel --url http://127.0.0.1:3847
+
+  Si la URL del túnel CAMBIÓ (cloudflared da una nueva cada vez),
+  actualizala en grok.com/connectors. ngrok con cuenta fija no cambia.
+
+
+────────────────────────────────────────
+QUÉ PODÉS PEDIRLE
+────────────────────────────────────────
+
+Web (siempre):
+  "Cambiá X en la home y publicá"
+  "Subí el número de WhatsApp 54911... y publicá"
+  "Mostrame el CSS del hero"
+
+Base (si está la service_role):
+  "Cuántos profesionales hay en San Bernardo"
+  "Hay denuncias abiertas"
+  "Activale el plan pro a [nombre]"
+
+
+────────────────────────────────────────
+SI ALGO FALLA
+────────────────────────────────────────
+
+Grok no ve tools
+  → las dos ventanas abiertas? la URL termina en /mcp?
+    el token coincide?
+
+Cambia en la PC pero no en contrataya.pro
+  → pedile "publicá" (publicar_web). Sin eso no sube por FTP.
+
+No cambia en el celular
+  → pedile bump_cache y publicar sw.js. O cerrá la app y reabrila.
+
+Tools de usuarios/pedidos fallan
+  → falta SUPABASE_SERVICE_ROLE. Cerrá node, pégala, volvé a arrancar.
+
+Cloudflared pide confirmación la primera vez
+  → escribí sí / yes en esa ventana.

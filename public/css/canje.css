@@ -1,0 +1,256 @@
+/* ============================================================
+   CONTRATÁ YA — Canje del comerciante
+   ------------------------------------------------------------
+   Se usa en el mostrador, muchas veces en la computadora vieja
+   del local y con gente esperando. Todo grande, todo legible,
+   nada escondido detrás de un menú.
+   ============================================================ */
+
+.canje-body {
+  background: var(--tinta);
+  color: var(--cal);
+  font-family: var(--texto);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.canje {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--s5) var(--s4) var(--s7);
+}
+
+.canje-marca {
+  font-family: var(--dato); font-size: 10px;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--plomo);
+}
+
+
+/* ── Portón ───────────────────────────────────────────────── */
+.porton {
+  position: fixed; inset: 0; z-index: 40;
+  display: grid; place-items: center;
+  background: var(--tinta); padding: var(--s5);
+}
+.porton-caja { text-align: center; max-width: 400px; }
+.porton-caja p { margin-top: var(--s3); color: var(--cal-2); }
+
+
+/* ── Cabecera ─────────────────────────────────────────────── */
+.canje-cabeza {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: var(--s4); padding-bottom: var(--s5);
+  border-bottom: 1px solid var(--linea);
+}
+.canje-cabeza h1 {
+  margin-top: var(--s2);
+  font-family: var(--display); font-weight: 800;
+  font-size: 30px; line-height: .98; letter-spacing: -.015em;
+}
+.canje-cabeza p { margin-top: var(--s2); color: var(--plomo); font-size: 15px; }
+
+.canje-zonas { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.canje-zonas span {
+  padding: 4px 10px; border-radius: 20px;
+  border: 1px solid var(--linea); color: var(--cal-3);
+  font-family: var(--dato); font-size: 10px;
+  letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+}
+
+
+/* ── Buscador ─────────────────────────────────────────────── */
+.buscador { margin-top: var(--s5); }
+.buscador label {
+  display: block; margin-bottom: var(--s2);
+  font-family: var(--dato); font-size: 10px;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--cal-3);
+}
+.buscador-fila { display: flex; gap: var(--s2); }
+
+#campoCodigo {
+  flex: 1; min-width: 0;
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  color: var(--cal); border-radius: var(--r-md);
+  padding: 16px 18px;
+  font-family: var(--dato); font-size: 26px;
+  letter-spacing: .1em; text-transform: uppercase;
+}
+#campoCodigo:focus { outline: none; border-color: var(--plomo); }
+#campoCodigo::placeholder { color: var(--cal-3); letter-spacing: .1em; }
+
+.buscador-nota { margin-top: var(--s2); font-size: 13.5px; color: var(--cal-3); }
+
+.btn-canje {
+  flex: none; padding: 0 26px; border-radius: var(--r-md);
+  background: var(--plomo); color: var(--tinta);
+  font-weight: 600; font-size: 16px;
+}
+.btn-canje:active { transform: scale(.98); }
+.btn-canje:disabled { opacity: .6; }
+.btn-canje-grande { width: 100%; padding: 18px; font-size: 18px; margin-top: var(--s4); }
+.btn-canje-sec {
+  margin-top: var(--s4); padding: 12px 20px; border-radius: var(--r-md);
+  border: 1px solid var(--linea); color: var(--cal-2); font-size: 15px;
+}
+
+
+/* ── Ficha del profesional ────────────────────────────────── */
+.cargando {
+  margin-top: var(--s5); color: var(--cal-3);
+  font-family: var(--dato); font-size: 11px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+
+.ficha-pro {
+  margin-top: var(--s5); padding: var(--s5) var(--s4);
+  background: var(--tinta-2); border: 1px solid var(--marea);
+  border-radius: var(--r-lg); text-align: center;
+}
+.ficha-foto {
+  width: 150px; height: 150px; margin: 0 auto var(--s4);
+  border-radius: 50%; overflow: hidden;
+  background: var(--tinta-3); border: 3px solid var(--marea);
+  display: grid; place-items: center;
+  font-family: var(--display); font-weight: 800; font-size: 44px; color: var(--cal-2);
+}
+.ficha-foto img { width: 100%; height: 100%; object-fit: cover; }
+
+.ficha-pro h2 { font-size: 27px; line-height: .98; }
+.ficha-oficio {
+  margin-top: var(--s2);
+  font-family: var(--dato); font-size: 11px;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--cal-2);
+}
+.ficha-datos {
+  display: flex; justify-content: center; gap: var(--s4);
+  margin-top: var(--s3);
+}
+.ficha-datos span {
+  font-family: var(--dato); font-size: 12px; color: var(--marea);
+}
+.ficha-mira { margin-top: var(--s3); font-size: 13px; color: var(--cal-3); }
+
+.ya-vino {
+  margin-top: var(--s4); padding: var(--s3) var(--s4);
+  background: var(--tinta-3); border-radius: var(--r-md);
+  color: var(--cal-2); font-size: 14.5px;
+}
+
+.ficha-mal {
+  margin-top: var(--s5); padding: var(--s5) var(--s4);
+  background: var(--tinta-2); border: 1px solid var(--coral);
+  border-radius: var(--r-lg); text-align: center;
+}
+.ficha-mal b { display: block; font-size: 19px; margin-bottom: var(--s2); }
+.ficha-mal p { color: var(--cal-2); font-size: 14.5px; }
+
+.listo {
+  margin-top: var(--s5); padding: var(--s5) var(--s4);
+  background: var(--tinta-2); border: 1px solid var(--marea);
+  border-radius: var(--r-lg); text-align: center;
+}
+.listo b {
+  display: block; font-family: var(--display); font-weight: 800;
+  font-size: 30px; color: var(--marea); margin-bottom: var(--s2);
+}
+.listo p { color: var(--cal-2); }
+
+
+/* ── Números ──────────────────────────────────────────────── */
+.numeros, .visitas { margin-top: var(--s7); }
+.numeros h2, .visitas h2 {
+  font-family: var(--display); font-weight: 800; font-size: 19px;
+  margin-bottom: var(--s4);
+}
+
+.numeros-grilla {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--s3);
+}
+.numero {
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: var(--r-md); padding: var(--s4);
+}
+.numero-rotulo {
+  font-family: var(--dato); font-size: 9px;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--cal-3);
+}
+.numero b {
+  display: block; margin-top: var(--s2);
+  font-family: var(--display); font-weight: 800;
+  font-size: 38px; line-height: 1; letter-spacing: -.015em;
+}
+.numero-nota { display: block; margin-top: var(--s2); font-size: 12.5px; color: var(--cal-3); }
+.numero-nota .sube { color: var(--marea); font-style: normal; }
+.numero-nota .baja { color: var(--coral); font-style: normal; }
+
+
+/* ── Quiénes vinieron ─────────────────────────────────────── */
+.visita {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s3) 0; border-bottom: 1px solid var(--linea);
+}
+.visita:last-child { border-bottom: 0; }
+.visita-foto {
+  width: 42px; height: 42px; flex: none; border-radius: 50%;
+  overflow: hidden; background: var(--tinta-3);
+  display: grid; place-items: center;
+  font-family: var(--dato); font-size: 13px; color: var(--cal-2);
+}
+.visita-foto img { width: 100%; height: 100%; object-fit: cover; }
+.visita-quien { flex: 1; min-width: 0; }
+.visita-quien b { font-weight: 600; font-size: 15px; }
+.visita-quien > span {
+  display: block; font-family: var(--dato); font-size: 10px;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--cal-3);
+}
+.nuevo {
+  display: inline-block; margin-left: 6px; padding: 2px 7px;
+  border-radius: 20px; background: var(--marea); color: var(--tinta);
+  font-family: var(--dato); font-size: 9px; font-style: normal;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.visita-veces {
+  flex: none; text-align: right;
+  font-family: var(--dato); font-size: 12px; color: var(--cal-2);
+}
+.visita-veces em {
+  display: block; font-style: normal; font-size: 10px; color: var(--cal-3);
+}
+
+.vacio-canje {
+  padding: var(--s6) var(--s4); text-align: center;
+  background: var(--tinta-2); border: 1px dashed var(--linea);
+  border-radius: var(--r-md);
+}
+.vacio-canje b { display: block; font-size: 18px; margin-bottom: var(--s2); }
+.vacio-canje p { color: var(--cal-2); font-size: 14.5px; max-width: 400px; margin: 0 auto; }
+
+
+/* ── Pie ──────────────────────────────────────────────────── */
+.canje-pie {
+  margin-top: var(--s7); padding-top: var(--s4);
+  border-top: 1px solid var(--linea);
+  color: var(--cal-3); font-size: 13px;
+}
+.canje-pie p + p { margin-top: 4px; }
+
+
+/* ── Brindis ──────────────────────────────────────────────── */
+.brindis {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--tinta-3); border: 1px solid var(--linea);
+  color: var(--cal); padding: 14px 22px; border-radius: var(--r-md);
+  z-index: 50; font-size: 15px;
+}
+[hidden] { display: none !important; }
+
+
+/* ── Celular ──────────────────────────────────────────────── */
+@media (max-width: 560px) {
+  .canje-cabeza { flex-direction: column; }
+  .canje-zonas { justify-content: flex-start; }
+  .buscador-fila { flex-direction: column; }
+  .btn-canje { padding: 16px; }
+  #campoCodigo { font-size: 22px; text-align: center; }
+}
