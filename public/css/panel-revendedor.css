@@ -1,0 +1,199 @@
+/* ============================================================
+   CONTRATÁ YA — Panel del revendedor
+   Pensado para alguien que no es técnico: números grandes,
+   una columna, sin menús. Prefijo .pr- para no pisar nada.
+   ============================================================ */
+
+.pr-body { background: var(--tinta); }
+
+.pr-marca {
+  font-family: var(--dato); font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--plomo);
+}
+
+/* ── Botones y campos ───────────────────────────────────── */
+.pr-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 13px 24px; border-radius: 999px;
+  font-weight: 600; font-size: 15px;
+  transition: transform 0.18s var(--ease), background 0.2s, border-color 0.2s;
+}
+.pr-btn:hover { transform: translateY(-1px); }
+.pr-btn-plomo { background: var(--plomo); color: #0B1620; }
+.pr-btn-plomo:hover { background: #FFBB53; }
+.pr-btn-linea { border: 1px solid var(--linea); color: var(--cal-2); }
+.pr-btn-linea:hover { border-color: var(--coral); color: var(--coral); }
+.pr-btn[disabled] { opacity: 0.5; pointer-events: none; }
+
+.pr-campo { display: flex; flex-direction: column; gap: 6px; }
+.pr-campo > span {
+  font-family: var(--dato); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--cal-3);
+}
+.pr-campo input {
+  background: var(--tinta); border: 1px solid var(--linea);
+  border-radius: var(--r-sm); padding: 13px 14px;
+  color: var(--cal); font-family: inherit; font-size: 16px; width: 100%;
+}
+.pr-campo input:focus { outline: none; border-color: var(--plomo); }
+
+/* ── Portón ─────────────────────────────────────────────── */
+.pr-porton {
+  min-height: 100dvh; display: grid; place-items: center; padding: var(--s5);
+}
+.pr-porton-caja {
+  width: min(100%, 400px);
+  display: flex; flex-direction: column; gap: var(--s4);
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: var(--r-lg); padding: var(--s6);
+  box-shadow: var(--sombra);
+}
+.pr-porton-caja h1 { font-size: 34px; }
+.pr-porton-texto { color: var(--cal-2); font-size: 14.5px; margin-top: -8px; }
+.pr-porton-texto.pr-mal { color: var(--coral); }
+.pr-porton-pie { color: var(--cal-3); font-size: 13px; text-align: center; }
+.pr-porton-pie a { color: var(--plomo); text-decoration: underline; }
+
+/* ── Panel ──────────────────────────────────────────────── */
+.pr-panel { max-width: 940px; margin: 0 auto; padding: var(--s5) var(--s5) var(--s8); }
+
+.pr-cabecera {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--s4); padding-bottom: var(--s5);
+  border-bottom: 1px solid var(--linea-soft);
+}
+.pr-cabecera h1 { font-size: clamp(28px, 6vw, 42px); margin-top: 6px; }
+.pr-sub { color: var(--cal-2); font-size: 15px; margin-top: 6px; }
+
+/* ── Los números ────────────────────────────────────────── */
+.pr-plata {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: var(--s4); margin: var(--s6) 0;
+}
+.pr-plata article {
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: var(--r-md); padding: var(--s4);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.pr-plata-grande {
+  grid-column: span 2; background: var(--tinta-3) !important;
+  border-color: var(--plomo-dim) !important;
+}
+@media (max-width: 620px) { .pr-plata-grande { grid-column: span 1; } }
+.pr-rotulo {
+  font-family: var(--dato); font-size: 9.5px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--cal-3);
+}
+.pr-monto { font-size: clamp(36px, 8vw, 54px); font-weight: 600; color: var(--plomo); line-height: 1; }
+.pr-monto-chico { font-size: 26px; font-weight: 600; color: var(--cal); line-height: 1.1; }
+.pr-pie { font-size: 12.5px; color: var(--cal-3); line-height: 1.4; }
+
+/* ── Avisos ─────────────────────────────────────────────── */
+.pr-avisos { display: flex; flex-direction: column; gap: 10px; margin-bottom: var(--s6); }
+.pr-aviso {
+  display: flex; gap: 12px; align-items: flex-start;
+  border-radius: var(--r-md); padding: 13px 16px;
+  font-size: 14.5px; line-height: 1.5;
+  border: 1px solid var(--linea); background: var(--tinta-2); color: var(--cal-2);
+}
+.pr-aviso::before { content: '•'; font-size: 18px; line-height: 1.2; }
+.pr-aviso-bien { border-color: rgba(47, 178, 166, 0.4); }
+.pr-aviso-bien::before { color: var(--marea); }
+.pr-aviso-ojo { border-color: rgba(240, 166, 58, 0.45); }
+.pr-aviso-ojo::before { color: var(--plomo); }
+.pr-aviso-mal { border-color: rgba(228, 87, 76, 0.5); }
+.pr-aviso-mal::before { color: var(--coral); }
+
+/* ── Secciones ──────────────────────────────────────────── */
+.pr-seccion { margin-bottom: var(--s7); }
+.pr-seccion h2 { font-size: 24px; margin-bottom: 6px; }
+.pr-bajada { color: var(--cal-3); font-size: 14px; margin-bottom: var(--s4); max-width: 66ch; }
+
+/* ── Zonas ──────────────────────────────────────────────── */
+.pr-zonas { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--s4); }
+.pr-zona {
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: var(--r-md); padding: var(--s4);
+}
+.pr-zona-cabeza { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s3); }
+.pr-zona-cabeza h3 { font-size: 20px; }
+.pr-zona-datos {
+  display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4);
+  margin: var(--s3) 0; font-size: 13px; color: var(--cal-3);
+}
+.pr-zona-datos b { color: var(--cal); font-family: var(--dato); font-weight: 500; }
+.pr-casilleros { display: flex; flex-direction: column; gap: 5px; margin-top: var(--s3); }
+.pr-casillero {
+  display: flex; justify-content: space-between; align-items: center; gap: var(--s3);
+  padding: 8px 11px; border-radius: var(--r-sm);
+  font-size: 13.5px; background: var(--tinta); border: 1px solid transparent;
+}
+.pr-casillero-libre { border-color: rgba(47, 178, 166, 0.35); }
+.pr-casillero-libre .pr-estado { color: var(--marea); }
+.pr-casillero-tomado { color: var(--cal-3); }
+.pr-estado { font-family: var(--dato); font-size: 11px; letter-spacing: 0.05em; }
+.pr-zona-pie { margin-top: var(--s3); font-size: 13px; color: var(--cal-2); }
+.pr-zona-pie b { color: var(--plomo); font-family: var(--dato); }
+
+/* ── Tablas y listas ────────────────────────────────────── */
+.pr-tabla-envase { overflow-x: auto; border: 1px solid var(--linea); border-radius: var(--r-md); }
+.pr-tabla { width: 100%; border-collapse: collapse; min-width: 560px; }
+.pr-tabla th {
+  text-align: left; padding: 11px 14px;
+  font-family: var(--dato); font-size: 9.5px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--cal-3);
+  background: var(--tinta-2); border-bottom: 1px solid var(--linea); white-space: nowrap;
+}
+.pr-tabla td {
+  padding: 12px 14px; font-size: 14.5px; color: var(--cal-2);
+  border-bottom: 1px solid var(--linea-soft);
+}
+.pr-tabla tr:last-child td { border-bottom: 0; }
+.pr-der { text-align: right; }
+.pr-tabla .dato { color: var(--cal); }
+
+.pr-venta {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s4);
+  padding: 14px 16px; border: 1px solid var(--linea);
+  border-radius: var(--r-md); background: var(--tinta-2); margin-bottom: 10px;
+}
+.pr-venta-nombre { font-weight: 600; color: var(--cal); font-size: 16px; }
+.pr-venta-sub { font-size: 13px; color: var(--cal-3); margin-top: 3px; }
+.pr-venta-plata { text-align: right; white-space: nowrap; }
+.pr-venta-plata .dato { color: var(--plomo); font-size: 18px; font-weight: 600; }
+.pr-venta-plata span { display: block; font-size: 12px; color: var(--cal-3); }
+.pr-venta-baja { opacity: 0.55; }
+
+.pr-pill {
+  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  font-family: var(--dato); font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.pr-pill-verde { background: rgba(47, 178, 166, 0.16); color: var(--marea); }
+.pr-pill-ambar { background: rgba(240, 166, 58, 0.16); color: var(--plomo); }
+.pr-pill-gris  { background: rgba(237, 231, 218, 0.07); color: var(--cal-3); }
+
+.pr-vacio {
+  border: 1px dashed var(--linea); border-radius: var(--r-md);
+  padding: var(--s5); text-align: center; color: var(--cal-3); font-size: 14.5px;
+}
+
+/* ── Pie ────────────────────────────────────────────────── */
+.pr-pie-largo {
+  border-top: 1px solid var(--linea-soft); padding-top: var(--s5);
+  color: var(--cal-3); font-size: 14px;
+}
+.pr-pie-largo h3 { font-size: 18px; color: var(--cal); margin-bottom: var(--s3); }
+.pr-pie-largo li { margin-bottom: 8px; padding-left: 16px; position: relative; line-height: 1.5; }
+.pr-pie-largo li::before { content: '—'; position: absolute; left: 0; color: var(--linea); }
+.pr-pie-largo strong { color: var(--cal); }
+.pr-pie-largo p { margin-top: var(--s4); }
+.pr-pie-largo a { color: var(--plomo); text-decoration: underline; }
+
+/* ── Brindis ────────────────────────────────────────────── */
+.pr-brindis {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+  z-index: 90; max-width: min(92vw, 460px);
+  background: var(--tinta-3); border: 1px solid var(--linea);
+  border-radius: var(--r-md); padding: 13px 20px;
+  color: var(--cal); font-size: 14.5px; box-shadow: var(--sombra);
+}

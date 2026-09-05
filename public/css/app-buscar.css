@@ -1,0 +1,103 @@
+/* ═══════════════════════════════════════════════════════════
+   BUSCAR — filtros y formulario de a pasos
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Pastillas arriba del mazo ───────────────────────────── */
+.filtros-mazo {
+  display: flex; align-items: center; gap: 7px;
+  margin-bottom: var(--s3);
+  overflow-x: auto; scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.filtros-mazo::-webkit-scrollbar { display: none; }
+.filtro-chip {
+  display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: 100px; padding: 8px 13px;
+  color: var(--cal); font-family: var(--texto); font-size: 13.5px;
+  cursor: pointer; min-height: 38px;
+  transition: border-color .16s var(--ease);
+}
+.filtro-chip:hover, .filtro-chip:focus-visible { border-color: var(--plomo); outline: none; }
+.filtro-chip:active { transform: scale(.98); }
+.filtro-chip-suave { color: var(--cal-2); }
+.chip-glifo { color: var(--plomo); font-size: 14px; }
+.chip-flecha { color: var(--cal-3); font-size: 10px; }
+.filtro-cuenta {
+  margin-left: auto; flex-shrink: 0;
+  font-family: var(--dato); font-size: 11.5px; color: var(--cal-3);
+  padding-left: 8px;
+}
+
+/* ── Elegir zona rápido ──────────────────────────────────── */
+.zonas-rapidas { display: grid; gap: 6px; }
+.zona-rapida {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; min-height: 46px; padding: 11px 15px;
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: var(--r-sm); color: var(--cal);
+  font-family: var(--texto); font-size: 15px; cursor: pointer;
+  transition: border-color .16s var(--ease);
+}
+.zona-rapida:hover { border-color: var(--plomo); }
+.zona-rapida b { font-family: var(--dato); font-size: 13px; color: var(--plomo); }
+.zona-rapida.sin-gente { opacity: .55; }
+.zona-rapida.sin-gente b { color: var(--cal-3); }
+.zona-rapida.elegida { border-color: var(--marea); }
+.zona-rapida.elegida b { color: var(--marea); }
+
+/* ── Dónde sí hay, cuando el mazo quedó vacío ────────────── */
+.vacio-zonas {
+  margin-top: var(--s5); width: 100%;
+  border-top: 1px solid var(--linea-soft); padding-top: var(--s4);
+}
+.vacio-zonas-titulo {
+  font-family: var(--dato); font-size: 11px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--cal-3); margin: 0 0 10px;
+}
+.vacio-zonas-lista { display: grid; gap: 6px; }
+
+/* ── El formulario, de a una pregunta ────────────────────── */
+.vista-pasos { padding-top: var(--s4); }
+.pasos-cabeza {
+  display: flex; align-items: center; gap: var(--s3);
+  margin-bottom: var(--s6);
+}
+.pasos-atras {
+  width: 40px; height: 40px; flex-shrink: 0;
+  display: grid; place-items: center;
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: 50%; color: var(--cal); font-size: 17px; cursor: pointer;
+}
+.pasos-atras:hover { border-color: var(--plomo); }
+.pasos-puntos { display: flex; gap: 6px; flex: 1; justify-content: center; }
+.paso-punto {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--linea);
+  transition: background .2s var(--ease), width .2s var(--ease);
+}
+.paso-punto.hecho { background: var(--marea); }
+.paso-punto.activo { background: var(--plomo); width: 20px; border-radius: 100px; }
+.pasos-cuenta { font-family: var(--dato); font-size: 11.5px; color: var(--cal-3); flex-shrink: 0; }
+
+.titulo-paso {
+  font-family: var(--display); font-size: clamp(25px, 6.5vw, 32px);
+  line-height: 1.08; margin: 0 0 8px;
+}
+.sub-paso { color: var(--cal-2); font-size: 15px; margin: 0 0 var(--s5); max-width: 42ch; }
+
+/* Botones grandes: una pregunta por pantalla, respuestas del tamaño del pulgar */
+.fichas-grandes { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 8px; }
+.fichas-grandes .ficha { min-height: 52px; font-size: 14.5px; }
+.urgencias-grandes { display: grid; gap: 9px; }
+.urgencias-grandes .urgencia { min-height: 66px; text-align: left; padding: 14px 16px; }
+.area-grande { min-height: 130px; font-size: 16px; }
+
+.fichas-hoja { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 7px; }
+.urgencias-hoja { display: grid; gap: 8px; }
+.sub-hoja { color: var(--cal-2); font-size: 14px; margin: 0 0 var(--s4); }
+
+@media (min-width: 1000px) {
+  .fichas-grandes { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  .vista-pasos { max-width: 720px; }
+}

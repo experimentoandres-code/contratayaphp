@@ -66,6 +66,25 @@ function brindis(texto) {
   b._t = setTimeout(() => { b.hidden = true; }, 2600);
 }
 
+/* Un botón que se apaga y dice "Enviando…" tiene que volver, pase lo que
+   pase. Había tres que si la cosa fallaba por un camino inesperado quedaban
+   apagados para siempre, con la persona mirando una pantalla que no responde
+   y sin manera de salir. */
+async function ocupar(boton, textoOcupado, tarea) {
+  if (!boton) return tarea();
+  const original = boton.textContent;
+  boton.disabled = true;
+  boton.textContent = textoOcupado;
+  try {
+    return await tarea();
+  } finally {
+    if (document.body.contains(boton)) {
+      boton.disabled = false;
+      boton.textContent = original;
+    }
+  }
+}
+
 function abrirHoja(html) {
   const hoja = $('#hoja');
   const panel = $('#hojaPanel');
@@ -127,6 +146,8 @@ const sponsorDe = (loc) => SPONSORS.find(s => s.localidades.includes(loc)) || SP
 function verRegistro() {
   barra.hidden = true;
   tabs.hidden = true;
+  // Direcciones limpias: el .html ya no existe de cara afuera.
+  const destino = '/entrar?volver=' + encodeURIComponent('/app');
   escena.innerHTML = `
     <div class="bienvenida">
       <div class="bienvenida-marca">
@@ -134,112 +155,15 @@ function verRegistro() {
         <span>CONTRATÁ <b>YA</b></span>
       </div>
       <h1>Oficios de la<br>costa, <em>ya.</em></h1>
-      <p>Para entrar necesitás una cuenta. Es lo que permite que las calificaciones sean de personas reales y no de perfiles inventados.</p>
+      <p>Para entrar necesitás una cuenta con tu correo y una contraseña. Es lo que permite que las calificaciones sean de personas reales y no de perfiles inventados.</p>
 
       <div class="roles" style="margin-top:24px">
-        <button class="btn btn-google btn-bloque" id="conGoogle">
-          <svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true">
-            <path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-2.7-.4-3.9H24v7.1h12.1c-.2 1.9-1.6 4.7-4.5 6.6l-.1.3 6.5 5 .5.1c4.1-3.8 6.6-9.4 6.6-15.2z"/>
-            <path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.3l-6.9-5.4c-1.8 1.3-4.3 2.2-7.6 2.2-5.8 0-10.7-3.8-12.5-9.1l-.3.1-6.7 5.2-.1.3C8 41.1 15.4 46 24 46z"/>
-            <path fill="#FBBC05" d="M11.5 28.4c-.5-1.4-.7-2.9-.7-4.4s.3-3 .7-4.4v-.3l-6.8-5.3-.2.1C2.9 17.2 2 20.5 2 24s.9 6.8 2.5 9.9l7-5.5z"/>
-            <path fill="#EA4335" d="M24 10.5c4.1 0 6.9 1.8 8.5 3.3l6.2-6C34.9 4.3 29.9 2 24 2 15.4 2 8 6.9 4.5 14.1l7 5.5c1.8-5.3 6.7-9.1 12.5-9.1z"/>
-          </svg>
-          Continuar con Google
-        </button>
-        <button class="btn btn-fantasma btn-bloque" id="conCorreo">Continuar con correo</button>
+        <a class="btn btn-plomo btn-bloque" id="conCorreo" href="${destino}">Entrar con mi correo</a>
+        <a class="btn btn-fantasma btn-bloque" id="crearCuentaLink" href="${destino}">Crear una cuenta</a>
       </div>
 
       <p class="registro-nota">Al continuar aceptás que tu nombre y tu calificación sean visibles para la otra parte. No publicamos tu teléfono ni tu dirección.</p>
     </div>`;
-
-  $('#conGoogle').addEventListener('click', registroGoogle);
-  $('#conCorreo').addEventListener('click', registroCorreo);
-}
-
-async function registroGoogle() {
-  abrirHoja(`
-    <div class="verif-paso">
-      <div class="verif-anillo"></div>
-      <h2 style="font-size:20px">Conectando con Google</h2>
-      <p style="color:var(--cal-2)">Te estamos llevando a Google…</p>
-    </div>`);
-  const { error } = await sb.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: location.origin + location.pathname }
-  });
-  if (error) {
-    cerrarHoja();
-    brindis('No se pudo conectar con Google: ' + error.message);
-  }
-}
-
-function registroCorreo() {
-  abrirHoja(`
-    <h2>Crear tu cuenta</h2>
-    <p>Te mandamos un mail con un enlace para entrar. Tenés que abrirlo desde este mismo teléfono o computadora.</p>
-    <div style="margin-top:20px">
-      <span class="campo-rotulo">Nombre y apellido</span>
-      <input class="chat-campo" id="regNombre" style="width:100%;border-radius:12px;margin-bottom:16px" placeholder="Como querés que te vean" autocomplete="name">
-      <span class="campo-rotulo">Correo</span>
-      <input class="chat-campo" id="regCorreo" style="width:100%;border-radius:12px" placeholder="tunombre@correo.com" type="email" autocomplete="email">
-    </div>
-    <button class="btn btn-plomo btn-bloque" id="regEnviar" style="margin-top:20px" disabled>Enviarme el enlace</button>`);
-
-  const revisar = () => {
-    const n = $('#regNombre').value.trim();
-    const c = $('#regCorreo').value.trim();
-    $('#regEnviar').disabled = !(n.length > 2 && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(c));
-  };
-  $('#regNombre').addEventListener('input', revisar);
-  $('#regCorreo').addEventListener('input', revisar);
-
-  $('#regEnviar').addEventListener('click', async () => {
-    const nombre = $('#regNombre').value.trim();
-    const correo = $('#regCorreo').value.trim();
-    const boton = $('#regEnviar');
-    boton.disabled = true;
-    boton.textContent = 'Enviando…';
-    const { error } = await sb.auth.signInWithOtp({
-      email: correo,
-      options: {
-        data: { nombre },
-        emailRedirectTo: location.origin + location.pathname
-      }
-    });
-    if (error) {
-      boton.disabled = false;
-      boton.textContent = 'Enviarme el enlace';
-      brindis('No se pudo enviar el mail: ' + error.message);
-      return;
-    }
-    avisarCorreo(correo);
-  });
-}
-
-function avisarCorreo(correo) {
-  abrirHoja(`
-    <h2>Revisá tu correo</h2>
-    <p>Te mandamos un mail a <b style="color:var(--cal)">${correo}</b> con un enlace para entrar.</p>
-    <p>Abrí ese mail <b>desde este mismo dispositivo</b> y tocá el enlace. Te trae de vuelta acá, ya adentro.</p>
-    <p style="color:var(--cal-2);font-size:14px">Si no lo ves, mirá en la carpeta de correo no deseado. Puede tardar un minuto en llegar.</p>
-    <button class="btn btn-fantasma btn-bloque btn-sm" id="regVolver" style="margin-top:14px">Cambiar el correo</button>`);
-  $('#regVolver').addEventListener('click', registroCorreo);
-}
-
-function crearCuenta({ nombre, correo, metodo }) {
-  Estado.usuario = {
-    nombre, correo, metodo,
-    foto: FOTOS_PERFIL[0],
-    puntajePro: null,       // sin calificaciones todavía
-    puntajeCliente: null,
-    trabajos: 0,
-    contrataciones: 0,
-    desde: new Date().getFullYear()
-  };
-  guardar();
-  cerrarHoja();
-  brindis('Cuenta creada con ' + metodo);
-  verBienvenida();
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -301,6 +225,7 @@ function verBienvenida() {
 
 // ¿El profesional ya cargó su perfil real? (rubro + al menos una zona)
 const perfilProCompleto = () =>
+  !Estado.perfilProACompletar &&
   !!(Estado.yo && Estado.yo.rubro && Estado.yo.zonas && Estado.yo.zonas.length);
 
 // Persistir en Supabase de qué lado del mostrador está el usuario.
@@ -316,6 +241,20 @@ async function guardarRol(rol) {
    BUSCAR
    ══════════════════════════════════════════════════════════ */
 function verBuscar() {
+  // El profesional ya dijo cuál es su oficio y en qué pueblos trabaja cuando
+  // armó el perfil. Volver a preguntárselo para ver los pedidos es hacerle
+  // llenar un formulario para llegar a lo mismo. Se precarga y, si quiere
+  // cambiar algo, tiene el botón "Cambiar" arriba del mazo.
+  if (Estado.rol === 'pro') {
+    if (!Estado.pedido.rubro && Estado.yo && Estado.yo.rubro) Estado.pedido.rubro = Estado.yo.rubro;
+    if (!Estado.pedido.urgencia) Estado.pedido.urgencia = 'todos';
+    if (!Estado.zona && Estado.yo) Estado.zona = Estado.yo.localidad || (Estado.yo.zonas || [])[0] || null;
+    if (Estado.zona) {
+      const z = $('#zonaActual');
+      if (z) z.textContent = Estado.zona;
+    }
+    guardar();
+  }
   const listo = Estado.zona && Estado.pedido.rubro && Estado.pedido.urgencia;
   return listo ? verMazo() : verFormulario();
 }
@@ -681,6 +620,10 @@ function verFormPerfilPro(volverA) {
       anios: cambios.anios, precio_desde: cambios.precio_desde,
       bio, especialidades: esp, instagram, facebook
     });
+    Estado.perfilProACompletar = false;
+    // La búsqueda vieja podía haber quedado con el rubro por omisión.
+    Estado.pedido.rubro = rubroSel;
+    Estado.vistos = [];
     guardar();
     brindis('Perfil guardado');
 
@@ -793,6 +736,62 @@ function verFormPerfilCliente(volverA) {
   });
 }
 
+/* ── El radio de búsqueda ────────────────────────────────────
+   El Partido de la Costa son catorce pueblos chicos pegados uno
+   al lado del otro sobre la misma ruta. Buscar sólo adentro del
+   propio deja el mazo vacío casi siempre: medido sobre la base,
+   nueve de cada diez combinaciones de oficio y localidad no
+   tienen a nadie. Así que el mazo abre el radio solo: primero tu
+   localidad, después las de al lado, después todo el partido, y
+   lo dice en pantalla para que nadie se sorprenda de ver a
+   alguien de otro pueblo.
+   ─────────────────────────────────────────────────────────── */
+const VECINAS_A_CADA_LADO = 2;
+
+function vecinasDe(zona) {
+  const i = LOCALIDADES.indexOf(zona);
+  if (i < 0) return [];
+  const salida = [];
+  for (let d = 1; d <= VECINAS_A_CADA_LADO; d++) {
+    if (LOCALIDADES[i - d]) salida.push(LOCALIDADES[i - d]);
+    if (LOCALIDADES[i + d]) salida.push(LOCALIDADES[i + d]);
+  }
+  return salida;
+}
+
+// 0 = en tu localidad · 1 = al lado (o donde vos trabajás) · 2 = resto del partido
+function anilloDe(donde, zona, propias) {
+  const lista = (Array.isArray(donde) ? donde : [donde]).filter(Boolean);
+  if (!zona) return 0;
+  if (lista.includes(zona)) return 0;
+  const cerca = new Set(vecinasDe(zona).concat((propias || []).filter(Boolean)));
+  if (lista.some(l => cerca.has(l))) return 1;
+  return 2;
+}
+
+const NOMBRE_ANILLO = ['acá', 'al lado', 'en el partido'];
+
+// Resumen de dónde salió lo que estás viendo, para contarlo en pantalla.
+function resumenRadio(lista, zona) {
+  const cerca = lista.filter(x => (x._anillo || 0) === 0).length;
+  const lejos = lista.filter(x => (x._anillo || 0) > 0);
+  const pueblos = [];
+  lejos.forEach(x => { const l = x.localidad; if (l && l !== zona && !pueblos.includes(l)) pueblos.push(l); });
+  return { cerca, lejos: lejos.length, pueblos };
+}
+
+function htmlRadioMazo(lista, esPro) {
+  const zona = Estado.zona;
+  const r = resumenRadio(lista, zona);
+  if (!r.lejos || !zona) return '';
+  const que = esPro ? 'pedidos' : 'profesionales';
+  const donde = r.pueblos.slice(0, 3).join(', ') + (r.pueblos.length > 3 ? ' y alrededores' : '');
+  if (r.cerca === 0) {
+    return `<p class="mazo-radio">No hay ${que} en <b>${escapar(zona)}</b>. Te muestro los de ${escapar(donde)}.</p>`;
+  }
+  return `<p class="mazo-radio">Después de los de <b>${escapar(zona)}</b> seguís con los de ${escapar(donde)}.</p>`;
+}
+
 /* ── Candidatos según el rol ────────────────────────────── */
 // Cache de pedidos reales traídos de Supabase (lado profesional).
 let pedidosPro = [];
@@ -810,16 +809,23 @@ async function cargarPedidosPro() {
     // Qué deslicé antes: los "sí" (ya son match) no vuelven; los "no" reaparecen al final.
     const { data: desl } = await sb.from('deslizamientos')
       .select('pedido_id,direccion').eq('usuario_id', uid);
-    const dijeSi = new Set((desl || []).filter(d => d.direccion === 'si').map(d => d.pedido_id));
-    const dijeNo = new Set((desl || []).filter(d => d.direccion === 'no').map(d => d.pedido_id));
+    // En la base conviven dos formas de escribir lo mismo: 'si'/'no' (lo que
+    // escribe la app) y 'der'/'izq' (lo que quedó de la carga inicial de datos).
+    // Si sólo miráramos 'si', un pedido ya aceptado volvería al mazo.
+    const esSi = (d) => d.direccion === 'si' || d.direccion === 'der';
+    const dijeSi = new Set((desl || []).filter(esSi).map(d => d.pedido_id));
+    const dijeNo = new Set((desl || []).filter(d => !esSi(d)).map(d => d.pedido_id));
 
+    // Se piden los del oficio en TODO el partido y después se ordenan por
+    // cercanía. Filtrar por una sola localidad en la consulta era lo que
+    // dejaba a doce de dieciséis profesionales sin ver un solo pedido.
     let qPed = sb.from('pedidos')
       .select('id,cliente_id,rubro,localidad,urgencia,detalle,presupuesto,creado_en,cliente:perfiles!cliente_id(nombre,foto_url,localidad,ausente,puntaje_cliente,contrataciones,desde_anio)')
       .eq('estado', 'abierto')
       .eq('rubro', Estado.pedido.rubro)
-      .eq('localidad', Estado.zona)
       .neq('cliente_id', uid)
-      .order('creado_en', { ascending: false });
+      .order('creado_en', { ascending: false })
+      .limit(120);
     if (Estado.pedido.urgencia && Estado.pedido.urgencia !== 'todos') {
       qPed = qPed.eq('urgencia', Estado.pedido.urgencia);
     }
@@ -842,12 +848,17 @@ async function cargarPedidosPro() {
         detalle: f.detalle || 'Sin detalle',
         presupuesto: f.presupuesto || '—'
       },
+      _anillo: anilloDe(f.localidad, Estado.zona, (Estado.yo && Estado.yo.zonas) || []),
       _real: true
     });
 
+    // Primero lo de tu pueblo, después lo de al lado, después el resto.
+    // Dentro de cada anillo se respeta el orden por fecha que trajo la base.
+    const porCercania = (a, b) => (a._anillo - b._anillo);
+
     const disponibles = (filas || []).filter(f => !dijeSi.has(f.id));
-    const nuevos     = disponibles.filter(f => !dijeNo.has(f.id)).map(mapear);
-    const reaparecen = disponibles.filter(f => dijeNo.has(f.id)).map(mapear);
+    const nuevos     = disponibles.filter(f => !dijeNo.has(f.id)).map(mapear).sort(porCercania);
+    const reaparecen = disponibles.filter(f => dijeNo.has(f.id)).map(mapear).sort(porCercania);
     pedidosPro = [...nuevos, ...reaparecen];   // primero lo nuevo; los "no" al final
   } catch (e) {
     pedidosPro = [];
@@ -874,11 +885,13 @@ async function cargarProfesionalesCli() {
       yaMatch = new Set((ms || []).map(m => m.profesional_id));
     }
 
+    // Igual que del lado del profesional: se piden todos los del oficio en el
+    // partido y la cercanía se resuelve acá, ordenando. Pedir sólo los que
+    // declararon TU localidad dejaba el mazo del vecino vacío casi siempre.
     let q = sb.from('perfiles')
       .select('id,nombre,foto_url,rubro,localidad,zonas,plan,verificacion,bio,especialidades,puntaje_pro,trabajos,respuesta_min,anios,precio_desde,uso_activado,galeria,instagram,facebook')
       .eq('rol', 'pro')
       .eq('rubro', Estado.pedido.rubro)
-      .contains('zonas', [Estado.zona])
       .neq('id', uid);
     let { data: filas, error: eSel } = await q;
     if (eSel) {
@@ -886,7 +899,6 @@ async function cargarProfesionalesCli() {
         .select('id,nombre,foto_url,rubro,localidad,zonas,plan,verificacion,bio,especialidades,puntaje_pro,trabajos,respuesta_min,anios,precio_desde')
         .eq('rol', 'pro')
         .eq('rubro', Estado.pedido.rubro)
-        .contains('zonas', [Estado.zona])
         .neq('id', uid);
       filas = r2.data;
     }
@@ -916,10 +928,13 @@ async function cargarProfesionalesCli() {
         anios: f.anios || 0,
         desde: f.precio_desde || 0,
         resenas: [],
+        _anillo: anilloDe((f.zonas || []).concat([f.localidad]), Estado.zona, []),
         _real: true
       }));
 
+    // Cercanía primero; adentro de cada anillo, el plan Pro y después el puntaje.
     profesionalesReales.sort((a, b) => {
+      if (a._anillo !== b._anillo) return a._anillo - b._anillo;
       const pa = esPlanPro(a.plan) ? 1 : 0;
       const pb = esPlanPro(b.plan) ? 1 : 0;
       if (pb !== pa) return pb - pa;
@@ -946,9 +961,24 @@ function candidatos() {
 async function verMazo() {
   const esPro = Estado.rol === 'pro';
 
-  escena.innerHTML = `<div class="vista"><p class="sub-vista" style="margin-top:48px;text-align:center">${esPro ? 'Buscando pedidos abiertos…' : 'Buscando profesionales…'}</p></div>`;
+  // Mientras busca, se ve la silueta de una tarjeta en su lugar exacto.
+  // Una pantalla en blanco con la palabra “cargando” parece que se colgó.
+  escena.innerHTML = `
+    <div class="vista vista-mazo" data-cargando="mazo">
+      <div class="resumen-busqueda" style="pointer-events:none">
+        <span class="esq-linea" style="width:64%;height:14px"></span>
+      </div>
+      <div class="mazo-app">${typeof esqueletoMazo === 'function' ? esqueletoMazo() : ''}</div>
+      <div class="controles">
+        <span class="disco esq-disco"></span>
+        <span class="pastilla-info esq-pastilla"></span>
+        <span class="disco disco-si esq-disco"></span>
+      </div>
+    </div>`;
   if (esPro) await cargarPedidosPro();
   else await cargarProfesionalesCli();
+  // Si mientras buscaba la persona se fue a otra pantalla, no le pisamos lo que está mirando.
+  if (!escena.querySelector('[data-cargando="mazo"]')) return;
 
   const lista = candidatos();
   const rubro = rubroDe(Estado.pedido.rubro);
@@ -958,21 +988,39 @@ async function verMazo() {
 
   escena.innerHTML = `
     <div class="vista vista-mazo">
-      ${franjaAnunciante(esPro ? Estado.yo.rubro : Estado.pedido.rubro, Estado.zona, 'Auspicia')}
-      <button class="resumen-busqueda" id="cambiarBusqueda">
-        <span><b>${rubro.nombre}</b> · ${Estado.zona}${urgResumen ? ' · ' + urgResumen : ''} · ${lista.length} ${esPro ? (lista.length === 1 ? 'pedido' : 'pedidos') : (lista.length === 1 ? 'disponible' : 'disponibles')}</span>
-        <span class="resumen-cambiar">Cambiar</span>
-      </button>
-      <div class="mazo-app" id="mazo"></div>
-      <div class="controles">
-        <button class="disco disco-no" id="btnNo" aria-label="Descartar">✕</button>
+      <div class="filtros-mazo" id="filtrosMazo">
+        <button class="filtro-chip" data-filtro="rubro">
+          <span class="chip-glifo">${rubro.glifo || ''}</span>
+          <span class="chip-texto">${rubro.nombre}</span>
+          <span class="chip-flecha">▾</span>
+        </button>
+        <button class="filtro-chip" data-filtro="zona">
+          <span class="chip-texto">${Estado.zona || 'Elegir zona'}</span>
+          <span class="chip-flecha">▾</span>
+        </button>
+        ${esPro ? `<button class="filtro-chip filtro-chip-suave" data-filtro="urgencia">
+          <span class="chip-texto">${urgResumen || 'Todos'}</span>
+          <span class="chip-flecha">▾</span>
+        </button>` : ''}
+        <span class="filtro-cuenta" id="mazoCuenta">${lista.length} ${esPro ? (lista.length === 1 ? 'pedido' : 'pedidos') : (lista.length === 1 ? 'disponible' : 'disponibles')}</span>
+      </div>
+      ${htmlRadioMazo(lista, esPro)}
+      <div class="mazo-zona">
+        <div class="mazo-app" id="mazo"></div>
+        <div class="controles">
+        <button class="btn-deshacer" id="btnDeshacer" type="button" hidden aria-label="Deshacer el último que pasaste">Deshacer</button>
+        <button class="disco disco-no" id="btnNo" aria-label="Paso, no me sirve">✕</button>
         <button class="pastilla-info" id="btnInfo" aria-label="Ver la ficha completa">Ver ficha</button>
         <button class="disco disco-si" id="btnSi" aria-label="${esPro ? 'Me interesa' : 'Me sirve'}">✓</button>
+        </div>
       </div>
+      <p class="mazo-voz" id="mazoVoz" role="status" aria-live="polite"></p>
+      ${franjaAnunciante(esPro ? Estado.yo.rubro : Estado.pedido.rubro, Estado.zona, 'Auspicia', true)}
     </div>`;
 
-  $('#cambiarBusqueda').addEventListener('click', verFormulario);
+  if (window.Buscar && Buscar.conectarChips) Buscar.conectarChips();
   pintarMazo();
+  window.Avisos?.marcaDeRubro();
   requestAnimationFrame(() => window.scrollTo({ top: 0 }));
 }
 
@@ -1013,6 +1061,7 @@ function pintarMazo() {
     cont.appendChild(esPro ? cartaCliente(p, prof) : cartaProfesional(p, prof));
   });
 
+
   const arriba = cont.lastElementChild;
   if (arriba) {
     arrastrable(arriba, lista[0]);
@@ -1022,18 +1071,49 @@ function pintarMazo() {
   }
 }
 
-// Cartel cuando de verdad no hay ningún pedido/profesional para este rubro y zona.
+// Cartel cuando de verdad no hay ningún pedido/profesional en todo el partido.
+// Ojo: con catorce pueblos chicos, el mazo vacío no es la excepción, es lo
+// más común. Así que no alcanza con un dibujito: tiene que decir qué pasó,
+// qué está pasando igual sin que la persona haga nada, y qué puede hacer ahora.
 function mazoVacio(cont, esPro) {
   if (!cont) return;
-  cont.innerHTML = `
-    <div class="vacio" style="height:100%">
+  const rubro = rubroDe(Estado.pedido.rubro);
+  const oficio = rubro ? rubro.nombre.toLowerCase() : 'este oficio';
+  const avisosListos = (typeof Notification !== 'undefined' && Notification.permission === 'granted');
+
+  cont.innerHTML = esPro ? `
+    <div class="vacio vacio-mazo">
       <span class="vacio-glifo">◷</span>
-      <h3>Por ahora no hay nadie acá</h3>
-      <p>Todavía no hay ${esPro ? 'pedidos' : 'profesionales'} de este rubro en ${Estado.zona}. Probá otra localidad o volvé más tarde.</p>
-      <button class="btn btn-fantasma btn-sm" id="otraZona">Probar otra localidad</button>
+      <h3>No hay pedidos de ${escapar(oficio)}</h3>
+      <p>Buscamos en toda la costa, no sólo en ${escapar(Estado.zona || 'tu zona')}. Ahora mismo no hay ninguno abierto.</p>
+      <p class="vacio-clave">Cuando un vecino publique uno de tu oficio, te avisamos al toque.</p>
+      <div class="vacio-acciones">
+        ${avisosListos ? '' : '<button class="btn btn-plomo btn-sm" id="vacioAvisos">Avisarme cuando entre uno</button>'}
+        <button class="btn btn-fantasma btn-sm" id="vacioOtroRubro">Ver otro oficio</button>
+        <button class="btn btn-fantasma btn-sm" id="vacioJugar">Jugar un rato</button>
+      </div>
+    </div>` : `
+    <div class="vacio vacio-mazo">
+      <span class="vacio-glifo">◷</span>
+      <h3>Todavía no hay nadie de ${escapar(oficio)}</h3>
+      <p class="vacio-clave">Tu pedido ya quedó publicado. Los profesionales de la costa lo ven y, apenas alguien lo tome, te avisamos.</p>
+      <p>No hace falta que hagas nada más. Si querés, mientras tanto probá con otro oficio.</p>
+      <div class="vacio-acciones">
+        ${avisosListos ? '' : '<button class="btn btn-plomo btn-sm" id="vacioAvisos">Avisarme cuando alguien lo tome</button>'}
+        <button class="btn btn-fantasma btn-sm" id="vacioOtroRubro">Pedir otro oficio</button>
+        <button class="btn btn-fantasma btn-sm" id="vacioZona">Cambiar de localidad</button>
+      </div>
     </div>`;
-  const b = $('#otraZona');
-  if (b) b.addEventListener('click', () => elegirZona(verMazo));
+
+  const b1 = $('#vacioAvisos');
+  if (b1) b1.addEventListener('click', () => activarAvisos());
+  const b2 = $('#vacioOtroRubro');
+  if (b2) b2.addEventListener('click', verFormulario);
+  const b3 = $('#vacioZona');
+  if (b3) b3.addEventListener('click', () => elegirZona(verMazo));
+  const b4 = $('#vacioJugar');
+  if (b4) b4.addEventListener('click', () => irA('jugar'));
+  window.Avisos?.vacio(cont);
 }
 
 function armazon(profundidad) {
@@ -1053,8 +1133,10 @@ function cartaProfesional(p, profundidad) {
   carta.innerHTML = `
     <span class="carta-marca marca-si">ME SIRVE</span>
     <span class="carta-marca marca-no">PASO</span>
-    <div class="carta-foto">
-      <img src="${p.foto}" alt="Foto de ${p.nombre}" loading="lazy">
+    <span class="carta-pista"><span class="flecha">↑</span> Deslizá para ver la ficha</span>
+    <span class="carta-marca marca-ficha">VER FICHA</span>
+    <div class="carta-foto" style="--foto:url('${p.foto}')">
+      <img src="${p.foto}" alt="Foto de ${p.nombre}" decoding="async">
       ${esPlanPro(p.plan) ? '<span class="carta-plan">Pro</span>' : ''}
       <span class="carta-glifo">${rubro.glifo}</span>
     </div>
@@ -1068,7 +1150,7 @@ function cartaProfesional(p, profundidad) {
       <div class="etiquetas">${p.especialidades.slice(0, 4).map(e => `<span class="etiqueta">${e}</span>`).join('')}</div>
       <div class="carta-pie">
         <div class="carta-puntaje"><b>${p.puntaje.toFixed(1)}</b><span>${p.trabajos} trabajos · responde en ${p.respuesta} min</span></div>
-        <div class="carta-precio"><b>${plata(p.desde)}</b><span>desde</span></div>
+        ${p.desde ? `<div class="carta-precio"><b>${plata(p.desde)}</b><span>desde</span></div>` : ''}
       </div>
     </div>`;
   return carta;
@@ -1082,8 +1164,10 @@ function cartaCliente(c, profundidad) {
   carta.innerHTML = `
     <span class="carta-marca marca-si">ME INTERESA</span>
     <span class="carta-marca marca-no">PASO</span>
-    <div class="carta-foto">
-      <img src="${c.foto}" alt="Foto de ${c.nombre}" loading="lazy">
+    <span class="carta-pista"><span class="flecha">↑</span> Deslizá para ver la ficha</span>
+    <span class="carta-marca marca-ficha">VER FICHA</span>
+    <div class="carta-foto" style="--foto:url('${c.foto}')">
+      <img src="${c.foto}" alt="Foto de ${c.nombre}" decoding="async">
       <span class="carta-plan ${c.pedido.urgencia === 'urgente' ? 'urgente' : ''}">${urg.nombre}</span>
       <span class="carta-glifo">${rubro.glifo}</span>
     </div>
@@ -1097,11 +1181,13 @@ function cartaCliente(c, profundidad) {
       <div class="etiquetas">
         <span class="etiqueta">${rubro.nombre}</span>
         <span class="etiqueta">${urg.detalle}</span>
+        ${enZona ? '' : `<span class="etiqueta etiqueta-lejos">Es en ${c.localidad}</span>`}
         ${c.ausente ? '<span class="etiqueta">No vive en la costa</span>' : ''}
       </div>
       <div class="carta-pie">
         <div class="carta-puntaje"><b>${c.puntaje.toFixed(1)}</b><span>${c.contrataciones} contrataciones</span></div>
-        <div class="carta-precio"><b>${c.pedido.presupuesto}</b><span>presupuesto</span></div>
+        ${/^[—–-]?$/.test(String(c.pedido.presupuesto || '').trim()) ? ''
+          : `<div class="carta-precio"><b>${c.pedido.presupuesto}</b><span>presupuesto</span></div>`}
       </div>
     </div>`;
   return carta;
@@ -1200,6 +1286,7 @@ function seguirResolviendo(carta, perfil, direccion) {
   guardar();
   actualizarGlobo();
   setTimeout(pintarMazo, 300);
+  setTimeout(() => window.Avisos?.mazo(), 900);
 }
 
 // Guarda en Supabase el deslizamiento del profesional y, si dijo "sí", el match.
@@ -1418,17 +1505,37 @@ let matchesReales = [];
 
 // Trae los matches donde participo (como cliente o como profesional),
 // con la otra persona y el pedido embebidos.
+/* Un resumen de lo que se está mostrando. Si no cambia, no se repinta. */
+function firmaMatches() {
+  return (matchesReales || []).map(m =>
+    [m.id, m.noLeidos, m.trabajo?.estado, m.trabajo?.inicio_cliente, m.trabajo?.inicio_pro,
+     m.trabajo?.fin_cliente, m.trabajo?.fin_pro, m.califique].join('·')).join('|');
+}
+
+let errorMatches = null;
+
 async function cargarMatches() {
+  const previos = matchesReales;
   matchesReales = [];
+  errorMatches = null;
   try {
     const { data: { session } } = await sb.auth.getSession();
     const uid = session?.user?.id;
     if (!uid) return matchesReales;
 
-    const { data: filas } = await sb.from('matches')
+    const { data: filas, error: eMatches } = await sb.from('matches')
       .select('id,pedido_id,cliente_id,profesional_id,estado,creado_en,cli:perfiles!cliente_id(nombre,foto_url,localidad,puntaje_cliente,contrataciones),pro:perfiles!profesional_id(nombre,foto_url,localidad,rubro,puntaje_pro,verificacion),pedido:pedidos!pedido_id(rubro,urgencia,detalle)')
       .or(`cliente_id.eq.${uid},profesional_id.eq.${uid}`)
       .order('creado_en', { ascending: false });
+
+    // supabase-js no lanza excepción cuando falla la red: devuelve el error
+    // acá adentro. Si esto no se mira, un problema de conexión termina
+    // dibujando "todavía no hay ninguno" a alguien que tiene cuatro matches.
+    if (eMatches) {
+      errorMatches = eMatches.message || 'sin conexión';
+      matchesReales = previos && previos.length ? previos : [];
+      return matchesReales;
+    }
 
     matchesReales = (filas || []).map(f => {
       const soyCliente = f.cliente_id === uid;
@@ -1519,28 +1626,66 @@ async function cargarMatches() {
       });
     }
   } catch (e) {
-    matchesReales = [];
+    // Antes esto devolvía una lista vacía y la pantalla decía "todavía no hay
+    // ninguno" a alguien que tenía cuatro. Sin señal, la app te decía que no
+    // tenías nada. Ahora se recuerda el error y se muestra como lo que es.
+    console.warn('[matches] no se pudieron leer:', e && e.message);
+    errorMatches = e && e.message ? e.message : 'sin conexión';
+    matchesReales = previos && previos.length ? previos : [];
   }
   return matchesReales;
 }
 
+// Silueta de una lista mientras llega el dato. Se usa en Matches y en
+// Beneficios: la pantalla ya tiene la forma final antes de tener contenido.
+function esqueletoFilas(cuantas) {
+  let h = '';
+  for (let i = 0; i < cuantas; i++) {
+    h += `<div class="esq-fila" aria-hidden="true">
+            <span class="esq-bloque"></span>
+            <span class="esq-cuerpo">
+              <span class="esq-linea" style="width:${52 + (i % 3) * 12}%"></span>
+              <span class="esq-linea" style="width:${34 + (i % 2) * 14}%;height:10px"></span>
+            </span>
+          </div>`;
+  }
+  return h;
+}
+
 async function verMatches() {
-  escena.innerHTML = `<div class="vista"><h1 class="titulo-vista">Matches</h1><p class="sub-vista" style="margin-top:24px">Cargando tus matches…</p></div>`;
+  escena.innerHTML = `
+    <div class="vista" data-cargando="matches">
+      <h1 class="titulo-vista">Matches</h1>
+      <p class="sub-vista">Buscando tus matches…</p>
+      ${esqueletoFilas(4)}
+    </div>`;
   await cargarMatches();
+  if (!escena.querySelector('[data-cargando="matches"]')) return;   // se fue a otra pantalla
   actualizarGlobo();
 
   if (!matchesReales.length) {
+    const falló = !!errorMatches;
     escena.innerHTML = `
       <div class="vista">
         <h1 class="titulo-vista">Matches</h1>
         <div class="vacio" style="margin-top:24px">
-          <span class="vacio-glifo">◇</span>
-          <h3>Todavía no hay ninguno</h3>
-          <p>Cuando aceptes un perfil (o alguien acepte tu pedido), el match aparece acá.</p>
-          <button class="btn btn-plomo btn-sm" id="aBuscar">${Estado.rol === 'pro' ? 'Ver pedidos' : 'Buscar oficios'}</button>
+          <span class="vacio-glifo">${falló ? '⚠' : '◇'}</span>
+          <h3>${falló ? 'No se pudo traer tu bandeja' : 'Todavía no hay ninguno'}</h3>
+          <p>${falló
+            ? 'Puede ser la conexión. Tus matches están guardados: no se perdió nada.'
+            : 'Cuando aceptes un perfil (o alguien acepte tu pedido), el match aparece acá.'}</p>
+          <div class="vacio-acciones">
+            ${falló ? '<button class="btn btn-plomo btn-sm" id="reintentarMatches">Reintentar</button>' : ''}
+            <button class="btn ${falló ? 'btn-fantasma' : 'btn-plomo'} btn-sm" id="aBuscar">${Estado.rol === 'pro' ? 'Ver pedidos' : 'Buscar oficios'}</button>
+          </div>
         </div>
       </div>`;
     $('#aBuscar').addEventListener('click', () => irA('buscar'));
+    const rein = $('#reintentarMatches');
+    if (rein) rein.addEventListener('click', () => ocupar(rein, 'Probando…', async () => {
+      await cargarMatches();
+      verMatches();
+    }));
     return;
   }
 
@@ -1573,6 +1718,11 @@ async function verMatches() {
     <div class="vista">
       <h1 class="titulo-vista">Matches</h1>
       <p class="sub-vista">${matchesReales.length} ${matchesReales.length === 1 ? 'match' : 'matches'}.</p>
+      ${errorMatches ? `
+        <div class="aviso-sin-red" id="avisoSinRed">
+          <span>No se pudo actualizar. Esto es lo último que se pudo traer.</span>
+          <button class="btn btn-sm btn-fantasma" id="reintentarMatches">Reintentar</button>
+        </div>` : ''}
       ${filas}
       <button class="btn btn-fantasma btn-bloque" id="aBuscarMas" style="margin-top:18px">
         ${Estado.rol === 'pro' ? 'Ver más pedidos' : 'Buscar otro profesional'}
@@ -1580,6 +1730,11 @@ async function verMatches() {
     </div>`;
 
   $('#aBuscarMas').addEventListener('click', () => irA('buscar'));
+  const reintentar = $('#reintentarMatches');
+  if (reintentar) reintentar.addEventListener('click', () => ocupar(reintentar, 'Probando…', async () => {
+    await cargarMatches();
+    verMatches();
+  }));
   escena.querySelectorAll('[data-match]').forEach(b => {
     b.addEventListener('click', () => {
       const m = matchesReales.find(x => x.id === b.dataset.match);
@@ -1653,9 +1808,19 @@ async function marcarTrabajo(m, accion) {
   return true;
 }
 
-function panelTrabajo(m) {
+/* El panel del trabajo.
+   `chatIniciado` decide si se muestra la invitación a abrir un trabajo. Antes
+   aparecía apenas se entraba al chat, arriba de todo y sin que nadie hubiera
+   dicho una palabra: de tan presente se volvía parte del decorado y dejaba de
+   verse. Ahora aparece cuando la conversación ya empezó de verdad —cuando
+   hablaron los dos—, que es el momento en que la pregunta tiene sentido.
+   Si el trabajo YA existe se muestra siempre: eso no es una invitación, es el
+   estado del trabajo y ahí están los botones para confirmarlo. */
+function panelTrabajo(m, chatIniciado) {
   const t = m.trabajo;
   const nombre = m.otro.nombre.split(' ')[0];
+
+  if (!t && !chatIniciado) return '';
 
   if (!t) {
     return (Estado.rol === 'cliente' || soyClienteEnMatch(m))
@@ -1784,7 +1949,7 @@ function abrirFormularioPresupuesto(m, repintar) {
     <p class="pre-form-marca">Contratá Ya · Plan Pro</p>
     <h2>Presupuesto de mano de obra</h2>
     <p>Lo armás vos, con lo que ${nombre} te contestó en el chat. El precio es solo tu trabajo: los materiales se aclaran en qué incluye y qué no.</p>
-    <p class="pre-aviso">El cliente ve la ficha completa en la app instalada. Si entra por el navegador, puede no verse: hay que abrir Contratá Ya desde el ícono del teléfono.</p>
+    <p class="pre-aviso">El cliente lo recibe en el chat y lo puede aceptar desde ahí.</p>
 
     <div class="campo" style="margin-top:18px">
       <span class="campo-rotulo">Qué se va a hacer</span>
@@ -1851,7 +2016,7 @@ function abrirFormularioPresupuesto(m, repintar) {
     if (error || !data || data.ok === false) {
       btn.disabled = false;
       btn.textContent = 'Enviar presupuesto';
-      brindis(error?.message || 'No se pudo enviar. ¿Corriste el SQL del presupuestador?');
+      brindis('No se pudo enviar el presupuesto. Probá de nuevo en un momento.');
       return;
     }
     cerrarHoja();
@@ -1868,6 +2033,14 @@ async function aceptarPresupuesto(id, m, repintar) {
   }
   brindis('Precio aceptado. El trabajo se inicia cuando los dos lo confirmen.');
   if (typeof repintar === 'function') repintar();
+}
+
+/* Deja el último mensaje a la vista. Se usa al abrir el chat y al enviar. */
+function ultimaBurbuja(cont) {
+  const ultima = cont.lastElementChild;
+  if (ultima && ultima.scrollIntoView) {
+    ultima.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  }
 }
 
 function conectarTrabajo(m, repintar) {
@@ -2144,7 +2317,7 @@ async function verMatchChat(m) {
         </div>
       </div>
 
-      <div id="panelTrabajo">${panelTrabajo(m)}</div>
+      <div id="panelTrabajo">${panelTrabajo(m, false)}</div>
 
       ${!cerrado && puedePresupuestar(m) ? `<button class="btn-pre" id="btnPresupuesto" type="button"><span>Presupuesto de mano de obra</span><em>Plan Pro</em></button>` : ''}
 
@@ -2196,7 +2369,7 @@ async function verMatchChat(m) {
       const preId = idPresupuestoDeMsg(x.texto);
       if (preId) {
         if (porPre[preId]) return htmlFichaPresupuesto(porPre[preId], m, cerrado);
-        return `<article class="pre-doc"><header class="pre-doc-cabeza"><div class="pre-doc-marca">Contratá Ya · Plan Pro</div><h3 class="pre-doc-titulo">Presupuesto de mano de obra</h3><p class="pre-doc-sub">Para verlo completo, abrí Contratá Ya desde la app instalada.</p></header></article>`;
+        return `<article class="pre-doc"><header class="pre-doc-cabeza"><div class="pre-doc-marca">Contratá Ya · Plan Pro</div><h3 class="pre-doc-titulo">Presupuesto de mano de obra</h3><p class="pre-doc-sub">Abrí el presupuesto para verlo completo.</p></header></article>`;
       }
       const mio = x.autor_id === uid;
       const hora = new Date(x.creado_en).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
@@ -2205,7 +2378,23 @@ async function verMatchChat(m) {
     cont.querySelectorAll('[data-aceptar-pre]').forEach(b => {
       b.addEventListener('click', () => aceptarPresupuesto(b.dataset.aceptarPre, m, () => verMatchChat(m)));
     });
-    cont.scrollIntoView({ block: 'end' });
+
+    // La conversación empezó cuando hablaron los dos. Recién ahí aparece la
+    // invitación a abrir el trabajo, y entra con una animación corta para que
+    // se note que es nueva.
+    const panel = document.getElementById('panelTrabajo');
+    if (panel && !m.trabajo) {
+      const hablaron = new Set(msgs.map(x => x.autor_id)).size >= 2;
+      if (hablaron && !panel.innerHTML.trim()) {
+        panel.innerHTML = panelTrabajo(m, true);
+        panel.firstElementChild?.classList.add('trabajo-panel-entra');
+        conectarTrabajo(m, () => verMatchChat(m));
+      } else if (!hablaron && panel.innerHTML.trim()) {
+        panel.innerHTML = '';
+      }
+    }
+
+    ultimaBurbuja(cont);
 
     // Si la otra persona me mandó mensajes sin leer, los marco como leídos.
     // Marcamos leído todo el match, no sólo los mensajes que se ven en
@@ -2226,13 +2415,38 @@ async function verMatchChat(m) {
       const texto = campo.value.trim();
       if (!texto) return;
       campo.value = '';
+
+      // El mensaje se dibuja al instante, en gris, antes de que el servidor
+      // conteste. Con una conexión mala, esperar dos segundos a que aparezca
+      // lo que uno acaba de escribir se siente como que no se envió, y la
+      // gente lo manda de nuevo.
+      const cont = document.getElementById('chatReal');
+      let provisoria = null;
+      if (cont) {
+        if (cont.querySelector('.sub-vista')) cont.innerHTML = '';
+        provisoria = document.createElement('div');
+        provisoria.className = 'burbuja burbuja-yo burbuja-enviando';
+        provisoria.textContent = texto;
+        cont.appendChild(provisoria);
+        ultimaBurbuja(cont);
+      }
+
       const { error } = await sb.from('mensajes')
         .insert({ match_id: m.id, trabajo_id: t ? t.id : null, autor_id: uid, texto });
-      if (error) { brindis('No se pudo enviar el mensaje'); campo.value = texto; return; }
+
+      if (error) {
+        if (provisoria) provisoria.remove();
+        brindis('No se pudo enviar. Fijate la conexión.');
+        campo.value = texto;
+        return;
+      }
       await pintarMensajes();
+      campo.focus();
     };
     $('#enviarChat').addEventListener('click', enviar);
-    $('#campoChat').addEventListener('keydown', e => { if (e.key === 'Enter') enviar(); });
+    $('#campoChat').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviar(); }
+    });
   }
 
   // Refresco automático: mensajes nuevos cada 4s, y de paso el estado del
@@ -2380,6 +2594,8 @@ async function calificarReal(m) {
 
     if (!m.trabajo?.id) {
       brindis('Primero hay que abrir y terminar un trabajo');
+      boton.disabled = false;
+      boton.textContent = 'Enviar calificación';
       return;
     }
 
@@ -2410,6 +2626,7 @@ async function calificarReal(m) {
     m.califique = true;
     cerrarHoja();
     brindis('¡Calificación enviada!');
+    setTimeout(() => window.Avisos?.cierre(), 700);
     // Si estábamos en el chat, lo repintamos para que desaparezca el botón.
     if (document.getElementById('chatReal')) verMatchChat(m);
   });
@@ -2658,16 +2875,32 @@ function accionEnlaceInter(enlace) {
   if (enlace === 'avisos') return () => { activarAvisos(); };
   if (enlace === 'planes') return () => { irA('perfil'); verPlanes(); };
   if (['buscar', 'beneficios', 'matches', 'perfil', 'jugar'].includes(enlace)) return () => irA(enlace);
-  return () => { location.href = enlace; };
+  return () => {
+    // Un enlace externo abre aparte: si se va la app, el que estaba
+    // deslizando pierde lo que estaba mirando.
+    if (/^https?:/i.test(enlace)) window.open(enlace, '_blank', 'noopener');
+    else location.href = enlace;
+  };
 }
 
 let interTimer = null;
 
+let interReintentos = 0;
+
 function programarInterstitial() {
   if (!Estado.usuario) return;
   if (document.getElementById('interCerrar')) return;
+  interReintentos = 0;
   clearTimeout(interTimer);
   interTimer = setTimeout(() => quizasInterstitial(), INTER_DELAY_MS);
+}
+
+// Estaba ocupada: se vuelve a intentar en unos segundos, unas pocas veces.
+function reintentarInterstitial() {
+  if (interReintentos >= 6) return;
+  interReintentos++;
+  clearTimeout(interTimer);
+  interTimer = setTimeout(() => quizasInterstitial(), 4000);
 }
 
 function siguienteAviso(lista, clave) {
@@ -2681,6 +2914,7 @@ function siguienteAviso(lista, clave) {
 
 function avisoDesdeFila(i) {
   return {
+    id: i.id,
     fondo: i.fondo,
     tinta: i.tinta,
     boton_fondo: i.boton_fondo,
@@ -2695,41 +2929,70 @@ function avisoDesdeFila(i) {
 }
 
 async function avisoDeRotacion() {
-  let a = null;
+  let pagos = [];
   try {
     const { data, error } = await sb.rpc('interstitials_activos');
     if (!error && data && data.length) {
       const rol = Estado.rol;
       const zona = Estado.zona || Estado.yo?.localidad;
-      let lista = data.filter(i => {
+      const elegibles = data.filter(i => {
         if (i.audiencia && i.audiencia !== 'todos' && i.audiencia !== rol) return false;
-        if (i.localidad && zona && i.localidad !== zona) return false;
+        if (i.localidad && zona && i.localidad !== zona) return false;   // el afiche de otro pueblo no va
         return true;
       });
-      const deZona = lista.filter(i => i.localidad);
-      if (deZona.length) lista = deZona;
-      const pagos = lista.filter(i => i.anunciante_id);
-      const pool = pagos.length ? pagos : lista;
-      const elegido = siguienteAviso(pool, 'interTurno');
-      if (elegido) a = avisoDesdeFila(elegido);
+      // El de tu localidad va primero, pero los generales NO se descartan.
+      // Antes se los filtraba y, como cada aviso pago cubre una localidad,
+      // el pool quedaba en UNO: todo el mundo veía siempre el mismo afiche.
+      pagos = elegibles.filter(i => i.anunciante_id)
+        .sort((a, b) => (b.localidad ? 1 : 0) - (a.localidad ? 1 : 0));
+      if (!pagos.length) pagos = elegibles;
     }
   } catch (e) {
     console.warn('[inter]', e);
   }
 
-  if (!a) {
-    let propios = AUTOPUBLICIDAD.filter(x => x.rol === Estado.rol || x.rol === 'todos');
-    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-      propios = propios.filter(x => !x.esAvisos);
-    }
-    a = siguienteAviso(propios, 'interTurnoCasa');
+  let propios = AUTOPUBLICIDAD.filter(x => x.rol === Estado.rol || x.rol === 'todos');
+  if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+    propios = propios.filter(x => !x.esAvisos);
   }
-  return a;
+
+  if (!pagos.length) return siguienteAviso(propios, 'interTurnoCasa');
+  if (!propios.length) {
+    const uno = siguienteAviso(pagos, 'interTurno');
+    return uno ? avisoDesdeFila(uno) : null;
+  }
+
+  // La rueda: primero se muestran TODOS los pagados, uno por vez; cuando se
+  // dio la vuelta entera, entra uno de casa y vuelve a empezar. Los pagados
+  // siguen teniendo prioridad, y los avisos propios —activar notificaciones,
+  // contar el plan Pro— dejan de no salir nunca.
+  const largo = pagos.length + 1;
+  let n = 0;
+  try { n = Number(localStorage.getItem('interTurno') || 0) || 0; } catch (e) {}
+  try { localStorage.setItem('interTurno', String(n + 1)); } catch (e) {}
+  const paso = n % largo;
+  if (paso < pagos.length) return avisoDesdeFila(pagos[paso]);
+  return siguienteAviso(propios, 'interTurnoCasa');
+}
+
+/* ¿Es mal momento para tapar la pantalla con un aviso?
+   El interstitial vive en z-index 90 y la hoja en 60: si sale mientras
+   alguien está llenando un presupuesto, le tapa el formulario a medio
+   escribir. Se posterga, no se pierde: el invariante de los 2 segundos
+   sigue valiendo para el caso normal (la app abierta y nada encima). */
+function momentoMaloParaAviso() {
+  const h = document.getElementById('hoja');
+  if (h && !h.hidden) return true;                                  // hay una hoja abierta
+  const f = document.activeElement;
+  if (f && /^(INPUT|TEXTAREA|SELECT)$/.test(f.tagName)) return true; // está escribiendo
+  if (document.querySelector('.carta.agarrada')) return true;        // tiene el dedo en una tarjeta
+  return false;
 }
 
 async function quizasInterstitial() {
   if (!Estado.usuario || document.hidden) return;
   if (document.getElementById('interCerrar')) return;
+  if (momentoMaloParaAviso()) { reintentarInterstitial(); return; }
 
   const forzado = consumirNovedadPedidos();
   if (await quizasInterPedidos(forzado)) return;
@@ -2746,6 +3009,7 @@ async function interstitialPorPerdidaJugar() {
   if (n % JUGAR_INTER_CADA !== 0) return false;
   if (!Estado.usuario) return false;
   if (document.getElementById('interCerrar')) return false;
+  if (momentoMaloParaAviso()) return false;
   const a = await avisoDeRotacion();
   if (!a) return false;
   mostrarInterstitial(a);
@@ -2777,10 +3041,12 @@ function mostrarInterstitial(a) {
 
   document.body.appendChild(capa);
   document.body.style.overflow = 'hidden';
+  window.Avisos?.registrarVista(a.id, 'interstitial');
 
   const cerrar = () => { capa.remove(); document.body.style.overflow = ''; };
   capa.querySelector('#interCerrar').addEventListener('click', cerrar);
   capa.querySelector('#interIr').addEventListener('click', () => {
+    window.Avisos?.registrarToque(a.id, 'interstitial');
     cerrar();
     if (typeof a.accion === 'function') a.accion();
   });
@@ -2803,7 +3069,9 @@ function consumirNovedadPedidos() {
   if (params.get('novedad') !== 'pedidos') return false;
   params.delete('novedad');
   const q = params.toString();
-  history.replaceState(null, '', location.pathname + (q ? '?' + q : ''));
+  // Ojo: se conserva history.state. Ahí vive la pila de pantallas que
+  // hace funcionar el botón "atrás" (app-nav.js). Pisarla con null lo rompe.
+  history.replaceState(history.state, '', location.pathname + (q ? '?' + q : ''));
   return true;
 }
 
@@ -2963,8 +3231,9 @@ function destinoFranja(enlace) {
   return { tipo: 'href', valor: enlace };
 }
 
-function franjaAnunciante(oficio, localidad, rotulo) {
+function franjaAnunciante(oficio, localidad, rotulo, simple) {
   const c = comercioPara(oficio, localidad);
+  window.Avisos?.medirFranja(c, rotulo);
 
   if (c) {
     const titulo = c.banner_titulo || c.nombre;
@@ -2972,7 +3241,7 @@ function franjaAnunciante(oficio, localidad, rotulo) {
     const rot = c.banner_rotulo || rotulo || 'Auspicia';
     const designed = !!(c.logo_url || c.banner_titulo || c.banner_fondo);
 
-    if (designed) {
+    if (designed && !simple) {
       const tinta = c.banner_tinta || (c.logo_url ? '#F5EFE4' : '#1A0F02');
       const fondo = c.banner_fondo || c.color || '#F0A63A';
       const estilo = c.logo_url
@@ -3052,9 +3321,12 @@ function verCredencial(comercio) {
   const u = Estado.usuario;
   const rubro = rubroDe(Estado.yo.rubro);
   const codigo = miCodigoBeneficio || '';
-  const partes = codigo.split('-');
-  const letras = partes[0] || '';
-  const numeros = (partes[1] || '').replace(/(\d{2})(?=\d)/g, '$1 ');
+  // El código llega como "CY1001" o como "CY-1001": se parte por donde
+  // termina la letra, no por un guión que puede no estar. Antes, sin guión,
+  // salía "CY1001 ·" con el punto colgando y sin números.
+  const limpio = String(codigo).toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const letras = (limpio.match(/^[A-Z]+/) || [''])[0];
+  const numeros = limpio.slice(letras.length).replace(/(\d{2})(?=\d)/g, '$1 ');
 
   const sellos = (Estado.yo.verificacion || [])
     .filter(v => ['identidad', 'telefono', 'email', 'zona', 'cuit'].includes(v));
@@ -3095,16 +3367,41 @@ function verCredencial(comercio) {
   });
 }
 
+/* Una sola pantalla de falla para toda la app. Antes, cuando algo no se podía
+   traer, cada pantalla dibujaba su estado vacío: la app le decía a la persona
+   que no tenía nada cuando en realidad no había podido preguntar. */
+function htmlNoSePudo(que, idBoton) {
+  return `
+    <div class="vacio" style="margin-top:24px">
+      <span class="vacio-glifo">⚠</span>
+      <h3>No pudimos traer ${que}</h3>
+      <p>Puede ser la señal. Nada se perdió: probá de nuevo.</p>
+      <div class="vacio-acciones">
+        <button class="btn btn-plomo btn-sm" id="${idBoton}">Reintentar</button>
+      </div>
+    </div>`;
+}
+
 async function verBeneficios() {
   const esPro = Estado.rol === 'pro';
   const zona = Estado.zona || Estado.yo.localidad;
 
-  escena.innerHTML = `<div class="vista">
+  escena.innerHTML = `<div class="vista" data-cargando="beneficios">
     <h1 class="titulo-vista">Beneficios</h1>
-    <p class="sub-vista">Cargando…</p></div>`;
+    <p class="sub-vista">Buscando comercios adheridos…</p>
+    ${esqueletoFilas(3)}</div>`;
 
   const { data: filas, error } = await sb.rpc('beneficios_de', { p_localidades: null });
-  if (error) console.warn('[beneficios] no se pudieron leer:', error.message);
+  if (error) {
+    console.warn('[beneficios] no se pudieron leer:', error.message);
+    if (!escena.querySelector('[data-cargando="beneficios"]')) return;
+    escena.innerHTML = `<div class="vista">
+      <h1 class="titulo-vista">Beneficios</h1>
+      ${htmlNoSePudo('los comercios de tu zona', 'reintentarBeneficios')}</div>`;
+    const b = $('#reintentarBeneficios');
+    if (b) b.addEventListener('click', () => ocupar(b, 'Probando…', () => verBeneficios()));
+    return;
+  }
 
   const todos = filas || [];
   const propios = todos.filter(x => x.localidad === zona);
@@ -3113,9 +3410,12 @@ async function verBeneficios() {
   // El código sólo tiene sentido para el profesional: es él quien lo
   // muestra en el mostrador.
   const codigo = esPro ? await traerCodigoBeneficio() : null;
-  const partesCod = (codigo || '').split('-');
-  const letrasCod = partesCod[0] || '';
-  const numerosCod = (partesCod[1] || '').replace(/(\d{2})(?=\d)/g, '$1 ');
+  if (!escena.querySelector('[data-cargando="beneficios"]')) return;   // se fue a otra pantalla
+  // Igual que en la credencial: se parte donde terminan las letras, no por un
+  // guión que puede no venir.
+  const limpioCod = String(codigo || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const letrasCod = (limpioCod.match(/^[A-Z]+/) || [''])[0];
+  const numerosCod = limpioCod.slice(letrasCod.length).replace(/(\d{2})(?=\d)/g, '$1 ');
 
   const cuadro = (x) => x.logo_url
     ? `<span class="sponsor-cuadro" style="padding:0;overflow:hidden"><img src="${x.logo_url}" alt="" style="width:100%;height:100%;object-fit:cover"></span>`
@@ -3180,6 +3480,7 @@ async function verBeneficios() {
   });
   const btnCred = document.getElementById('mostrarCredencial');
   if (btnCred) btnCred.addEventListener('click', () => verCredencial(propios[0] || null));
+  window.Avisos?.cupones(escena.querySelector('.vista'));
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -3215,16 +3516,26 @@ const FOTO_LADO_GALERIA = 900;
 // Una foto es "real" si está subida al depósito. Los dibujos de
 // FOTOS_PERFIL y el vacío no cuentan: el argumento del producto es que
 // atrás de cada estrella hay una persona, y un dibujito lo desmiente.
+// ¿Esta persona tiene una foto que sirva para mostrarla en el mazo?
+// Vale la que subió a la plataforma y también las que viven en el propio
+// sitio (/img/gente/…): en esta instalación esas SON las fotos de la gente.
+// Antes se exigía el bucket de storage y, como ninguna foto lo cumplía, el
+// mazo del vecino daba vacío siempre.
 function esFotoReal(url) {
   if (!url) return false;
   const limpia = String(url).split('?')[0];
-  if (FOTOS_PERFIL.some(f => limpia.endsWith(f))) return false;
-  return limpia.includes('/storage/v1/object/public/fotos/');
+  if (limpia.includes('/storage/v1/object/public/fotos/')) return true;
+  return /(^|\/)img\/gente\/[^/]+$/.test(limpia);
 }
+
+// ¿YO todavía no subí mi foto? Acá no alcanza con mirar la ruta: si nunca
+// subió nada, la app le presta un dibujito para no dejar el hueco, y ese
+// préstamo no puede contar como foto propia. La verdad la tiene el perfil.
+const tengoFotoPropia = () => !!(Estado.usuario && Estado.usuario.fotoPropia);
 
 // Sólo se le exige al profesional: es su vidriera y le construye
 // reputación. Al cliente se le pediría un requisito sin devolverle nada.
-const necesitoFoto = () => Estado.rol === 'pro' && !esFotoReal(Estado.usuario?.foto);
+const necesitoFoto = () => Estado.rol === 'pro' && !tengoFotoPropia();
 
 // Abre la imagen sin convertirla a texto. FileReader + base64 infla la
 // foto un tercio en memoria y se cae con las fotos grandes de celular, o
@@ -3321,6 +3632,7 @@ async function guardarFotoEnPerfil(url) {
   // Sin foto propia queda el marcador de posición, que no es una opción
   // elegible: sirve para no dejar un hueco mientras no subió la suya.
   Estado.usuario.foto = url || FOTOS_PERFIL[0];
+  Estado.usuario.fotoPropia = !!url;
   guardar();
 }
 
@@ -3878,7 +4190,6 @@ function htmlBtnTutorial() {
 }
 
 function bloqueVerificacionCuenta() {
-  const google = /google/i.test(Estado.usuario && Estado.usuario.metodo);
   const activa = cuentaActiva();
   const sello = (Estado.yo?.verificacion || []).includes('identidad');
   return `
@@ -3886,7 +4197,7 @@ function bloqueVerificacionCuenta() {
     <div class="tarjeta">
       <div class="capa-fila ok">
         <span class="capa-tilde">✓</span>
-        <span style="flex:1"><b>${google ? 'Google' : 'Correo'}</b><span>Así entras a la cuenta.</span></span>
+        <span style="flex:1"><b>Correo y contraseña</b><span>Así entrás a la cuenta.</span></span>
       </div>
       <div class="capa-fila ${sello || activa ? 'ok' : ''}" style="margin-top:8px">
         <span class="capa-tilde">${sello || activa ? '✓' : '—'}</span>
@@ -3980,9 +4291,12 @@ async function enviarActivacionWA() {
 async function reintentarActivacion() {
   const b = $('#btnYaActivo');
   if (b) { b.disabled = true; b.textContent = 'Revisando…'; }
+  const devolverBoton = () => {
+    if (b && document.body.contains(b)) { b.disabled = false; b.textContent = 'Ya me activaron, entrar'; }
+  };
   try {
     const { data: { session } } = await sb.auth.getSession();
-    if (!session?.user?.id) { brindis('Se cerró la sesión'); return; }
+    if (!session?.user?.id) { brindis('Se cerró la sesión'); devolverBoton(); return; }
     const { data: fresco } = await sb.from('perfiles').select('*').eq('id', session.user.id).maybeSingle();
     if (fresco) volcarPerfil(fresco);
     if (!cuentaActiva()) {
@@ -4074,8 +4388,8 @@ function verPerfilPro() {
       <div class="pie-legal">
         <a href="${INSTAGRAM_CONTRATA}" target="_blank" rel="noopener noreferrer">Instagram</a>
         <a href="${FACEBOOK_CONTRATA}" target="_blank" rel="noopener noreferrer">Facebook</a>
-        <a href="/terminos.html">Términos</a>
-        <a href="/privacidad.html">Privacidad</a>
+        <a href="/terminos">Términos</a>
+        <a href="/privacidad">Privacidad</a>
         <button id="borrarCuenta">Borrar mi cuenta</button>
       </div>
     </div>`;
@@ -4147,8 +4461,8 @@ function verPerfilCliente() {
       <div class="pie-legal">
         <a href="${INSTAGRAM_CONTRATA}" target="_blank" rel="noopener noreferrer">Instagram</a>
         <a href="${FACEBOOK_CONTRATA}" target="_blank" rel="noopener noreferrer">Facebook</a>
-        <a href="/terminos.html">Términos</a>
-        <a href="/privacidad.html">Privacidad</a>
+        <a href="/terminos">Términos</a>
+        <a href="/privacidad">Privacidad</a>
         <button id="borrarCuenta">Borrar mi cuenta</button>
       </div>
     </div>`;
@@ -4490,6 +4804,7 @@ function verJugar() {
 function irA(vista) {
   if (window.JuegoCorrer) JuegoCorrer.parar();
   Estado.vista = vista;
+  window.Avisos?.limpiar();
   guardar();
   $('#barraTitulo').textContent = TITULOS[vista] || 'Contratá Ya';
   tabs.querySelectorAll('.tab').forEach(t => t.classList.toggle('activa', t.dataset.vista === vista));
@@ -4569,9 +4884,21 @@ function arrancarLatido() {
   latidoMatches = setInterval(async () => {
     if (!Estado.usuario || document.hidden) return;
     if (document.getElementById('chatReal')) return;   // el chat ya tiene su propio refresco
+    // Antes esto repintaba la bandeja cada 25 segundos SIEMPRE: la pantalla
+    // se ponía en blanco, aparecían las siluetas grises y la lista volvía a
+    // entrar deslizándose, aunque no hubiera cambiado nada. Y el guardia que
+    // debía evitarlo con una hoja abierta preguntaba por una clase que no
+    // existe en el proyecto. Ahora sólo se repinta si de verdad cambió algo.
+    const antes = firmaMatches();
     await cargarMatches();
     actualizarGlobo();
-    if (Estado.vista === 'matches' && !document.querySelector('.hoja-abierta')) verMatches();
+    const hoja = document.getElementById('hoja');
+    const hojaAbierta = !!hoja && hoja.hidden === false;
+    if (Estado.vista === 'matches' && !hojaAbierta && firmaMatches() !== antes) {
+      // Un refresco no es una pantalla nueva: no tiene que entrar deslizándose.
+      document.documentElement.dataset.nav = 'ninguna';
+      verMatches();
+    }
   }, 25000);
 
   // Al volver a la app después de tenerla en segundo plano.
@@ -4622,6 +4949,12 @@ function volcarPerfil(perfil) {
   // parada ahora lo elige ella con el botón de cambiar de modo, y no
   // tiene que pisarse en cada recarga: sólo se usa si todavía no eligió.
   if (perfil.rol && !Estado.rol) Estado.rol = perfil.rol;
+  // Ojo con el rubro: más abajo hay un valor por omisión para que la app
+  // no se rompa, pero si el perfil vino SIN oficio y SIN zonas es que la
+  // persona nunca completó su ficha. Eso hay que saberlo: un profesional
+  // así no lo ve ningún cliente, y él no se entera.
+  Estado.perfilProACompletar = (perfil.rol === 'pro' || Estado.rol === 'pro')
+    && (!perfil.rubro || !(perfil.zonas && perfil.zonas.length));
   Estado.yo = Object.assign({}, Estado.yo, {
     rubro: perfil.rubro || Estado.yo.rubro,
     localidad: perfil.localidad || Estado.yo.localidad,
@@ -4659,7 +4992,7 @@ function pintarModo() {
 async function arrancar() {
   recuperar();
 
-  // ¿Volvemos de Google o del enlace del correo? Supabase deja la sesión lista tras el redirect.
+  // La sesión la deja /entrar (correo y contraseña) en el almacenamiento del navegador.
   const { data: { session } } = await sb.auth.getSession();
 
   // La verdad la tiene Supabase, no el navegador. Si el estado guardado dice
@@ -4691,13 +5024,14 @@ async function arrancar() {
     const nombre = perfil?.nombre || u.user_metadata?.full_name || u.user_metadata?.name ||
                    u.user_metadata?.nombre ||
                    (u.email ? u.email.split('@')[0] : 'Usuario');
-    const metodo = u.app_metadata?.provider === 'google' ? 'Google' : 'Correo';
+    const metodo = 'Correo';
     Estado.usuario = {
       id: u.id,
       nombre,
       correo: u.email,
       metodo,
       foto: perfil?.foto_url || FOTOS_PERFIL[0],
+      fotoPropia: !!(perfil && perfil.foto_url),
       // Guardamos los dos puntajes: cuál se muestra lo decide el rol activo.
       puntajePro: (perfil && perfil.puntaje_pro != null) ? Number(perfil.puntaje_pro) : null,
       puntajeCliente: (perfil && perfil.puntaje_cliente != null) ? Number(perfil.puntaje_cliente) : null,
@@ -4720,6 +5054,7 @@ async function arrancar() {
       volcarPerfil(fresco);
       if (fresco.nombre) Estado.usuario.nombre = fresco.nombre;
       Estado.usuario.foto = fresco.foto_url || Estado.usuario.foto;
+      Estado.usuario.fotoPropia = !!fresco.foto_url;
       Estado.usuario.puntajePro = fresco.puntaje_pro != null ? Number(fresco.puntaje_pro) : null;
       Estado.usuario.puntajeCliente = fresco.puntaje_cliente != null ? Number(fresco.puntaje_cliente) : null;
       Estado.usuario.trabajos = fresco.trabajos || 0;
@@ -4776,6 +5111,24 @@ async function arrancar() {
 
   pintarModo();
   await cargarCarteles();
+
+  // El alta por correo ya crea el perfil con el rol, así que este profesional
+  // nunca pasa por la pantalla de bienvenida. Si quedó sin oficio ni zonas,
+  // no lo ve ningún cliente y él desliza y espera sin saber por qué no pasa
+  // nada. Lo primero que ve, entonces, es su propia ficha para completarla.
+  if (Estado.rol === 'pro' && !perfilProCompleto()) {
+    barra.hidden = false;
+    tabs.hidden = true;
+    arrancarLatido();
+    arrancarPresencia();
+    verFormPerfilPro(() => { tabs.hidden = false; irA('buscar'); });
+    const sub = escena.querySelector('.sub-vista');
+    if (sub) sub.insertAdjacentHTML('afterend',
+      '<p class="aviso-completar">Falta lo principal: tu oficio y en qué pueblos trabajás. ' +
+      'Sin eso no aparecés en las búsquedas de los vecinos y no te va a llegar ningún pedido.</p>');
+    return;
+  }
+
   barra.hidden = false;
   tabs.hidden = false;
   arrancarLatido();

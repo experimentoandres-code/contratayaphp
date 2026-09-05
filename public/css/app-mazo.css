@@ -1,0 +1,388 @@
+/* ============================================================
+   CONTRATÁ YA — Mazo, navegación y esqueletos de carga
+   ------------------------------------------------------------
+   Va DESPUÉS de app.css: acá se afina lo que ya existía.
+   Mismo lenguaje de siempre (asfalto, ámbar, verde marea).
+   ============================================================ */
+
+/* ══ 1. LA TARJETA ═════════════════════════════════════════ */
+
+.carta {
+  box-shadow: var(--sombra-carta);
+  transition: box-shadow .2s var(--ease), border-color .2s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+  backface-visibility: hidden;
+}
+.carta.carta-arriba { cursor: grab; }
+.carta.agarrada { cursor: grabbing; box-shadow: 0 40px 70px -20px rgba(0, 0, 0, 0.92); }
+.carta.volando { pointer-events: none; }
+
+/* Las de atrás no llevan transición mientras arrastrás: si la llevaran,
+   irían un cuarto de segundo atrasadas y la pila se sentiría de goma. */
+.carta:not(.carta-arriba) {
+  transition: transform .34s var(--ease), opacity .34s var(--ease), filter .34s var(--ease);
+  pointer-events: none;
+}
+.mazo-app.arrastrando .carta:not(.carta-arriba) { transition: none; }
+
+/* El tinte que se enciende hacia el lado al que la estás llevando */
+.carta-tinte {
+  position: absolute; inset: 0; z-index: 4;
+  pointer-events: none; opacity: 0;
+  transition: opacity .1s linear;
+  border-radius: inherit;
+}
+.carta-tinte[data-lado="si"] { background: linear-gradient(270deg, rgba(47, 178, 166, 0.55), rgba(47, 178, 166, 0) 62%); }
+.carta-tinte[data-lado="no"] { background: linear-gradient(90deg,  rgba(228, 87, 76, 0.55), rgba(228, 87, 76, 0) 62%); }
+
+.carta.cerca-si { border-color: var(--marea); box-shadow: 0 0 0 2px var(--marea), var(--sombra-carta); }
+.carta.cerca-no { border-color: var(--coral); box-shadow: 0 0 0 2px var(--coral), var(--sombra-carta); }
+
+.carta-marca {
+  z-index: 6;
+  transition: opacity .1s linear;
+  transform-origin: center;
+  background: rgba(11, 22, 32, 0.55);
+  backdrop-filter: blur(2px);
+  font-size: clamp(16px, 5.2vw, 21px);
+  max-width: calc(100% - 36px);
+  white-space: nowrap;
+}
+
+/* La foto arranca como un bloque gris que late, no como un hueco blanco */
+.carta-foto { background: var(--tinta-2); }
+.carta-foto img { opacity: 0; transition: opacity .25s ease; }
+.carta.foto-lista .carta-foto img { opacity: 1; }
+.carta:not(.foto-lista) .carta-foto::before {
+  content: ''; position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(100deg, var(--tinta-2) 30%, var(--tinta-3) 50%, var(--tinta-2) 70%);
+  background-size: 280% 100%;
+  animation: latir 1.3s ease-in-out infinite;
+}
+@keyframes latir { from { background-position: 130% 0; } to { background-position: -30% 0; } }
+
+/* ══ 2. LOS BOTONES DEL MAZO ═══════════════════════════════ */
+
+/* Los botones tienen que quedar por encima de la tarjeta: cuando la
+   inclinás, la punta se les mete arriba y si no, el dedo le pega a la
+   tarjeta en vez de al botón. */
+.vista-mazo .mazo-app { position: relative; z-index: 1; }
+.controles { position: relative; z-index: 5; }
+.controles button, .disco, .pastilla-info { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.disco:active { transform: scale(0.88); }
+.disco-no:active { background: var(--coral); color: #fff; border-color: var(--coral); }
+.disco-si:active { background: var(--marea); color: #04201D; border-color: var(--marea); }
+
+/* Deshacer: aparece a la izquierda de los botones cuando pasaste una tarjeta
+   y se va solo a los pocos segundos. Ocupa un lugar que estaba vacío, así
+   que aparecer y desaparecer no mueve nada de lo demás. */
+.btn-deshacer {
+  position: absolute; left: 0; top: 50%;
+  width: 48px;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  color: var(--cal-2);
+  font-family: var(--dato); font-size: 9px;
+  letter-spacing: 0; text-transform: uppercase;
+  line-height: 1;
+  padding: 8px 0;
+  border-radius: var(--r-md);
+  opacity: 0;
+  transform: translateY(-50%) scale(0.72);
+  transition: opacity .22s var(--ease), transform .22s var(--ease);
+  pointer-events: none;
+  touch-action: manipulation;
+}
+.btn-deshacer::before {
+  content: '↶';
+  font-family: var(--texto); font-size: 20px; line-height: 1;
+  color: var(--plomo);
+}
+.btn-deshacer.a-la-vista { opacity: 1; transform: translateY(-50%) scale(1); pointer-events: auto; }
+.btn-deshacer:active { transform: translateY(-50%) scale(0.9); }
+/* En teléfonos angostos no entra al lado de los botones: pasa a ser una
+   pastilla flotante justo arriba, sobre el borde de abajo de la tarjeta. */
+@media (max-width: 374px) {
+  .controles { gap: var(--s3); }
+  .pastilla-info { padding: 10px 13px; font-size: 12px; }
+  .btn-deshacer {
+    left: 50%; top: auto; bottom: calc(100% + 8px);
+    width: auto; flex-direction: row; gap: 6px;
+    font-size: 10.5px;
+    padding: 6px 13px;
+    background: rgba(11, 22, 32, 0.9);
+    border: 1px solid var(--linea);
+    border-radius: 999px;
+    transform: translateX(-50%) translateY(6px) scale(0.92);
+  }
+  .btn-deshacer::before { font-size: 15px; }
+  .btn-deshacer.a-la-vista { transform: translateX(-50%) translateY(0) scale(1); }
+  .btn-deshacer:active { transform: translateX(-50%) scale(0.94); }
+}
+
+/* Lo que lee el lector de pantalla al cambiar de tarjeta */
+.mazo-voz {
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+/* ══ 3. LA GUÍA DE LA PRIMERA VEZ ══════════════════════════ */
+
+.mazo-guia {
+  position: absolute; inset: 0; z-index: 30;
+  display: grid; place-items: center;
+  padding: var(--s4);
+  background: rgba(6, 14, 20, 0.86);
+  backdrop-filter: blur(3px);
+  border-radius: var(--r-lg);
+  animation: aparecer .3s ease both;
+  text-align: center;
+}
+.mazo-guia.se-va { animation: desvanecer .25s ease forwards; }
+@keyframes desvanecer { to { opacity: 0; } }
+
+.mazo-guia-caja { display: flex; flex-direction: column; align-items: center; gap: var(--s3); max-width: 30ch; }
+
+.mazo-guia-mano {
+  display: flex; align-items: center; justify-content: center; gap: var(--s3);
+  height: 62px;
+}
+.mazo-guia-flecha { font-size: 22px; line-height: 1; opacity: 0.75; }
+.mazo-guia-flecha.no { color: var(--coral); animation: guia-late-no 3.4s var(--ease) infinite; }
+.mazo-guia-flecha.si { color: var(--marea); animation: guia-late-si 3.4s var(--ease) infinite; }
+
+.mazo-guia-pieza {
+  position: relative; width: 40px; height: 54px;
+  animation: guia-vaiven 3.4s var(--ease) infinite;
+}
+.mazo-guia-carta {
+  position: absolute; inset: 0;
+  border: 2px solid var(--plomo); border-radius: 7px;
+  background: rgba(240, 166, 58, 0.14);
+}
+/* El punto es el dedo apoyado en la tarjeta. Un círculo se entiende
+   en cualquier teléfono; un emoji de mano depende de la fuente. */
+.mazo-guia-toque {
+  position: absolute; left: 50%; top: 60%;
+  width: 17px; height: 17px; margin: -8px 0 0 -8px;
+  border-radius: 50%; background: var(--cal);
+  box-shadow: 0 0 0 0 rgba(237, 231, 218, 0.45);
+  animation: guia-onda 1.7s ease-out infinite;
+}
+@keyframes guia-onda {
+  0%   { box-shadow: 0 0 0 0 rgba(237, 231, 218, 0.45); }
+  70%  { box-shadow: 0 0 0 13px rgba(237, 231, 218, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(237, 231, 218, 0); }
+}
+@keyframes guia-vaiven {
+  0%, 10%  { transform: translateX(0) rotate(0deg); }
+  30%      { transform: translateX(34px) rotate(11deg); }
+  48%      { transform: translateX(0) rotate(0deg); }
+  68%      { transform: translateX(-34px) rotate(-11deg); }
+  86%,100% { transform: translateX(0) rotate(0deg); }
+}
+@keyframes guia-late-si { 0%,18%,52%,100% { opacity: .4; transform: none; } 30% { opacity: 1; transform: translateX(4px); } }
+@keyframes guia-late-no { 0%,56%,88%,100% { opacity: .4; transform: none; } 68% { opacity: 1; transform: translateX(-4px); } }
+
+.mazo-guia-texto { font-size: 15px; line-height: 1.5; color: var(--cal); }
+.mazo-guia-texto b { font-weight: 600; }
+.mazo-guia .guia-si { color: var(--marea); font-weight: 600; }
+.mazo-guia .guia-no { color: var(--coral); font-weight: 600; }
+.mazo-guia-nota { font-size: 12.5px; color: var(--cal-3); line-height: 1.4; }
+
+@media (max-height: 700px) {
+  .mazo-guia-mano { height: 46px; }
+  .mazo-guia-pieza { height: 42px; width: 32px; }
+  .mazo-guia-nota { display: none; }
+}
+
+/* ══ 4. ESQUELETOS DE CARGA ════════════════════════════════ */
+/* Antes de que llegue el dato se ve la forma de lo que viene.
+   Es la diferencia entre "está trabajando" y "se colgó". */
+
+.esq-linea, .esq-bloque, .esq-disco, .esq-pastilla {
+  display: block;
+  background: linear-gradient(100deg, var(--tinta-2) 30%, var(--tinta-3) 50%, var(--tinta-2) 70%);
+  background-size: 280% 100%;
+  animation: latir 1.3s ease-in-out infinite;
+  border-radius: 6px;
+}
+.esq-linea { height: 13px; margin: 4px 0; }
+.esq-disco { border-radius: 50%; border-color: transparent; }
+.esq-pastilla { border-radius: 999px; width: 104px; height: 40px; }
+.carta-esqueleto { box-shadow: none; border-style: dashed; }
+.carta-esqueleto .carta-foto { border-radius: 0; }
+.carta-esqueleto .carta-cuerpo { gap: 7px; }
+
+.esq-fila {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  border: 1px solid var(--linea); border-radius: var(--r-md);
+  margin-bottom: var(--s2);
+}
+.esq-fila .esq-bloque { width: 44px; height: 44px; border-radius: 13px; flex-shrink: 0; }
+.esq-fila .esq-cuerpo { flex: 1; min-width: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .esq-linea, .esq-bloque, .esq-disco, .esq-pastilla,
+  .carta:not(.foto-lista) .carta-foto::before { animation: none; }
+}
+
+/* ══ 5. NAVEGACIÓN ═════════════════════════════════════════ */
+
+/* Las pantallas entran desde la derecha al avanzar y desde la
+   izquierda al volver. Es la pista de que hay un adelante y un atrás. */
+.vista { animation: pantalla-adelante .22s var(--ease) both; }
+[data-nav="atras"] .vista { animation-name: pantalla-atras; }
+[data-nav="ninguna"] .vista { animation: none; }
+
+@keyframes pantalla-adelante {
+  from { opacity: 0; transform: translate3d(18px, 0, 0); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes pantalla-atras {
+  from { opacity: 0; transform: translate3d(-18px, 0, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Barra de abajo: el pulgar tiene que acertarle sin mirar */
+.tabs { touch-action: manipulation; }
+.tab {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-height: 56px;
+  justify-content: center;
+  transition: color .16s var(--ease);
+}
+.tab .tab-i { transition: transform .16s var(--ease); }
+.tab:active .tab-i { transform: scale(0.86); }
+.tab.activa .tab-i { transform: scale(1.06); }
+.tab.activa::before { transition: opacity .2s var(--ease); }
+
+/* La hoja de abajo ahora también se va con animación */
+.hoja.cerrando .hoja-fondo { animation: hoja-fondo-fuera .22s ease forwards; }
+.hoja.cerrando .hoja-panel { animation: hoja-abajo .23s cubic-bezier(0.4, 0, 1, 1) forwards; }
+@keyframes hoja-fondo-fuera { to { opacity: 0; } }
+@keyframes hoja-abajo { to { transform: translateY(100%); } }
+
+.hoja-tirador {
+  cursor: pointer;
+  padding: 0;
+  transition: background .2s var(--ease), width .2s var(--ease);
+}
+.hoja-panel { touch-action: pan-y; }
+
+/* Todo lo que se toca responde al toque */
+.btn, .ficha, .urgencia, .rol, .match-fila, .zona-item, .resumen-busqueda, .beneficio, .estrella {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.match-fila { transition: transform .14s var(--ease), border-color .2s var(--ease); }
+.match-fila:active { transform: scale(0.985); }
+
+
+/* ══ 6. EL RÓTULO DE ARRIBA DEL MAZO ═══════════════════════ */
+/* Antes se partía en dos renglones y le comía altura a la tarjeta.
+   Ahora: qué buscás (se corta con puntos suspensivos), cuántos hay
+   y el botón de cambiar. Siempre un renglón. */
+.resumen-que {
+  flex: 1 1 auto; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.resumen-cuenta {
+  flex: none;
+  font-family: var(--dato); font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--plomo);
+  background: rgba(240, 166, 58, 0.1);
+  border: 1px solid rgba(240, 166, 58, 0.3);
+  border-radius: 999px;
+  padding: 2px 9px;
+  white-space: nowrap;
+}
+.resumen-busqueda { gap: var(--s2); }
+
+/* ══ 7. RADIO DE BÚSQUEDA Y MAZO VACÍO ═════════════════════ */
+
+/* La línea que explica por qué aparece gente de otro pueblo */
+.mazo-radio {
+  flex-shrink: 0;
+  margin: -4px 0 var(--s3);
+  padding: 7px 12px;
+  border-radius: var(--r-sm);
+  background: rgba(47, 178, 166, 0.08);
+  border-left: 2px solid var(--marea);
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--cal-2);
+}
+.mazo-radio b { color: var(--cal); font-weight: 600; }
+
+.etiqueta-lejos {
+  background: rgba(47, 178, 166, 0.14) !important;
+  color: var(--marea) !important;
+}
+
+/* El mazo vacío es lo que ve la mayoría: tiene que trabajar, no decorar */
+.vacio-mazo {
+  height: 100%;
+  gap: var(--s3);
+  padding: var(--s5) var(--s4);
+  overflow-y: auto;
+}
+.vacio-mazo h3 { font-size: 19px; }
+.vacio-clave {
+  color: var(--cal) !important;
+  font-size: 14.5px !important;
+  background: rgba(240, 166, 58, 0.09);
+  border: 1px solid rgba(240, 166, 58, 0.28);
+  border-radius: var(--r-md);
+  padding: 10px 13px;
+}
+.vacio-acciones {
+  display: flex; flex-direction: column; gap: var(--s2);
+  width: 100%; max-width: 280px; margin-top: var(--s2);
+}
+.vacio-acciones .btn { width: 100%; }
+
+/* Aviso arriba de la ficha del profesional recién dado de alta */
+.aviso-completar {
+  margin: var(--s4) 0 calc(var(--s4) * -1 + 6px);
+  padding: 11px 14px;
+  border-radius: var(--r-md);
+  background: rgba(240, 166, 58, 0.1);
+  border: 1px solid rgba(240, 166, 58, 0.38);
+  color: var(--cal);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Botones del mazo sin tarjetas: apagados, no fantasmas */
+.disco:disabled, .pastilla-info:disabled {
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+/* ══ 8. TELÉFONOS CON POCA PANTALLA ════════════════════════ */
+/* En un teléfono barato de 568 px de alto no entra todo: la franja del
+   auspiciante, el rótulo, el aviso del radio, la tarjeta y los botones.
+   Se recorta lo accesorio para que nunca queden los botones cortados,
+   que es lo único que la persona necesita tener siempre a mano. */
+@media (max-height: 680px) {
+  .vista-mazo .sponsor-franja { display: none; }
+  .vista-mazo .resumen-busqueda { padding: 7px 12px; font-size: 12.5px; margin-bottom: var(--s2); }
+  .vista-mazo .mazo-radio {
+    font-size: 11.5px; padding: 5px 10px; margin-bottom: var(--s2);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .vista-mazo .mazo-app { min-height: 0; margin-bottom: var(--s2); }
+  .vista-mazo .disco { width: 48px; height: 48px; font-size: 18px; }
+  .vista-mazo .disco-si { width: 54px; height: 54px; font-size: 21px; }
+  .vista-mazo .pastilla-info { padding: 8px 12px; font-size: 11.5px; }
+  .vista-mazo .carta-cuerpo { padding: var(--s3); gap: 6px; }
+  .vista-mazo .carta-nombre h3 { font-size: 19px; }
+  .vista-mazo .etiquetas { display: none; }
+}
+@media (max-height: 600px) {
+  .vista-mazo .mazo-radio { display: none; }
+}

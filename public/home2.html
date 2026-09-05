@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contratá Ya — Oficios del Partido de la Costa, cerca tuyo</title>
+<meta name="description" content="Publicá lo que necesitás arreglar y te contestan albañiles, plomeros, electricistas, gasistas y techistas de tu propia localidad, verificados y calificados por otros vecinos. De San Clemente a Costa Esmeralda.">
+<meta name="theme-color" content="#0B1620">
+
+<meta property="og:title" content="Contratá Ya — Oficios del Partido de la Costa">
+<meta property="og:description" content="Contás qué necesitás y te contestan profesionales de tu localidad, verificados y con calificaciones de otros vecinos. Sin comisiones.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/img/icon-512.png">
+<meta property="og:locale" content="es_AR">
+
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/img/isotipo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Contratá Ya">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/home2.css">
+</head>
+<body>
+
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<!-- La cinta de instalar la arma home2.js según el teléfono. -->
+<div id="cinta"></div>
+
+<header class="barra">
+  <div class="env">
+    <a class="marca" href="#top">
+      <img src="/img/isotipo.svg" alt="" width="24" height="24">
+      <span>CONTRATÁ <b>YA</b></span>
+    </a>
+    <nav>
+      <a href="#cerca">Quién hay cerca</a>
+      <a href="#como">Cómo funciona</a>
+      <a href="#confianza">Confianza</a>
+      <a href="#temporada">Antes de alquilar</a>
+      <a href="#comercios">Comercios</a>
+      <a href="#preguntas">Preguntas</a>
+    </nav>
+    <a class="btn btn-ambar btn-chico" href="/app">Abrir la app</a>
+  </div>
+</header>
+
+<main id="contenido">
+
+<!-- ══════════════════ PORTADA ══════════════════
+     Le habla al vecino y al dueño de casa: la demanda es lo que
+     falta. El profesional tiene su puerta acá al lado, no abajo
+     de todo. -->
+<section class="portada" id="top">
+  <div class="env portada-grilla">
+    <div>
+      <p class="rotulo"><span class="punto"></span>Partido de la Costa · de San Clemente a Costa Esmeralda</p>
+      <h1>Se rompió algo.<br>El que lo arregla<br><em>vive acá cerca.</em></h1>
+      <p class="bajada">
+        Contás qué necesitás y te contestan albañiles, plomeros, electricistas, gasistas,
+        techistas y pintores de tu propia localidad. Con foto, con calificaciones de otros
+        vecinos, y el precio lo arreglan ustedes dos. Nosotros no cobramos comisión.
+      </p>
+
+      <div class="acciones">
+        <a class="btn btn-ambar" href="/app">Contar qué necesito</a>
+        <a class="btn btn-linea" href="/app?rol=pro">Trabajo de un oficio</a>
+      </div>
+      <p class="bajo-boton">Gratis para los dos lados. Se entra con correo y contraseña, en un minuto.</p>
+
+      <!-- Las cuatro cifras las lee home2.js de la app, en el momento.
+           Nunca están escritas acá. -->
+      <ul class="cifras" id="cifras">
+        <li class="cifra cargando"><b data-cifra="pros">—</b><span>profesionales anotados</span></li>
+        <li class="cifra cargando"><b data-cifra="locs">—</b><span>localidades con gente adentro</span></li>
+        <li class="cifra cargando"><b data-cifra="oficios">—</b><span>oficios distintos</span></li>
+        <li class="cifra cargando"><b data-cifra="pedidos">—</b><span>pedidos abiertos ahora</span></li>
+      </ul>
+      <p class="al-pie-cifras">Estos cuatro números los lee esta página de la app en el momento en que la abrís. No están escritos a mano.</p>
+    </div>
+
+    <!-- Qué se ve del otro lado, sin inventar una persona. -->
+    <aside class="ficha">
+      <span class="ficha-sello">Así se ve una ficha</span>
+      <div class="ficha-cara">
+        <img src="/img/gente/p05.svg" alt="" width="74" height="74" loading="lazy">
+        <div>
+          <h3>Electricista</h3>
+          <p class="ficha-meta">Santa Teresita y Mar del Tuyú</p>
+          <p class="ficha-meta"><span class="estrellas">★★★★★</span> 4,8 · 96 trabajos</p>
+        </div>
+      </div>
+      <div class="ficha-datos">
+        <div><b>11</b><span>años de oficio</span></div>
+        <div><b>$—</b><span>lo arreglan ustedes</span></div>
+        <div><b>5/5</b><span>capas verificadas</span></div>
+      </div>
+      <div class="ficha-capas">
+        <span class="sello-capa">teléfono</span>
+        <span class="sello-capa">correo</span>
+        <span class="sello-capa">CUIT</span>
+        <span class="sello-capa">identidad</span>
+        <span class="sello-capa">zona</span>
+      </div>
+      <p class="ficha-nota">Ejemplo armado para mostrar el formato. En la app cada ficha es de una persona real de tu localidad, con su nombre, su foto y las calificaciones que le dejaron.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ══════════════════ QUIÉN HAY CERCA ══════════════════
+     La prueba. Sale entera de la app: localidades, cuánta gente
+     hay en cada una y qué oficios. Es lo primero que pregunta
+     cualquiera antes de anotarse. -->
+<section class="sec franja" id="cerca">
+  <div class="env">
+    <div class="cabeza">
+      <p class="rotulo">Antes de anotarte</p>
+      <h2>Mirá quién hay<br>en tu localidad.</h2>
+      <p class="bajada">
+        Tocá tu pueblo y te decimos cuánta gente hay anotada ahora mismo y de qué oficios.
+        Es la lista de verdad, leída de la app en este momento: si en tu localidad hay poco,
+        lo vas a ver acá y no después de dar diez pasos.
+      </p>
+    </div>
+
+    <div class="costa-grilla">
+      <div>
+        <p class="costa-punta">Norte · San Clemente</p>
+        <ol class="costa" id="costa" aria-label="Localidades del Partido de la Costa, de norte a sur"></ol>
+        <p class="costa-punta">Sur · Costa Esmeralda</p>
+      </div>
+
+      <div class="zona-panel" id="zonaPanel" aria-live="polite">
+        <p class="rotulo gris">Cargando</p>
+        <h3>Leyendo la app…</h3>
+        <p class="zona-linea">Un segundo, estamos contando la gente que hay anotada en cada localidad.</p>
+      </div>
+    </div>
+
+    <div class="aviso-datos" id="avisoDatos" hidden>
+      No pudimos leer los números de la app en este momento. Podés entrar igual y buscar por vos:
+      <a href="/app" style="color:var(--plomo)">abrir la app</a>.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ LAS DOS PUERTAS ══════════════════ -->
+<section class="sec" id="puertas">
+  <div class="env">
+    <div class="cabeza">
+      <p class="rotulo">Dos puertas, una sola app</p>
+      <h2>Vos entrás por donde te toca.</h2>
+      <p class="bajada">
+        Adentro es el mismo lugar, con la misma gente y las mismas reglas. Lo único que cambia
+        es de qué lado del trabajo estás parado. Y si un día sos las dos cosas —el electricista
+        que necesita un albañil— no hace falta otra cuenta.
+      </p>
+    </div>
+
+    <div class="puertas">
+      <article class="puerta vecino">
+        <p class="rotulo">Si necesitás que te arreglen algo</p>
+        <h3>Necesito<br>un oficio</h3>
+        <p>Sos el dueño de la casa, el que alquila, el que vive todo el año o el que administra propiedades de otros.</p>
+        <ul>
+          <li>Contás qué pasa, en qué localidad y si corre apuro.</li>
+          <li>Ves a los que trabajan en tu zona, con su puntaje y sus trabajos hechos.</li>
+          <li>Se abre el chat y el precio lo arreglan entre ustedes dos.</li>
+          <li>Cuando termina, lo calificás. Eso es lo que hace que el siguiente vecino elija bien.</li>
+        </ul>
+        <a class="btn btn-ambar btn-ancho" href="/app">Contar qué necesito</a>
+        <p class="aclara">Publicar un pedido no cuesta nada y no te compromete a contratar a nadie.</p>
+      </article>
+
+      <article class="puerta oficio">
+        <p class="rotulo">Si vivís de un oficio</p>
+        <h3>Trabajo de<br>un oficio</h3>
+        <p>Albañilería, electricidad, plomería, gas, techos, pintura, carpintería, piletas, fletes, limpieza, caseros y quince oficios más.</p>
+        <ul>
+          <li>Armás tu perfil con tu rubro, tus localidades y tu foto.</li>
+          <li>Te llegan los pedidos de tu zona. Agarrás los que te sirven.</li>
+          <li>Cada trabajo bien hecho te sube el puntaje, y el puntaje es tuyo.</li>
+          <li>Tenés descuento en el corralón o la ferretería de tu localidad, mostrando la credencial de la app.</li>
+        </ul>
+        <a class="btn btn-marea btn-ancho" href="/entrar?crear=1">Anotarme, es gratis</a>
+        <p class="aclara">Anotarse y trabajar no cuesta nada. Después existe un plan Pro opcional, y no hace falta para conseguir trabajo.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ CÓMO FUNCIONA ══════════════════
+     Tres pasos y sin jerga. Las dos vistas conviven en el mismo
+     bloque para que la página no se parta en dos. -->
+<section class="sec franja" id="como">
+  <div class="env">
+    <div class="cabeza">
+      <p class="rotulo">Cómo funciona</p>
+      <h2>Tres pasos, y listo.</h2>
+    </div>
+
+    <div class="pestanias" role="tablist" aria-label="Elegí de qué lado estás">
+      <button role="tab" id="tab-vecino" aria-controls="pasos-vecino" aria-selected="true" type="button">Necesito un arreglo</button>
+      <button role="tab" id="tab-pro" aria-controls="pasos-pro" aria-selected="false" type="button">Tengo un oficio</button>
+    </div>
+
+    <div class="pasos" id="pasos-vecino" role="tabpanel" aria-labelledby="tab-vecino">
+      <article class="paso">
+        <h3>Contás qué pasa</h3>
+        <p>El oficio que necesitás, tu localidad y si es para hoy o podés esperar. Un minuto, tres preguntas.</p>
+        <span class="apunte">Necesitás una cuenta: es lo que hace que del otro lado haya alguien con nombre y no un teléfono suelto.</span>
+      </article>
+      <article class="paso">
+        <h3>Mirás quién hay</h3>
+        <p>Te aparecen los que trabajan en tu localidad, de a uno. Cara, oficio, años, trabajos hechos y lo que otros vecinos escribieron.</p>
+        <span class="apunte">Si te sirve, decís que sí. Si no, pasás al siguiente y no pasa nada.</span>
+      </article>
+      <article class="paso">
+        <h3>Arreglan directo</h3>
+        <p>Se abre el chat entre ustedes dos. El precio, qué incluye y para cuándo queda escrito ahí. Nosotros no metemos mano ni cobramos comisión.</p>
+        <span class="apunte">Cuando termina, se califican los dos.</span>
+      </article>
+    </div>
+
+    <div class="pasos" id="pasos-pro" role="tabpanel" aria-labelledby="tab-pro" hidden>
+      <article class="paso">
+        <h3>Armás tu perfil</h3>
+        <p>Tu oficio, en qué localidades trabajás y tu foto. La foto es obligatoria: es lo primero que mira el que va a dejarte entrar a su casa.</p>
+        <span class="apunte">Después nos escribís por WhatsApp y una persona del equipo te activa.</span>
+      </article>
+      <article class="paso">
+        <h3>Te llegan los pedidos</h3>
+        <p>Los trabajos de tu oficio y de tu zona te aparecen de a uno. Agarrás los que te convienen y descartás el resto.</p>
+        <span class="apunte">Con la app agregada a la pantalla de inicio te enterás al toque; sin instalarla, cuando abrís el navegador.</span>
+      </article>
+      <article class="paso">
+        <h3>Construís tu puntaje</h3>
+        <p>Cada trabajo terminado y calificado te sube. Ese puntaje es lo que te hace elegible para el vecino que todavía no te conoce.</p>
+        <span class="apunte">También calificás vos al cliente. Quien paga tarde o cambia la obra a mitad de camino queda registrado.</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ CONFIANZA ══════════════════ -->
+<section class="sec" id="confianza">
+  <div class="env">
+    <div class="cabeza">
+      <p class="rotulo">Por qué confiar</p>
+      <h2>Dejar entrar a<br>alguien a tu casa<br>no es poca cosa.</h2>
+      <p class="bajada">
+        Por eso no alcanza con una lista de teléfonos. Acá hay tres cosas trabajando juntas:
+        se chequea quién es cada uno antes de que aparezca, se califican las dos partes, y lo
+        que se acuerda queda escrito.
+      </p>
+    </div>
+
+    <div class="confianza-grilla">
+      <!-- Diagrama: la persona pasa por cinco controles antes de aparecer
+           en la pantalla de un vecino. Dibujado a mano, sin librerías. -->
+      <svg class="lamina" viewBox="0 0 300 330" role="img"
+           aria-label="Diagrama: una cuenta nueva pasa por cinco controles antes de aparecer en la pantalla de un vecino">
+        <defs>
+          <linearGradient id="h2-baja" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#F0A63A"/>
+            <stop offset="1" stop-color="#2FB2A6"/>
+          </linearGradient>
+        </defs>
+
+        <text x="150" y="16" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6F818D">SE ANOTA</text>
+        <line x1="150" y1="24" x2="150" y2="300" stroke="url(#h2-baja)" stroke-width="2"/>
+
+        <g font-family="IBM Plex Mono" font-size="12" fill="#0B1620">
+          <rect x="42" y="30"  width="216" height="38" rx="10" fill="#12222E" stroke="#24404F"/>
+          <circle cx="66" cy="49" r="12" fill="#F0A63A"/><text x="66" y="53" text-anchor="middle">01</text>
+          <text x="88" y="53" font-size="13" fill="#EDE7DA" font-family="Inter Tight">Teléfono</text>
+
+          <rect x="42" y="82"  width="216" height="38" rx="10" fill="#12222E" stroke="#24404F"/>
+          <circle cx="66" cy="101" r="12" fill="#E5A340"/><text x="66" y="105" text-anchor="middle">02</text>
+          <text x="88" y="105" font-size="13" fill="#EDE7DA" font-family="Inter Tight">Correo</text>
+
+          <rect x="42" y="134" width="216" height="38" rx="10" fill="#12222E" stroke="#24404F"/>
+          <circle cx="66" cy="153" r="12" fill="#9FAE58"/><text x="66" y="157" text-anchor="middle">03</text>
+          <text x="88" y="157" font-size="13" fill="#EDE7DA" font-family="Inter Tight">CUIT</text>
+
+          <rect x="42" y="186" width="216" height="38" rx="10" fill="#12222E" stroke="#24404F"/>
+          <circle cx="66" cy="205" r="12" fill="#63B383"/><text x="66" y="209" text-anchor="middle">04</text>
+          <text x="88" y="209" font-size="13" fill="#EDE7DA" font-family="Inter Tight">Identidad</text>
+
+          <rect x="42" y="238" width="216" height="38" rx="10" fill="#12222E" stroke="#24404F"/>
+          <circle cx="66" cy="257" r="12" fill="#2FB2A6"/><text x="66" y="261" text-anchor="middle">05</text>
+          <text x="88" y="261" font-size="13" fill="#EDE7DA" font-family="Inter Tight">Zona de trabajo</text>
+        </g>
+
+        <path d="M150 288 l-7 -10 h14 z" fill="#2FB2A6"/>
+        <rect x="60" y="298" width="180" height="26" rx="13" fill="#12222E" stroke="#2FB2A6"/>
+        <text x="150" y="315" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#2FB2A6">APARECE EN TU PANTALLA</text>
+      </svg>
+
+      <div>
+        <p class="rotulo gris">Las cinco capas</p>
+        <ol class="capas">
+          <li class="capa"><span class="n">01</span><div><h3>Teléfono</h3><p>Un número que anda y que contesta. Es por donde te vamos a poder encontrar si algo sale mal.</p></div></li>
+          <li class="capa"><span class="n">02</span><div><h3>Correo</h3><p>Confirmado. Nada de cuentas de un solo uso, que es lo que hace que las estrellas no valgan nada.</p></div></li>
+          <li class="capa"><span class="n">03</span><div><h3>CUIT activo</h3><p>Contra el padrón de AFIP. Dice que del otro lado hay alguien que trabaja en blanco de verdad.</p></div></li>
+          <li class="capa"><span class="n">04</span><div><h3>Identidad</h3><p>DNI y una selfie con prueba de vida: que la cara de la ficha sea la cara que golpea la puerta.</p></div></li>
+          <li class="capa"><span class="n">05</span><div><h3>Zona de trabajo</h3><p>Que la localidad que dice sea la localidad donde de verdad trabaja.</p></div></li>
+        </ol>
+        <p class="zona-nota">
+          Y encima de las cinco hay una persona: después de crear la cuenta nos escribís por
+          WhatsApp y alguien del equipo te activa. Es lento a propósito. En un partido chico,
+          que haya alguien atrás pesa más que cualquier sello automático.
+        </p>
+      </div>
+    </div>
+
+    <div class="dos-calif">
+      <article class="calif">
+        <p class="rotulo">El vecino califica al profesional</p>
+        <ul>
+          <li><span>Calidad del trabajo</span><span class="estrellas">★★★★★</span></li>
+          <li><span>Cumplió el plazo</span><span class="estrellas">★★★★★</span></li>
+          <li><span>Respetó el precio</span><span class="estrellas">★★★★☆</span></li>
+          <li><span>Dejó limpio</span><span class="estrellas">★★★★★</span></li>
+        </ul>
+      </article>
+      <article class="calif">
+        <p class="rotulo">El profesional califica al vecino</p>
+        <ul>
+          <li><span>Pagó en fecha</span><span class="estrellas">★★★★★</span></li>
+          <li><span>Fue claro con el pedido</span><span class="estrellas">★★★★☆</span></li>
+          <li><span>Dio acceso a la obra</span><span class="estrellas">★★★★★</span></li>
+          <li><span>Trato</span><span class="estrellas">★★★★★</span></li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="tres" style="margin-top:16px">
+      <article class="tarjeta ambar">
+        <h3>El trabajo, por escrito</h3>
+        <p>Lo que arreglan queda en el chat: el precio, qué incluye y para cuándo. Cuando el dueño pregunte qué se hizo en la casa, está ahí.</p>
+      </article>
+      <article class="tarjeta marea">
+        <h3>Lo tuyo no se publica</h3>
+        <p>Tu teléfono y tu dirección quedan reservados hasta que ustedes dos decidan hablar. No hay un listado con tus datos dando vueltas.</p>
+      </article>
+      <article class="tarjeta coral">
+        <h3>Si algo sale mal</h3>
+        <p>Se denuncia desde adentro de la app y lo mira una persona. Las cuentas con problemas se suspenden y queda escrito por qué.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ TEMPORADA ══════════════════
+     El bloque que le habla al dueño que alquila: es la demanda
+     de octubre y noviembre, que es la que decide el año. -->
+<section class="sec franja" id="temporada">
+  <div class="env">
+    <div class="cabeza">
+      <p class="rotulo">Si alquilás tu casa</p>
+      <h2>Lo que no arreglás<br>en noviembre, te lo<br>llaman en enero.</h2>
+      <p class="bajada">
+        Acá el año no es un año de oficina: es una temporada. Entre octubre y mediados de
+        diciembre se arregla todo lo que después aguanta tres meses de gente. Es el momento
+        en que más se contrata en el partido, y también en el que más cuesta conseguir a alguien.
+      </p>
+    </div>
+
+    <div class="lamina-caja">
+      <!-- Cómo se mueve el trabajo a lo largo del año en el partido.
+           No es una medición: es el calendario de la costa. -->
+      <svg class="lamina" viewBox="0 0 320 190" style="max-width:620px" role="img"
+           aria-label="Calendario de la costa: se prepara en septiembre y octubre, se arregla de noviembre a mediados de diciembre, la temporada va de mediados de diciembre a febrero, y en marzo y abril se cierra">
+        <!-- Eje: los doce meses, de enero a diciembre. -->
+        <g font-family="IBM Plex Mono" font-size="9" fill="#6F818D" text-anchor="middle">
+          <text x="86"  y="13">E</text><text x="105" y="13">F</text><text x="125" y="13">M</text>
+          <text x="144" y="13">A</text><text x="164" y="13">M</text><text x="184" y="13">J</text>
+          <text x="203" y="13">J</text><text x="223" y="13">A</text><text x="242" y="13">S</text>
+          <text x="262" y="13">O</text><text x="282" y="13">N</text><text x="301" y="13">D</text>
+        </g>
+        <line x1="76" y1="19" x2="311" y2="19" stroke="#24404F" stroke-width="1"/>
+
+        <g font-family="Inter Tight" font-size="11.5" fill="#A9B7C1">
+          <!-- Preparar: septiembre y octubre -->
+          <text x="0" y="42">Preparar</text>
+          <rect x="233" y="30" width="39" height="17" rx="5" fill="#3c5a6b"/>
+
+          <!-- Arreglar: noviembre y la primera mitad de diciembre. El pico. -->
+          <text x="0" y="80" fill="#F0A63A">Arreglar</text>
+          <rect x="272" y="68" width="29" height="17" rx="5" fill="#F0A63A"/>
+
+          <!-- Temporada: de mediados de diciembre a febrero. Cruza el año. -->
+          <text x="0" y="118">Temporada</text>
+          <rect x="301" y="106" width="10" height="17" rx="4" fill="#E4574C"/>
+          <rect x="76"  y="106" width="39" height="17" rx="5" fill="#E4574C"/>
+
+          <!-- Después: marzo y abril -->
+          <text x="0" y="156">Después</text>
+          <rect x="115" y="144" width="39" height="17" rx="5" fill="#2FB2A6"/>
+        </g>
+
+        <!-- La ventana buena, marcada de punta a punta. -->
+        <rect x="233" y="176" width="68" height="6" rx="3" fill="#F0A63A" opacity="0.4"/>
+        <text x="231" y="181" text-anchor="end" font-family="IBM Plex Mono" font-size="9" fill="#6F818D">SE DECIDE EL AÑO</text>
+      </svg>
+      <p class="lamina-pie">Es el calendario del partido, no una medición de la app: cuándo se contrata y cuándo no.</p>
+    </div>
+
+    <h3 style="font-size:22px;margin-bottom:14px">Lo que conviene mirar antes de que llegue la gente</h3>
+    <ol class="chequeo">
+      <li><span class="marca">01</span><span><b>Termotanque.</b> Purga y válvula. Es la falla número uno de enero.</span></li>
+      <li><span class="marca">02</span><span><b>Tablero eléctrico.</b> Térmica y disyuntor. Casa vieja con aire nuevo es problema seguro.</span></li>
+      <li><span class="marca">03</span><span><b>Techo y canaletas</b>, antes de las tormentas de noviembre.</span></li>
+      <li><span class="marca">04</span><span><b>Pileta.</b> Bomba, filtro y química.</span></li>
+      <li><span class="marca">05</span><span><b>Aberturas</b> hinchadas por la humedad del invierno.</span></li>
+      <li><span class="marca">06</span><span><b>Rejas y cerraduras.</b></span></li>
+      <li><span class="marca">07</span><span><b>Desagües y cámara</b>, antes de que sean ocho personas usando el baño.</span></li>
+      <li><span class="marca">08</span><span><b>Pintura del frente.</b> Es lo que se ve en la foto del aviso.</span></li>
+      <li><span class="marca">09</span><span><b>Aires acondicionados</b>, limpieza de filtros.</span></li>
+      <li><span class="marca">10</span><span><b>Un plomero y un electricista guardados</b> en la agenda, antes de que pase algo.</span></li>
+    </ol>
+    <div class="acciones">
+      <a class="btn btn-ambar" href="/app">Pedir presupuesto para mi casa</a>
+      <a class="btn btn-linea" href="/blog">Leer más sobre la temporada</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ ADMINISTRADORES ══════════════════ -->
+<section class="sec" id="administras">
+  <div class="env">
+    <div class="banda">
+      <div>
+        <p class="rotulo">Inmobiliarias, administradores, hoteles y cabañas</p>
+        <h2>¿Y a quién llamás<br>un domingo de enero?</h2>
+        <p>
+          Si tenés a cargo diez, treinta o cien casas, el problema no es conseguir un plomero:
+          es conseguir el segundo cuando el primero no atiende. Acá tenés a los profesionales
+          de cada localidad ordenados por oficio, con calificaciones y con el historial de lo
+          que se hizo en cada casa. Escribinos y lo armamos con vos.
+        </p>
+      </div>
+      <a class="btn btn-marea" href="https://wa.me/5492246552086?text=Hola%2C%20administro%20propiedades%20en%20la%20costa%20y%20quiero%20probar%20Contrat%C3%A1%20Ya." target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ COMERCIOS ══════════════════ -->
+<section class="sec franja" id="comercios">
+  <div class="env">
+    <div class="cabeza">
+      <p class="rotulo">Para comercios</p>
+      <h2>Un corralón por<br>localidad. Nada más.</h2>
+      <p class="bajada">
+        Cuando un profesional está por agarrar un trabajo, la app le muestra dónde comprar los
+        materiales cerca. Ese lugar es exclusivo por rubro y por localidad: si lo tomó una
+        ferretería de Santa Teresita, no entra otra mientras dure el acuerdo.
+      </p>
+    </div>
+
+    <div class="comercios-grilla">
+      <div>
+        <p class="rotulo gris">14 localidades × 7 rubros de comercio</p>
+        <div class="casilleros" id="casilleros" aria-hidden="true"></div>
+        <p class="leyenda">
+          <span><i class="lib"></i>Casillero libre</span>
+          <span><i class="tom"></i>Uno por rubro y localidad</span>
+        </p>
+        <p class="lamina-pie">Cada cuadradito es un lugar exclusivo: materiales, ferretería, sanitarios, pinturería, aberturas, electricidad y piletas, en cada uno de los catorce pueblos.</p>
+      </div>
+
+      <div>
+        <h3 style="font-size:22px;margin-bottom:14px">Lo que recibe el comercio</h3>
+        <ul class="check">
+          <li>Aparecer como el proveedor sugerido cuando un profesional de su rubro agarra un trabajo en su localidad.</li>
+          <li>Un beneficio propio para los profesionales —el descuento lo decide el comercio— que se canjea sólo dentro de la app.</li>
+          <li>Un panel propio: cuántos profesionales pasaron por el local, cuáles son nuevos y quién vuelve más seguido. La publicidad que se compra hoy no se puede medir; esta sí.</li>
+          <li>Exclusividad de rubro y localidad mientras dure el acuerdo.</li>
+        </ul>
+
+        <h3 style="font-size:22px;margin:26px 0 12px">Y del lado del profesional</h3>
+        <p style="color:var(--cal-2);font-size:15.5px;max-width:60ch">
+          Mostrás tu credencial de la app en el mostrador y te hacen el descuento. Eso ya te
+          sirve el primer día, aunque el primer trabajo todavía no haya entrado.
+        </p>
+
+        <div class="acciones">
+          <a class="btn btn-ambar" href="https://wa.me/5492246552086?text=Hola%2C%20quiero%20la%20zona%20de%20mi%20comercio%20en%20Contrat%C3%A1%20Ya." target="_blank" rel="noopener noreferrer">Quiero la zona de mi comercio</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ INSTALACIÓN ══════════════════ -->
+<section class="sec" id="instalar">
+  <div class="env instalar-caja">
+    <div>
+      <p class="rotulo">Tenela a mano</p>
+      <h2 id="instalarTitulo">Agregala a la<br>pantalla de inicio.</h2>
+      <p class="bajada" id="instalarPorque">
+        Agregada, te avisa cuando pasa algo: que alguien te contestó, que entró un trabajo de tu
+        oficio, que el presupuesto está. Sin agregar, te enterás recién cuando abrís el navegador.
+        No ocupa lugar y no hay que bajar nada de ninguna tienda.
+      </p>
+      <div class="acciones" id="instalarAccion"></div>
+    </div>
+
+    <div>
+      <div class="lamina-caja" id="guiaIOS" hidden>
+        <p class="rotulo gris">¿Tenés iPhone? Son tres pasos</p>
+        <ol class="pasos-ios">
+          <li><span>Abrí esta página en <strong>Safari</strong>.</span></li>
+          <li><span>Tocá el botón <strong>Compartir</strong>, el cuadradito con la flecha para arriba.</span></li>
+          <li><span>Elegí <strong>Agregar a inicio</strong>.</span></li>
+        </ol>
+        <p class="lamina-pie">Queda como una app más. En iPhone es la única manera de que te lleguen los avisos.</p>
+      </div>
+
+      <div class="lamina-caja">
+        <p class="rotulo gris">Qué te avisa</p>
+        <ul class="check">
+          <li>Que alguien te contestó.</li>
+          <li>Que entró un pedido de tu oficio en tu localidad.</li>
+          <li>Que te pasaron el precio por escrito.</li>
+          <li>Que te dejaron una calificación.</li>
+        </ul>
+        <p class="lamina-pie">Nada más que eso. No mandamos publicidad al teléfono.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ PREGUNTAS ══════════════════ -->
+<section class="sec franja" id="preguntas">
+  <div class="env">
+    <div class="cabeza">
+      <p class="rotulo">Preguntas</p>
+      <h2>Lo que todos<br>preguntan primero.</h2>
+    </div>
+
+    <div class="faq">
+      <details>
+        <summary>¿Cuánto me sale pedir un trabajo?</summary>
+        <p>Nada. Publicar el pedido, mirar quién hay y hablar con la persona es gratis, y no cobramos comisión sobre lo que arreglen. Vos le pagás al profesional, directo, lo que hayan acordado los dos.</p>
+      </details>
+
+      <details>
+        <summary>¿Tengo que anotarme para mirar?</summary>
+        <p>Sí, hace falta una cuenta. Es correo y contraseña, un minuto. Sabemos que es un paso más, pero es lo que sostiene todo lo demás: del otro lado hay una persona con nombre, cara y calificaciones, no un aviso anónimo. Si no queremos perfiles fantasma de un lado, tampoco los podemos tener del otro.</p>
+      </details>
+
+      <details>
+        <summary>¿Y si no hay nadie de ese oficio en mi localidad?</summary>
+        <p>Puede pasar, y más en los pueblos chicos. Acá arriba está la lista real, para que lo veas antes de dar diez pasos. Si igual publicás el pedido, queda publicado: el primer profesional de ese oficio que entre lo va a ver, y te avisamos.</p>
+        <p>Y si conocés a alguien que hace ese trabajo, pasale la app. Es la forma más rápida de que tu propio pueblo se llene.</p>
+      </details>
+
+      <details>
+        <summary>¿Cómo sé que la persona que viene es quien dice ser?</summary>
+        <p>Por tres cosas. Las cinco capas de verificación —teléfono, correo, CUIT, identidad y zona— que se chequean antes de que aparezca. Las calificaciones que le dejaron otros vecinos, con su comentario. Y que la cuenta la activa una persona del equipo, a mano, hablando por WhatsApp.</p>
+        <p>Nada de eso es una garantía absoluta, y no se la vamos a vender. Es bastante más de lo que tenés cuando llamás a un número que te pasaron en un grupo.</p>
+      </details>
+
+      <details>
+        <summary>¿Quién pone el precio?</summary>
+        <p>Ustedes dos. La app no fija tarifas, no toma pagos y no se queda con nada. Lo que sí hace es que quede escrito en el chat: el precio, qué incluye y para cuándo, así después no hay discusión sobre lo que se había dicho.</p>
+      </details>
+
+      <details>
+        <summary>Soy profesional. ¿Me cobran por anotarme?</summary>
+        <p>No. Anotarse, aparecer, recibir pedidos y trabajar es gratis, y va a seguir siéndolo. Hay un plan Pro opcional de $15.000 por mes para el que quiera salir primero en su localidad, cubrir todas las zonas que necesite, mostrar fotos de sus trabajos y que le avise al toque cuando entra un pedido. No hace falta para conseguir trabajo.</p>
+      </details>
+
+      <details>
+        <summary>Administro casas de alquiler. ¿Sirve para eso?</summary>
+        <p>Es para lo que mejor sirve, porque son varios arreglos juntos y todos los años los mismos. Escribinos por WhatsApp y lo armamos con vos: los oficios de cada localidad, quién atendió cada casa y qué se hizo.</p>
+        <p><a href="https://wa.me/5492246552086?text=Hola%2C%20administro%20propiedades%20en%20la%20costa%20y%20quiero%20probar%20Contrat%C3%A1%20Ya." target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a></p>
+      </details>
+
+      <details>
+        <summary>¿Funciona en iPhone?</summary>
+        <p>Sí. Se abre en Safari y se agrega a la pantalla de inicio desde el botón Compartir. Ese paso no es un capricho: en iPhone es la única manera de que te lleguen los avisos.</p>
+      </details>
+
+      <details>
+        <summary>¿Qué datos míos se ven?</summary>
+        <p>Tu nombre y tu foto. Tu teléfono y tu dirección quedan reservados hasta que ustedes dos decidan hablar. A las fotos se les quitan los datos de ubicación antes de subirlas.</p>
+      </details>
+
+      <details>
+        <summary>¿Y si el trabajo sale mal?</summary>
+        <p>Lo calificás, con comentario, y eso lo va a leer el próximo vecino que lo mire. Si hubo algo más serio, se denuncia desde adentro de la app y lo mira una persona: las cuentas con problemas se suspenden y queda registrado el motivo. Las reseñas malas no se borran para tapar críticas.</p>
+      </details>
+
+      <details>
+        <summary>¿Es sólo para el Partido de la Costa?</summary>
+        <p>Por ahora sí: las catorce localidades, de San Clemente del Tuyú a Costa Esmeralda. Preferimos que funcione de verdad en un partido chico antes que estar a medias en toda la provincia.</p>
+      </details>
+
+      <details>
+        <summary>¿Quién está atrás de esto?</summary>
+        <p>Un equipo chico que trabaja acá. El mismo WhatsApp que activa las cuentas es el que atiende a los comercios y el que contesta si algo se rompe: <a href="https://wa.me/5492246552086?text=Hola%2C%20te%20escribo%20desde%20la%20web%20de%20Contrat%C3%A1%20Ya." target="_blank" rel="noopener noreferrer">+54 9 2246 55-2086</a>.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════════════ CIERRE ══════════════════ -->
+<section class="cierre">
+  <div class="env">
+    <img src="/img/isotipo.svg" alt="" width="46" height="46">
+    <h2>De San Clemente<br>a Costa Esmeralda.</h2>
+    <p>Una sola app para todo el partido. Contá qué necesitás y mirá quién hay en tu localidad.</p>
+    <div class="acciones">
+      <a class="btn btn-ambar" href="/app">Contar qué necesito</a>
+      <a class="btn btn-linea" href="/entrar?crear=1">Tengo un oficio, me anoto</a>
+    </div>
+  </div>
+</section>
+
+<footer class="pie">
+  <div class="env">
+    <span class="dato">CONTRATÁ YA · Partido de la Costa · Buenos Aires</span>
+    <nav>
+      <a href="/blog">Notas</a>
+      <a href="https://www.instagram.com/contrataya.pro/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a href="https://www.facebook.com/people/Contrata-ya-pro/61593293355517/" target="_blank" rel="noopener noreferrer">Facebook</a>
+      <a href="/terminos">Términos</a>
+      <a href="/privacidad">Privacidad</a>
+      <a href="https://wa.me/5492246552086?text=Hola%2C%20te%20escribo%20desde%20la%20web%20de%20Contrat%C3%A1%20Ya." target="_blank" rel="noopener noreferrer">Contacto</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="/js/instalar.js"></script>
+<script src="/js/home2.js"></script>
+</body>
+</html>

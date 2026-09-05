@@ -1,0 +1,142 @@
+/* ═══════════════════════════════════════════════════════════
+   ZONAS — el mapa del partido y la ficha de cada localidad
+   ═══════════════════════════════════════════════════════════ */
+
+.zonas { padding: var(--s4) 0 var(--s6); }
+.zonas-cabeza h2 {
+  font-family: var(--display); font-size: 24px; line-height: 1.1; margin: 0 0 6px;
+}
+.zonas-cabeza p { color: var(--cal-2); font-size: 14.5px; margin: 0 0 var(--s5); }
+
+/* ── El mapa ───────────────────────────────────────────── */
+.mapa { width: 100%; max-width: 340px; margin: 0 auto var(--s5); display: block; }
+.mapa-mar {
+  font-family: var(--dato); font-size: 9px; letter-spacing: .25em;
+  fill: var(--marea); opacity: .45;
+}
+.mapa-nombre {
+  font-family: var(--texto); font-size: 10.5px; fill: var(--cal-2);
+  transition: fill .18s var(--ease);
+}
+.mapa-cuantos { font-family: var(--dato); font-size: 10px; fill: var(--cal-3); }
+.mapa-bolita {
+  fill: var(--plomo); opacity: .85;
+  transition: transform .18s var(--ease), opacity .18s var(--ease);
+  transform-box: fill-box; transform-origin: center;
+}
+.mapa-halo { fill: transparent; }
+.mapa-punto { cursor: pointer; }
+.mapa-punto.vacia .mapa-bolita { fill: var(--linea); opacity: 1; }
+.mapa-punto.vacia .mapa-nombre { fill: var(--cal-3); }
+.mapa-punto:hover .mapa-bolita,
+.mapa-punto:focus-visible .mapa-bolita { transform: scale(1.35); }
+.mapa-punto:hover .mapa-nombre,
+.mapa-punto:focus-visible .mapa-nombre { fill: var(--cal); }
+.mapa-punto:focus-visible { outline: none; }
+.mapa-punto:focus-visible .mapa-halo { fill: rgba(240,166,58,.18); }
+.mapa-punto.activa .mapa-bolita { fill: var(--marea); opacity: 1; }
+.mapa-punto.activa .mapa-nombre { fill: var(--cal); font-weight: 600; }
+
+/* ── El mazo de zonas ──────────────────────────────────── */
+.zonas-mazo { display: grid; gap: 10px; }
+.zona-carta {
+  display: block; width: 100%; text-align: left;
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: var(--r-md); padding: 14px 16px; color: var(--cal);
+  font-family: var(--texto); cursor: pointer;
+  transition: border-color .18s var(--ease), transform .18s var(--ease);
+}
+.zona-carta:hover { border-color: var(--plomo); transform: translateY(-1px); }
+.zona-carta:active { transform: scale(.99); }
+.zona-carta.sin-gente { opacity: .62; }
+.zc-nombre { display: block; font-family: var(--display); font-size: 17px; }
+.zc-datos { display: block; font-size: 13px; color: var(--cal-2); margin-top: 3px; }
+.zc-datos b { color: var(--cal); }
+.zc-datos i { color: var(--marea); font-style: normal; }
+.zc-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.zc-chip {
+  font-size: 11.5px; color: var(--cal-2); background: var(--tinta-3);
+  border-radius: 100px; padding: 3px 10px;
+}
+.zc-chip.vacio { background: transparent; color: var(--cal-3); padding-left: 0; }
+
+.zonas-cargando { padding: var(--s6) 0; }
+.esqueleto-mapa {
+  height: 380px; border-radius: var(--r-md);
+  background: linear-gradient(100deg, var(--tinta-2) 30%, var(--tinta-3) 50%, var(--tinta-2) 70%);
+  background-size: 220% 100%;
+  animation: latido 1.4s infinite linear;
+}
+@keyframes latido { from { background-position: 130% 0; } to { background-position: -30% 0; } }
+
+/* ── La ficha de la localidad ──────────────────────────── */
+.zf-cabeza h2 { font-family: var(--display); font-size: 26px; margin: 0 0 10px; }
+.zf-cifras { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: var(--s5); }
+.zf-cifras span { font-size: 13px; color: var(--cal-2); }
+.zf-cifras b { color: var(--plomo); font-family: var(--dato); font-size: 16px; }
+.zf-ayuda { font-size: 13.5px; color: var(--cal-3); margin: 0 0 10px; }
+
+.zf-oficio {
+  border: 1px solid var(--linea); border-radius: var(--r-md);
+  background: var(--tinta-2); margin-bottom: 8px; overflow: hidden;
+}
+.zf-oficio summary {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 15px; cursor: pointer; list-style: none;
+}
+.zf-oficio summary::-webkit-details-marker { display: none; }
+.zf-glifo { font-size: 16px; color: var(--plomo); width: 20px; text-align: center; }
+.zf-nombre { flex: 1; font-size: 15px; }
+.zf-cuenta {
+  font-family: var(--dato); font-size: 12px; background: var(--tinta-3);
+  border-radius: 100px; padding: 2px 9px; color: var(--cal-2);
+}
+.zf-estrella { font-family: var(--dato); font-size: 12px; color: var(--plomo); }
+.zf-gente { padding: 0 15px 4px; }
+.zf-persona {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0; border-top: 1px solid var(--linea-soft);
+}
+.zf-foto {
+  width: 36px; height: 36px; border-radius: 50%; flex: none; overflow: hidden;
+  background: var(--tinta-3); display: grid; place-items: center;
+  font-family: var(--display); font-size: 14px; color: var(--cal-2);
+}
+.zf-foto img { width: 100%; height: 100%; object-fit: cover; }
+.zf-quien { flex: 1; min-width: 0; }
+.zf-quien b { display: block; font-size: 14.5px; font-weight: 600; }
+.zf-quien small { display: block; font-size: 12px; color: var(--cal-3); }
+.zf-pro { font-style: normal; color: var(--plomo); }
+.zf-punt { font-family: var(--dato); font-size: 12.5px; color: var(--plomo); }
+.zf-buscar {
+  width: calc(100% - 30px); margin: 6px 15px 14px; padding: 10px;
+  background: var(--tinta-3); border: 1px solid var(--linea); border-radius: var(--r-sm);
+  color: var(--cal); font-family: var(--texto); font-size: 14px; cursor: pointer;
+}
+.zf-buscar:hover { border-color: var(--plomo); }
+
+.zf-titulo { font-family: var(--display); font-size: 16px; margin: var(--s5) 0 10px; }
+.zf-comercio {
+  display: flex; align-items: center; gap: 10px; padding: 10px 0;
+  border-top: 1px solid var(--linea-soft);
+}
+.zf-comercio-punto { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.zf-comercio b { display: block; font-size: 14px; }
+.zf-comercio small { color: var(--cal-3); font-size: 12.5px; }
+.zf-vacio {
+  border: 1px dashed var(--linea); border-radius: var(--r-md);
+  padding: 22px; text-align: center; color: var(--cal-2);
+}
+.zf-vacio b { display: block; margin-bottom: 6px; color: var(--cal); }
+.zf-acciones { margin-top: var(--s5); }
+.zf-cargando { padding: var(--s6) 0; text-align: center; color: var(--cal-3); }
+
+/* ── Escritorio: el mapa al lado, no arriba ────────────── */
+@media (min-width: 860px) {
+  .zonas-cuerpo {
+    display: grid; grid-template-columns: 340px 1fr; gap: var(--s6); align-items: start;
+  }
+  .zonas-mapa { position: sticky; top: 84px; }
+  .mapa { max-width: 100%; margin-bottom: 0; }
+  .zonas-mazo { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+}

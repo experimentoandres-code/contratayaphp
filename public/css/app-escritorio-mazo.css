@@ -1,0 +1,115 @@
+/* ═══════════════════════════════════════════════════════════
+   EL MAZO EN ESCRITORIO — dividido, no estirado
+   ───────────────────────────────────────────────────────────
+   En el teléfono la tarjeta es la pantalla y los datos van
+   encima de la foto: no hay lugar para otra cosa. En una
+   pantalla ancha eso obliga a recortar la foto hasta que no se
+   ve de qué es, y deja el texto flotando sobre una imagen
+   oscurecida, que es exactamente el "contenedor sobre el fondo"
+   que se veía mal.
+
+   Acá la tarjeta se divide en dos: la foto ocupa su lado, entera
+   y sin recortes raros, y al lado va una columna con el nombre,
+   los datos y los botones. Es la misma tarjeta y el mismo gesto
+   —se sigue arrastrando igual—, pero con la forma que le sirve a
+   una pantalla ancha.
+   ═══════════════════════════════════════════════════════════ */
+
+@media (min-width: 1000px) {
+
+  /* La tarjeta se agranda y se acomoda en dos columnas. */
+  .vista-mazo .mazo-zona {
+    width: min(1040px, calc(100% - 96px));
+    top: 28px; bottom: 28px;
+  }
+  .vista-mazo .carta {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) 380px;
+    background: var(--tinta-2);
+    border: 1px solid var(--linea);
+    overflow: hidden;
+  }
+
+  /* La foto: su lado, completa. */
+  .vista-mazo .carta-foto {
+    position: relative;
+    inset: auto;
+    grid-column: 1;
+    height: 100%;
+    border-radius: 0;
+  }
+  .vista-mazo .carta-foto img { object-position: center 22%; }
+  /* Sin degradado: no hay texto encima que necesite leerse. */
+  .vista-mazo .carta-foto::after { display: none; }
+
+  /* La columna de datos: fondo propio, sin transparencias. */
+  .vista-mazo .carta-cuerpo {
+    grid-column: 2;
+    position: relative;
+    margin: 0;
+    padding: 34px 30px 120px;
+    background: var(--tinta-2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    overflow: visible;
+  }
+  .vista-mazo .carta-nombre h3 { font-size: 27px; text-shadow: none; }
+  .vista-mazo .carta-meta { font-size: 15px; text-shadow: none; }
+  /* Acá sí entra la bio y las especialidades: hay lugar de sobra. */
+  .vista-mazo .carta-bio {
+    display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: var(--cal-2); font-size: 14.5px; margin-top: 4px;
+  }
+  .vista-mazo .carta .etiquetas { display: flex; margin-top: 6px; }
+  .vista-mazo .carta-pie {
+    border-top: 1px solid var(--linea);
+    padding-top: 14px; margin-top: 10px;
+  }
+
+  /* Los botones, al pie de la columna de datos. */
+  .vista-mazo .mazo-zona .controles {
+    left: auto; right: 0;
+    width: 380px;
+    bottom: 28px;
+    padding: 0 30px;
+    justify-content: space-between;
+  }
+  .vista-mazo .mazo-zona .disco,
+  .vista-mazo .mazo-zona .pastilla-info {
+    background: var(--tinta-3);
+    backdrop-filter: none;
+  }
+  .vista-mazo .mazo-zona .btn-deshacer { left: auto; right: 30px; bottom: 96px; }
+
+  /* Los sellos y la pista se quedan del lado de la foto. */
+  .vista-mazo .carta-plan { left: 18px; top: 18px; }
+  .vista-mazo .carta-pista { left: 25%; transform: translateX(-50%); top: 18px; }
+
+  /* Las de atrás asoman apenas, como una pila de tarjetas de verdad. */
+  .vista-mazo .carta:not(.carta-arriba) { opacity: .5; }
+}
+
+/* En pantallas anchas de verdad, la tarjeta no crece indefinidamente. */
+@media (min-width: 1500px) {
+  .vista-mazo .mazo-zona { width: min(1160px, calc(100% - 120px)); }
+  .vista-mazo .carta { grid-template-columns: minmax(0, 1.25fr) 420px; }
+  .vista-mazo .mazo-zona .controles { width: 420px; }
+}
+
+/* Los filtros dejan de flotar sobre la tarjeta: con la vista dividida hay
+   lugar para ponerlos arriba, en su renglón, sin tapar la foto ni los sellos. */
+@media (min-width: 1000px) {
+  .vista-mazo .filtros-mazo {
+    position: static;
+    background: none;
+    padding: 18px var(--s6) 0;
+    margin: 0 auto;
+    max-width: 1160px;
+  }
+  .vista-mazo .mazo-zona { top: 78px; bottom: 28px; }
+  .vista-mazo .carta-pista { top: 18px; left: 50%; }
+  .vista-mazo .carta-plan { top: 18px; }
+}

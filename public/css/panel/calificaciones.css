@@ -1,0 +1,22 @@
+/* ============================================================
+   CONTRATÁ YA — Panel · Calificaciones
+   Las reseñas, con su respuesta debajo.
+   ============================================================ */
+
+.resenas-lista { display: flex; flex-direction: column; gap: 12px; max-width: 900px; }
+.resena-admin {
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: var(--r-md); padding: 16px 18px;
+}
+.resena-baja { border-color: var(--coral); }
+.resena-cabeza-admin { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.puntaje-bloque {
+  border-radius: var(--r-sm); padding: 4px 9px;
+  font-family: var(--dato); font-size: 12px; font-weight: 600;
+  background: var(--tinta-3); color: var(--marea);
+}
+.puntaje-bajo { background: var(--coral); color: var(--tinta); }
+.resena-admin p { color: var(--cal-2); text-wrap: pretty; }
+.oculta { opacity: .45; }
+
+
