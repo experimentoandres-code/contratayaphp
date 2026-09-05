@@ -1,11 +1,17 @@
 /* ============================================================
+   CONTRATÁ YA — Panel · Documentos
+   El vault de markdown y HTML: carpetas, lectura y edición en
+   vivo. Antes vivía en js/admin-docs.js; se movió tal cual.
+   ============================================================ */
+
+/* ============================================================
    CONTRATÁ YA — Documentos del panel (vault markdown)
    Navegación tipo Obsidian, edición en vivo, sólo admin.
    ============================================================ */
 
 const DocsAdmin = {
   max: 5,
-  modo: 'split',
+  modo: 'read',        // se abre siempre para leer; editar es un paso aparte
   actual: null,
   bruto: '',
   sucio: false,
@@ -112,19 +118,35 @@ function docsWiki(src) {
   });
 }
 
+function docsEsHtml(path) {
+  return /\.html?$/i.test(String(path || ''));
+}
+
 function docsRender(src) {
   const md = DocsAdmin.el && DocsAdmin.el.querySelector('#docsMd');
   if (!md) return;
-  const preparado = docsWiki(src || '');
   let html;
-  if (window.marked) {
-    marked.setOptions({ gfm: true, breaks: false });
-    html = marked.parse(preparado);
+
+  if (docsEsHtml(DocsAdmin.actual)) {
+    // Documento HTML: se muestra como está. Igual pasa por el saneador:
+    // lo escribe una persona, pero un <script> pegado sin querer no corre.
+    html = String(src || '');
+  } else if (window.marked) {
+    // Markdown completo: tablas, tachado, listas de tareas, citas, código.
+    marked.setOptions({ gfm: true, breaks: false, pedantic: false });
+    html = marked.parse(docsWiki(src || ''));
   } else {
     html = '<pre>' + docsEsc(src) + '</pre>';
   }
-  if (window.DOMPurify) html = DOMPurify.sanitize(html);
+
+  if (window.DOMPurify) {
+    html = DOMPurify.sanitize(html, {
+      ADD_TAGS: ['details', 'summary', 'kbd', 'mark', 'figure', 'figcaption', 'abbr', 'sup', 'sub'],
+      ADD_ATTR: ['target', 'colspan', 'rowspan', 'align', 'checked', 'disabled', 'type', 'start', 'open']
+    });
+  }
   md.innerHTML = html;
+  md.classList.toggle('docs-md-html', docsEsHtml(DocsAdmin.actual));
 }
 
 function docsSetSucio(v) {
@@ -136,6 +158,7 @@ function docsSetSucio(v) {
 }
 
 function docsSetModo(m) {
+  if (m !== 'read' && m !== 'edit') m = 'read';
   DocsAdmin.modo = m;
   try { sessionStorage.setItem('docsModo', m); } catch (_) {}
   if (DocsAdmin.el) DocsAdmin.el.setAttribute('data-modo', m);
@@ -194,14 +217,20 @@ function docsMigas(path) {
   ).join(' <span>/</span> ');
 }
 
+/* Todas las carpetas abiertas la primera vez. Un árbol cerrado esconde
+   justo lo que uno viene a buscar. */
+function docsAbrirTodo(nodos) {
+  for (const n of nodos || []) {
+    if (n.type === 'dir') { DocsAdmin.abiertas.add(n.path); docsAbrirTodo(n.children); }
+  }
+}
+
 async function docsCargarArbol() {
   const j = await docsReq('tree');
   DocsAdmin.tree = j.tree || [];
   if (j.max) DocsAdmin.max = j.max;
   DocsAdmin.files = docsAplanar(DocsAdmin.tree);
-  if (!DocsAdmin.abiertas.size) {
-    DocsAdmin.tree.forEach(n => { if (n.type === 'dir') DocsAdmin.abiertas.add(n.path); });
-  }
+  if (!DocsAdmin.abiertas.size) docsAbrirTodo(DocsAdmin.tree);
   docsPintarArbol();
 }
 
@@ -229,12 +258,15 @@ async function docsAbrir(path) {
     const vacio = DocsAdmin.el.querySelector('#docsVacio');
     const md = DocsAdmin.el.querySelector('#docsMd');
     ed.value = contenido;
+    ed.placeholder = docsEsHtml(path) ? 'Escribí HTML…' : 'Escribí markdown…';
     if (vacio) vacio.hidden = true;
     if (md) md.hidden = false;
     docsRender(contenido);
     docsMigas(path);
     docsSetSucio(false);
     docsPintarArbol();
+    // Cada nota se abre para leer. Editar es una decisión, no el estado inicial.
+    if (DocsAdmin.modo !== 'read') docsSetModo('read');
   } catch (e) {
     docsSetSucio(true);
     const el = DocsAdmin.el.querySelector('#docsEstado');
@@ -305,6 +337,8 @@ function docsModal(tipo) {
     : '');
   DocsAdmin.el.querySelector('#docsNuevaCarpeta').value = padre;
   DocsAdmin.el.querySelector('#docsNuevaNombre').value = '';
+  const formato = DocsAdmin.el.querySelector('#docsNuevoFormato');
+  if (formato) formato.parentElement.hidden = (tipo !== 'nota');
   velo.classList.add('abierto');
   DocsAdmin.el.querySelector('#docsNuevaNombre').focus();
 }
@@ -327,7 +361,10 @@ async function docsCrear() {
     brindis('Carpeta creada');
     return;
   }
-  const path = [carpeta, nombre + '.md'].filter(Boolean).join('/');
+  // Markdown u HTML: los dos se leen y se guardan igual.
+  const sel = DocsAdmin.el.querySelector('#docsNuevoFormato');
+  const ext = (sel && sel.value === 'html') ? '.html' : '.md';
+  const path = [carpeta, nombre + ext].filter(Boolean).join('/');
   if (docsProf(path, false) > DocsAdmin.max) {
     brindis('Máximo ' + DocsAdmin.max + ' subcarpetas');
     return;
@@ -341,7 +378,7 @@ async function docsCrear() {
   if (carpeta) DocsAdmin.abiertas.add(carpeta);
   await docsCargarArbol();
   await docsAbrir(path);
-  docsSetModo('split');
+  docsSetModo('edit');   // una nota nueva se abre para escribirla
 }
 
 async function docsBorrar() {
@@ -363,21 +400,22 @@ async function docsBorrar() {
 function docsPlantilla() {
   return `<div class="docs-admin" data-modo="${docsEsc(DocsAdmin.modo)}">
     <aside class="docs-lado">
+      <button type="button" id="docsPlegar" class="docs-plegar" title="Ocultar las carpetas">‹</button>
       <input id="docsBuscar" type="search" placeholder="Buscar  ·  Ctrl+K" autocomplete="off">
       <div class="docs-acciones">
         <button type="button" id="docsBtnNota">+ Nota</button>
         <button type="button" id="docsBtnCarpeta">+ Carpeta</button>
+        <button type="button" id="docsBtnBajar" title="Bajar los documentos en un archivo">⤓ Bajar</button>
       </div>
       <nav id="docsArbol"><p class="docs-vacio">Cargando…</p></nav>
     </aside>
     <section class="docs-main">
       <header class="docs-barra">
-        <button type="button" id="docsMenu" aria-label="Carpetas">☰</button>
+        <button type="button" id="docsMenu" aria-label="Ver las carpetas">Carpetas</button>
         <div id="docsMigas">Documentos</div>
         <div class="docs-modos">
-          <button type="button" data-modo="read">Lectura</button>
-          <button type="button" data-modo="edit">Edición</button>
-          <button type="button" data-modo="split">Dividido</button>
+          <button type="button" data-modo="read">Leer</button>
+          <button type="button" data-modo="edit">Editar</button>
         </div>
         <button type="button" class="docs-ico" id="docsBtnGuardar">Guardar</button>
         <button type="button" class="docs-ico docs-ico-mal" id="docsBtnBorrar">Borrar</button>
@@ -407,6 +445,12 @@ function docsPlantilla() {
         <h2 id="docsModalTitulo">Nueva nota</h2>
         <input class="docs-campo" id="docsNuevaCarpeta" placeholder="Carpeta (vacío = raíz)">
         <input class="docs-campo" id="docsNuevaNombre" placeholder="Nombre">
+        <label class="docs-formato">Formato
+          <select class="docs-campo" id="docsNuevoFormato">
+            <option value="md">Markdown (.md)</option>
+            <option value="html">HTML (.html)</option>
+          </select>
+        </label>
         <div class="docs-pies">
           <button type="button" data-docs-cerrar>Cancelar</button>
           <button type="button" class="pri" id="docsCrearOk">Crear</button>
@@ -416,7 +460,70 @@ function docsPlantilla() {
   </div>`;
 }
 
+/* Bajar los documentos en un solo archivo. La API pide la sesión en una
+   cabecera, así que no alcanza con un enlace: se trae el archivo y recién
+   ahí se le pasa al navegador. */
+async function docsBajar(carpeta) {
+  const boton = DocsAdmin.el.querySelector('#docsBtnBajar');
+  const textoOriginal = boton ? boton.textContent : '';
+  if (boton) { boton.disabled = true; boton.textContent = 'Armando…'; }
+  try {
+    const token = await docsToken();
+    const qs = carpeta ? '?path=' + encodeURIComponent(carpeta) : '';
+    const r = await fetch('/api/admin/docs/zip' + qs, { headers: { Authorization: 'Bearer ' + token } });
+    if (!r.ok) {
+      const j = await r.json().catch(() => ({}));
+      throw new Error(j.error || 'no se pudo armar el archivo');
+    }
+    const cuantos = r.headers.get('X-Documentos') || '';
+    const nombre = (r.headers.get('Content-Disposition') || '').match(/filename="([^"]+)"/);
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nombre ? nombre[1] : 'documentos.zip';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    brindis(cuantos ? `${cuantos} documentos bajados` : 'Documentos bajados');
+  } catch (e) {
+    brindis(e.message || 'No se pudo bajar');
+  } finally {
+    if (boton) { boton.disabled = false; boton.textContent = textoOriginal; }
+  }
+}
+
+/* El árbol se puede plegar para leer a pantalla completa, y se acuerda. */
+function docsPlegarLado(plegado) {
+  DocsAdmin.el.classList.toggle('lado-plegado', plegado);
+  const b = DocsAdmin.el.querySelector('#docsPlegar');
+  if (b) {
+    b.textContent = plegado ? '›' : '‹';
+    b.title = plegado ? 'Mostrar las carpetas' : 'Ocultar las carpetas';
+  }
+  try { localStorage.setItem('docsLado', plegado ? 'plegado' : 'abierto'); } catch (_) {}
+}
+
 function docsConectar() {
+  const botonBajar = DocsAdmin.el.querySelector('#docsBtnBajar');
+  if (botonBajar) {
+    botonBajar.addEventListener('click', () => {
+      // Con una carpeta abierta baja esa; si no, baja todo.
+      const carpeta = DocsAdmin.carpeta || '';
+      docsBajar(carpeta);
+    });
+  }
+
+  const botonPlegar = DocsAdmin.el.querySelector('#docsPlegar');
+  if (botonPlegar) {
+    botonPlegar.addEventListener('click', () =>
+      docsPlegarLado(!DocsAdmin.el.classList.contains('lado-plegado')));
+    let guardado = null;
+    try { guardado = localStorage.getItem('docsLado'); } catch (_) {}
+    if (guardado === 'plegado') docsPlegarLado(true);
+  }
+
   const root = DocsAdmin.el;
   root.querySelector('#docsArbol').addEventListener('click', (e) => {
     const nota = e.target.closest('.docs-nota');
@@ -525,7 +632,7 @@ function docsConectar() {
       if (meta && e.key.toLowerCase() === 'k') { e.preventDefault(); docsAbrirPaleta(); }
       if (meta && e.key.toLowerCase() === 'e') {
         e.preventDefault();
-        docsSetModo(DocsAdmin.modo === 'read' ? 'split' : 'read');
+        docsSetModo(DocsAdmin.modo === 'read' ? 'edit' : 'read');
         if (DocsAdmin.modo === 'read') docsRender((DocsAdmin.el.querySelector('#docsEditor') || {}).value || DocsAdmin.bruto);
       }
       if (meta && e.key.toLowerCase() === 'n') { e.preventDefault(); docsModal('nota'); }
@@ -544,8 +651,10 @@ function docsConectar() {
 
 DocsAdmin.montar = async function (el) {
   try {
-    DocsAdmin.modo = sessionStorage.getItem('docsModo') || 'split';
-  } catch (_) {}
+    const guardado = sessionStorage.getItem('docsModo');
+    // 'split' era el modo dividido, que ya no existe.
+    DocsAdmin.modo = (guardado === 'edit') ? 'edit' : 'read';
+  } catch (_) { DocsAdmin.modo = 'read'; }
   const ya = el.querySelector('.docs-admin');
   if (ya && DocsAdmin.el === ya && ya.isConnected) {
     await docsCargarArbol();
@@ -567,7 +676,34 @@ DocsAdmin.montar = async function (el) {
   if (DocsAdmin.actual && DocsAdmin.files.some(f => f.path === DocsAdmin.actual)) {
     await docsAbrir(DocsAdmin.actual);
   } else {
-    const home = DocsAdmin.files.find(f => f.path === 'Bienvenida.md') || DocsAdmin.files[0];
+    const home = DocsAdmin.files.find(f => f.path === 'Planificacion/00-INDICE.md')
+              || DocsAdmin.files.find(f => f.path === 'Bienvenida.md')
+              || DocsAdmin.files[0];
     if (home) await docsAbrir(home.path);
   }
 };
+
+
+Panel.registrar('documentos', {
+  titulo:      'Documentos',
+  bajada:      'Vault markdown · carpetas, lectura y edición en vivo',
+  claseCuerpo: 'sec-docs',
+  // Queda fuera del refresco de cada 12 segundos: acá se escribe, y
+  // repintar debajo de la mano te comería lo tipeado.
+  refrescar:   false,
+  // Si ya está montado no se borra el cuerpo al recargar.
+  conservar:   () => typeof DocsAdmin !== 'undefined' && DocsAdmin.montado(),
+  alSalir() {
+    if (typeof DocsAdmin !== 'undefined' && DocsAdmin.hayCambios()) {
+      if (!confirm('Hay cambios sin guardar en Documentos. ¿Descartarlos?')) return false;
+      DocsAdmin.sucio = false;
+    }
+    return true;
+  },
+  pintar: async (cuerpo) => {
+    if (typeof DocsAdmin === 'undefined' || !DocsAdmin.montar) {
+      throw new Error('No se cargó el módulo de Documentos');
+    }
+    await DocsAdmin.montar(cuerpo);
+  }
+});

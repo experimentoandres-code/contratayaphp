@@ -3,22 +3,38 @@
    Subir la versión en cada despliegue para forzar la limpieza.
    ============================================================ */
 
-const VERSION = 'contrataya-v92';
+const VERSION = 'contrataya-v147';
 
+/* Direcciones sin .html: las viejas ahora redirigen, y cache.addAll falla
+   con una redirección. */
 const BASE = [
   '/',
-  '/index.html',
-  '/app.html',
-  '/offline.html',
+  '/app',
+  '/offline',
   '/manifest.webmanifest',
   '/css/tokens.css',
   '/css/landing.css',
   '/css/app.css',
+  '/css/app-mazo.css',
+  '/css/app-carta.css',
+  '/css/app-avisos.css',
+  '/css/app-buscar.css',
+  '/css/app-zonas.css',
+  '/css/app-escritorio.css',
+  '/css/app-chat.css',
+  '/css/ui.css',
+  '/css/app-mazo-full.css',
+  '/css/app-escritorio-mazo.css',
   '/js/data.js',
   '/js/instalar.js',
   '/js/landing.js',
   '/js/tutorial.js',
   '/js/app.js',
+  '/js/app-mazo.js',
+  '/js/app-zonas.js',
+  '/js/app-avisos.js',
+  '/js/app-buscar.js',
+  '/js/app-nav.js',
   '/js/jugar.js',
   '/img/isotipo.svg',
   '/img/logo.svg',
@@ -50,6 +66,16 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   if (url.origin !== location.origin) return; // fuentes y externos: red directa
 
+  /* La API NUNCA se cachea. Guardar estas respuestas trae dos problemas
+     graves: se siguen mostrando datos viejos aunque el servidor ya tenga
+     otros, y una respuesta pedida con la sesión de una persona se le puede
+     terminar entregando a otra en el mismo teléfono. Siempre red. */
+  if (url.pathname.startsWith('/sb/') ||
+      url.pathname.startsWith('/api/') ||
+      url.pathname.startsWith('/docs-api.php')) {
+    return;   // sin respondWith: la maneja el navegador, derecho a la red
+  }
+
   // Navegación: red primero, caché de respaldo.
   if (req.mode === 'navigate') {
     e.respondWith(
@@ -59,7 +85,7 @@ self.addEventListener('fetch', (e) => {
           caches.open(VERSION).then(c => c.put(req, copia));
           return res;
         })
-        .catch(() => caches.match(req).then(r => r || caches.match('/offline.html')))
+        .catch(() => caches.match(req).then(r => r || caches.match('/offline')))
     );
     return;
   }
@@ -130,7 +156,7 @@ self.addEventListener('push', (e) => {
 
 self.addEventListener('notificationclick', (e) => {
   e.notification.close();
-  const destino = e.notification.data?.url || '/app.html';
+  const destino = e.notification.data?.url || '/app';
 
   e.waitUntil((async () => {
     // Si la app ya está abierta en alguna ventana, la traemos al frente

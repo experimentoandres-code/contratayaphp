@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Entrar · Contratá Ya</title>
+<link rel="icon" href="/img/favicon-64.png">
+<link rel="stylesheet" href="/css/tokens.css">
+<style>
+  body { margin:0; min-height:100dvh; background:var(--tinta); color:var(--cal);
+         font-family:var(--texto); display:flex; align-items:center; justify-content:center;
+         padding:var(--s5) var(--s4) calc(var(--s5) + env(safe-area-inset-bottom)); }
+  main { width:100%; max-width:420px; }
+  .marca { display:flex; align-items:center; gap:var(--s3); margin-bottom:var(--s5); }
+  .marca img { width:38px; height:38px; }
+  .marca b { font-family:var(--display); font-size:19px; letter-spacing:-.01em; }
+
+  .tabs { display:flex; gap:var(--s1); background:var(--tinta-2); padding:4px;
+          border-radius:var(--r-md); margin-bottom:var(--s4); }
+  .tabs button { flex:1; padding:11px; border:0; border-radius:var(--r-sm); background:transparent;
+                 color:var(--cal-2); font-family:var(--texto); font-size:15px; cursor:pointer;
+                 transition:background .18s var(--ease), color .18s var(--ease); }
+  .tabs button[aria-selected="true"] { background:var(--tinta-3); color:var(--cal); font-weight:600; }
+
+  label { display:block; font-size:13px; color:var(--cal-2); margin:var(--s3) 0 6px; }
+  input, select { width:100%; box-sizing:border-box; padding:13px var(--s4); background:var(--tinta-2);
+          border:1px solid var(--linea); border-radius:var(--r-sm); color:var(--cal);
+          font-family:var(--texto); font-size:16px; }
+  input:focus, select:focus { outline:none; border-color:var(--plomo); }
+  button.principal { width:100%; margin-top:var(--s4); padding:14px; border:0; border-radius:var(--r-sm);
+          background:var(--plomo); color:#0B1620; font-family:var(--texto); font-size:16px;
+          font-weight:600; cursor:pointer; }
+  button.principal:disabled { opacity:.55; cursor:default; }
+  .aviso { margin:var(--s4) 0 0; font-size:13px; line-height:1.55; color:var(--cal-3); }
+  .error { margin:var(--s3) 0 0; font-size:14px; color:var(--coral); }
+  .demo-botones { display:grid; gap:var(--s2); }
+  .btn-demo { display:block; width:100%; text-align:left; padding:13px var(--s4);
+              background:var(--tinta-2); border:1px solid var(--linea); border-radius:var(--r-sm);
+              color:var(--cal); font-family:var(--texto); cursor:pointer;
+              transition:border-color .16s var(--ease), transform .16s var(--ease); }
+  .btn-demo:hover { border-color:var(--plomo); }
+  .btn-demo:active { transform:scale(.99); }
+  .btn-demo:disabled { opacity:.6; cursor:default; }
+  .btn-demo b { display:block; font-size:15px; }
+  .btn-demo small { display:block; color:var(--cal-3); font-size:12.5px; margin-top:2px; line-height:1.4; }
+  details { margin-top:var(--s5); border-top:1px solid var(--linea-soft); padding-top:var(--s4); }
+  summary { font-size:13px; color:var(--cal-3); cursor:pointer; }
+  .cuentas { margin-top:var(--s3); max-height:38vh; overflow:auto; }
+  .cuenta { display:flex; align-items:center; gap:var(--s3); width:100%; text-align:left;
+            background:transparent; border:0; border-radius:var(--r-sm); padding:8px;
+            color:var(--cal-2); font-family:var(--texto); font-size:13px; cursor:pointer; }
+  .cuenta:hover { background:var(--tinta-2); }
+  .cuenta img { width:30px; height:30px; border-radius:50%; object-fit:cover; background:var(--tinta-3); }
+  .cuenta span { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  code { font-family:var(--dato); color:var(--marea); font-size:12px; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<main>
+  <div class="marca"><img src="/img/isotipo.svg" alt=""><b>Contratá Ya</b></div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tabEntrar" aria-selected="true">Entrar</button>
+    <button role="tab" id="tabCrear" aria-selected="false">Crear cuenta</button>
+  </div>
+
+  <form id="formEntrar">
+    <label for="correo">Tu correo</label>
+    <input id="correo" type="email" autocomplete="username" inputmode="email" required>
+    <label for="clave">Tu contraseña</label>
+    <input id="clave" type="password" autocomplete="current-password" required>
+    <button class="principal" type="submit">Entrar</button>
+    <p class="error" id="errorEntrar" hidden></p>
+  </form>
+
+  <form id="formCrear" hidden>
+    <label for="nombre">Tu nombre</label>
+    <input id="nombre" type="text" autocomplete="name" required>
+    <label for="rol">¿Qué venís a hacer?</label>
+    <select id="rol">
+      <option value="cliente">Necesito contratar a alguien</option>
+      <option value="pro">Trabajo de un oficio y busco trabajo</option>
+    </select>
+
+    <div id="camposPro" hidden>
+      <label for="rubro">¿Cuál es tu oficio?</label>
+      <select id="rubro"></select>
+      <label for="localidad">¿En qué localidad trabajás?</label>
+      <select id="localidad"></select>
+    </div>
+    <label for="correoNuevo">Tu correo</label>
+    <input id="correoNuevo" type="email" autocomplete="username" inputmode="email" required>
+    <label for="claveNueva">Una contraseña</label>
+    <input id="claveNueva" type="password" autocomplete="new-password" minlength="8" required>
+    <button class="principal" type="submit">Crear mi cuenta</button>
+    <p class="aviso">Ocho caracteres o más. Con eso alcanza para entrar cuando vuelvas.</p>
+    <p class="error" id="errorCrear" hidden></p>
+  </form>
+
+  <div id="cajaDemo" hidden>
+    <p class="rotulo">Probar sin crear cuenta</p>
+    <div class="demo-botones">
+      <button type="button" class="btn-demo" data-demo="demo.vecino@aapp.host">
+        <b>Entrar como vecino</b>
+        <small>Pedir un trabajo y elegir entre los oficios de tu zona</small>
+      </button>
+      <button type="button" class="btn-demo" data-demo="demo.profesional@aapp.host">
+        <b>Entrar como profesional</b>
+        <small>El mazo de pedidos, los matches y el chat, del otro lado</small>
+      </button>
+    </div>
+    <p class="aviso">Cuentas de demostración con datos inventados. Lo que hagas ahí no le llega
+      a nadie.</p>
+  </div>
+
+  <details id="cajaCuentas" hidden>
+    <summary>Cuentas de prueba de esta copia</summary>
+    <p class="aviso">Tocá una para completar el correo. La contraseña de todas es
+      <code>contrataya2026</code>. La de administración es <code>admin@aapp.host</code>.</p>
+    <div class="cuentas" id="listaCuentas"></div>
+  </details>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/supabase.js"></script>
+<script src="/js/data.js"></script>
+<script>
+const volver = new URLSearchParams(location.search).get('volver') || '/app.html';
+const $ = (s) => document.querySelector(s);
+
+function pestania(cual) {
+  const entrar = cual === 'entrar';
+  $('#tabEntrar').setAttribute('aria-selected', String(entrar));
+  $('#tabCrear').setAttribute('aria-selected', String(!entrar));
+  $('#formEntrar').hidden = !entrar;
+  $('#formCrear').hidden = entrar;
+}
+$('#tabEntrar').onclick = () => pestania('entrar');
+$('#tabCrear').onclick = () => pestania('crear');
+
+// /entrar?crear=1 abre directamente el alta: lo usan los enlaces de la app
+// que invitan a registrarse.
+if (new URLSearchParams(location.search).has('crear')) pestania('crear');
+
+function adonde(email) {
+  if (String(email || '').toLowerCase() === 'admin@aapp.host') return '/admin.html';
+  return volver;
+}
+
+async function conBoton(form, idError, fn) {
+  const boton = form.querySelector('button.principal');
+  const err = document.getElementById(idError);
+  const textoOriginal = boton.textContent;
+  err.hidden = true;
+  boton.disabled = true;
+  boton.textContent = 'Un momento…';
+  try {
+    const problema = await fn();
+    if (problema) {
+      err.textContent = problema;
+      err.hidden = false;
+    }
+  } finally {
+    boton.disabled = false;
+    boton.textContent = textoOriginal;
+  }
+}
+
+$('#formEntrar').addEventListener('submit', (e) => {
+  e.preventDefault();
+  conBoton(e.target, 'errorEntrar', async () => {
+    const email = $('#correo').value.trim();
+    const { error } = await sb.auth.signInWithPassword({ email, password: $('#clave').value });
+    if (error) return 'Ese correo y esa contraseña no coinciden.';
+    location.href = adonde(email);
+  });
+});
+
+// Oficio y localidad se piden en el alta: sin eso el profesional no aparece
+// en ninguna búsqueda y se queda esperando un trabajo que nunca le va a llegar.
+(function camposDeProfesional() {
+  const rubro = $('#rubro'), localidad = $('#localidad');
+  for (const r of (typeof RUBROS !== 'undefined' ? RUBROS : [])) {
+    rubro.append(new Option(r.nombre, r.id));
+  }
+  for (const l of (typeof LOCALIDADES !== 'undefined' ? LOCALIDADES : [])) {
+    const nombre = typeof l === 'string' ? l : l.nombre;
+    localidad.append(new Option(nombre, nombre));
+  }
+  const alternar = () => {
+    const esPro = $('#rol').value === 'pro';
+    $('#camposPro').hidden = !esPro;
+    rubro.required = esPro;
+  };
+  $('#rol').addEventListener('change', alternar);
+  alternar();
+})();
+
+$('#formCrear').addEventListener('submit', (e) => {
+  e.preventDefault();
+  conBoton(e.target, 'errorCrear', async () => {
+    const email = $('#correoNuevo').value.trim();
+    const { error } = await sb.auth.signUp({
+      email,
+      password: $('#claveNueva').value,
+      options: { data: {
+        full_name: $('#nombre').value.trim(),
+        rol: $('#rol').value,
+        rubro: $('#rol').value === 'pro' ? $('#rubro').value : null,
+        localidad: $('#localidad').value
+      } }
+    });
+    if (error) {
+      if (/already|exists/i.test(error.message)) return 'Ya hay una cuenta con ese correo. Probá entrar.';
+      if (/8/.test(error.message)) return 'La contraseña tiene que tener al menos 8 caracteres.';
+      return 'No se pudo crear la cuenta: ' + error.message;
+    }
+    location.href = adonde(email);
+  });
+});
+
+// Los dos botones de demostración: entran con una cuenta real, con su
+// contraseña. No hay ninguna puerta sin clave detrás de esto.
+document.querySelectorAll('[data-demo]').forEach(b => {
+  b.addEventListener('click', async () => {
+    const otros = document.querySelectorAll('[data-demo]');
+    otros.forEach(x => { x.disabled = true; });
+    const texto = b.querySelector('b').textContent;
+    b.querySelector('b').textContent = 'Entrando…';
+    const { error } = await sb.auth.signInWithPassword({
+      email: b.dataset.demo, password: 'contrataya2026'
+    });
+    if (error) {
+      b.querySelector('b').textContent = texto;
+      otros.forEach(x => { x.disabled = false; });
+      const err = $('#errorEntrar');
+      err.textContent = 'La cuenta de demostración no está disponible.';
+      err.hidden = false;
+      return;
+    }
+    location.href = '/app';
+  });
+});
+
+// Los botones de demostración y la lista de cuentas sólo se muestran mientras
+// esta copia sea de demostración. Se apagan borrando datos/demo-activo.
+(async () => {
+  try {
+    const estado = await (await fetch('/sb/local/estado')).json();
+    if (estado && estado.demo) document.getElementById('cajaDemo').hidden = false;
+  } catch { /* si no se puede saber, no se muestran */ }
+})();
+
+// Las cuentas de prueba sólo aparecen mientras esta copia sea de demostración.
+(async () => {
+  try {
+    const r = await fetch('/sb/local/usuarios');
+    if (!r.ok) return;
+    const gente = await r.json();
+    if (!gente.length) return;
+    const caja = $('#listaCuentas');
+    for (const u of gente) {
+      if (!u.email) continue;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'cuenta';
+      const img = document.createElement('img');
+      img.src = u.foto_url || '/img/isotipo.svg';
+      img.alt = '';
+      img.onerror = () => { img.src = '/img/isotipo.svg'; };
+      const t = document.createElement('span');
+      t.textContent = `${u.nombre || u.email} · ${u.email}`;
+      b.append(img, t);
+      b.onclick = () => {
+        pestania('entrar');
+        $('#correo').value = u.email;
+        $('#clave').focus();
+      };
+      caja.append(b);
+    }
+    $('#cajaCuentas').hidden = false;
+    const rot = document.getElementById('rotuloCuentas');
+    if (rot) rot.hidden = false;
+  } catch { /* si no está, no se muestra */ }
+})();
+</script>
+</body>
+</html>

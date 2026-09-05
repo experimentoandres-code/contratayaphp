@@ -1,0 +1,389 @@
+/* ============================================================
+   CONTRATÁ YA — Panel · Documentos
+   El vault: árbol, visor, editor y markdown completo.
+   ============================================================ */
+
+.admin.sec-docs {
+  grid-template-columns: 236px minmax(0, 1fr);
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
+.admin.sec-docs .contenido {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.admin.sec-docs .cabecera { flex: none; }
+.admin.sec-docs .cabecera .marca-tiempo { display: none; }
+.admin.sec-docs .cuerpo {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.docs-admin {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--tinta);
+}
+.docs-lado {
+  width: 260px;
+  min-width: 260px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--tinta-0);
+  border-right: 1px solid var(--linea);
+}
+.docs-lado input[type="search"] {
+  margin: 12px 12px 8px;
+  width: calc(100% - 24px);
+  padding: 8px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--linea);
+  background: var(--tinta-2);
+  color: var(--cal);
+}
+.docs-acciones {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px 10px;
+}
+.docs-acciones button,
+.docs-ico {
+  background: var(--tinta-2);
+  border: 1px solid var(--linea);
+  border-radius: 7px;
+  padding: 5px 8px;
+  font-size: 11px;
+  color: var(--cal-3);
+}
+.docs-acciones button:hover,
+.docs-ico:hover { color: var(--cal); border-color: var(--plomo); }
+.docs-ico-mal:hover { border-color: var(--coral); color: var(--coral); }
+
+#docsArbol {
+  flex: 1;
+  overflow: auto;
+  padding: 4px 8px 24px;
+  font-size: 13px;
+}
+.docs-carpeta > .docs-fila,
+.docs-nota {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  user-select: none;
+}
+.docs-nota { cursor: pointer; color: var(--cal); }
+.docs-nota:hover,
+.docs-carpeta > .docs-fila:hover { background: var(--tinta-3); }
+.docs-nota.activa { background: var(--tinta-3); color: var(--cal); box-shadow: inset 2px 0 0 var(--plomo); }
+.docs-carpeta.en-carpeta > .docs-fila { color: var(--cal); }
+.docs-chev { width: 10px; color: var(--cal-3); font-size: 10px; }
+.docs-kids { padding-left: 12px; }
+.docs-carpeta.cerrada > .docs-kids { display: none; }
+.docs-carpeta.cerrada > .docs-fila .docs-chev { transform: rotate(-90deg); }
+.docs-etiq {
+  color: var(--cal-3);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 600;
+  font-family: var(--dato);
+}
+.docs-vacio { color: var(--cal-3); padding: 16px; font-size: 12px; }
+
+.docs-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--tinta);
+}
+.docs-barra {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--linea);
+  background: var(--tinta-0);
+  min-height: 46px;
+}
+#docsMigas {
+  flex: 1;
+  font-size: 12px;
+  color: var(--cal-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#docsMigas b { color: var(--cal); font-weight: 600; }
+#docsMigas span { color: var(--cal-3); }
+.docs-modos {
+  display: flex;
+  background: var(--tinta-2);
+  border: 1px solid var(--linea);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.docs-modos button {
+  background: none;
+  border: 0;
+  padding: 5px 10px;
+  font-size: 11px;
+  color: var(--cal-3);
+}
+.docs-modos button.ok { background: var(--tinta-3); color: var(--cal); }
+.docs-estado {
+  font-size: 11px;
+  color: var(--cal-3);
+  min-width: 92px;
+  text-align: right;
+  font-family: var(--dato);
+}
+.docs-estado.sucio { color: var(--plomo); }
+.docs-estado.ok { color: #3dba7a; }
+
+.docs-lienzo {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+#docsEditor,
+.docs-vista {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+}
+#docsEditor {
+  display: none;
+  border: 0;
+  resize: none;
+  background: #08131b;
+  padding: 28px 24px 80px;
+  line-height: 1.55;
+  font-family: var(--dato);
+  font-size: 13.5px;
+  color: var(--cal);
+  outline: none;
+  border-right: 1px solid var(--linea);
+  tab-size: 2;
+}
+/* Dos modos y nada más: se lee, o se edita. La pantalla partida en dos
+   columnas no servía ni para una cosa ni para la otra. */
+.docs-admin[data-modo="edit"] #docsEditor { display: block; }
+.docs-admin[data-modo="edit"] .docs-vista { display: none; }
+.docs-admin[data-modo="read"] #docsEditor { display: none; }
+
+.docs-vista { padding: 28px 36px 96px; }
+
+.docs-vacio-main {
+  margin: auto;
+  color: var(--cal-3);
+  text-align: center;
+  padding: 40px;
+  max-width: 420px;
+}
+.docs-vacio-main kbd,
+.docs-vacio-main code {
+  font-family: var(--dato);
+  background: var(--tinta-2);
+  border: 1px solid var(--linea);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 12px;
+  color: var(--cal-2);
+}
+.docs-vacio-main p { margin: 8px 0; }
+
+.docs-md { font-size: 15.5px; line-height: 1.7; max-width: 760px; }
+.docs-md h1, .docs-md h2, .docs-md h3, .docs-md h4 {
+  font-family: var(--display);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.015em;
+  margin: 1.4em 0 .5em;
+}
+.docs-md h1 { font-size: 1.8em; margin-top: 0; }
+.docs-md h2 { font-size: 1.3em; border-bottom: 1px solid var(--linea); padding-bottom: .25em; }
+.docs-md h3 { font-size: 1.08em; }
+.docs-md p { margin: .75em 0; }
+.docs-md a { color: var(--plomo); text-decoration: none; border-bottom: 1px solid var(--plomo-dim); }
+.docs-md .docs-wiki { color: var(--plomo); border-bottom: 1px solid var(--plomo-dim); cursor: pointer; }
+.docs-md .docs-wiki-roto { color: var(--coral); border-bottom: 1px dashed var(--coral); }
+.docs-md ul, .docs-md ol { padding-left: 1.4em; }
+.docs-md ul { list-style: disc; }
+.docs-md ol { list-style: decimal; }
+.docs-md li { margin: .25em 0; }
+.docs-md blockquote {
+  margin: 1em 0;
+  padding: .2em 0 .2em 1em;
+  border-left: 3px solid var(--plomo);
+  color: var(--cal-3);
+}
+.docs-md code {
+  font-family: var(--dato);
+  font-size: .86em;
+  background: var(--tinta-2);
+  padding: .12em .35em;
+  border-radius: 4px;
+}
+.docs-md pre {
+  background: #08131b;
+  border: 1px solid var(--linea);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow: auto;
+}
+.docs-md pre code { background: none; padding: 0; font-size: 12.5px; }
+.docs-md table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 14px; }
+.docs-md th, .docs-md td { border: 1px solid var(--linea); padding: 6px 10px; text-align: left; }
+.docs-md th { background: var(--tinta-2); font-weight: 600; }
+.docs-md hr { border: 0; border-top: 1px solid var(--linea); margin: 2em 0; }
+.docs-md strong { color: #fff; }
+
+.docs-velo {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.55);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+  z-index: 20;
+}
+.docs-velo.abierto { display: flex; }
+.docs-caja {
+  width: min(560px, 92vw);
+  background: var(--tinta-2);
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+.docs-caja h2 { margin: 0; padding: 14px 16px 8px; font-size: 14px; }
+.docs-campo {
+  width: calc(100% - 32px);
+  margin: 0 16px 10px;
+  background: var(--tinta);
+  border: 1px solid var(--linea);
+  border-radius: 8px;
+  padding: 8px 10px;
+  outline: none;
+  color: var(--cal);
+}
+.docs-pies { display: flex; justify-content: flex-end; gap: 8px; padding: 8px 16px 14px; }
+.docs-pies button {
+  border: 1px solid var(--linea);
+  background: var(--tinta-3);
+  border-radius: 7px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--cal-2);
+}
+.docs-pies .pri { background: var(--plomo); border-color: var(--plomo); color: var(--tinta); font-weight: 600; }
+#docsListaCmd { max-height: 50vh; overflow: auto; }
+.docs-item-cmd {
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.docs-item-cmd:hover,
+.docs-item-cmd.sel { background: var(--tinta-3); }
+.docs-item-cmd small { color: var(--cal-3); }
+
+#docsMenu {
+  display: none;
+  background: none;
+  border: 1px solid var(--linea);
+  border-radius: 8px;
+  width: 36px; height: 32px;
+  color: var(--cal);
+}
+
+@media (max-width: 900px) {
+  .docs-lado {
+    position: absolute;
+    z-index: 8;
+    height: 100%;
+    transform: translateX(-100%);
+    transition: transform .2s;
+  }
+  .docs-admin.lado .docs-lado { transform: none; }
+  #docsMenu { display: inline-flex; align-items: center; justify-content: center; }
+  .docs-vista { padding: 20px 16px 80px; }
+  #docsEditor { padding: 16px; }
+}
+
+
+
+/* El árbol de carpetas también se pliega. */
+.docs-lado { position: relative; }
+.docs-admin.lado-plegado .docs-lado { width: 0; min-width: 0; padding: 0; overflow: visible; border: 0; }
+.docs-admin.lado-plegado .docs-lado > *:not(.docs-plegar) { display: none; }
+.docs-admin.lado-plegado .docs-plegar { right: -34px; }
+
+/* Elegir markdown o HTML al crear. */
+.docs-formato { display: block; margin-top: 10px; font-size: 13px; color: var(--cal-2); }
+.docs-formato select { margin-top: 6px; }
+
+/* ── Markdown completo ─────────────────────────────────────
+   Lo que faltaba: imágenes, tachado, listas de tareas, resaltado,
+   plegables, notas al pie y tablas que no desbordan en el teléfono. */
+.docs-md img { max-width: 100%; height: auto; border-radius: var(--r-sm); margin: 14px 0; }
+.docs-md del { color: var(--cal-3); }
+.docs-md mark { background: rgba(240, 166, 58, .25); color: var(--cal); padding: 0 3px; border-radius: 3px; }
+.docs-md kbd {
+  font-family: var(--dato); font-size: 12px; padding: 1px 6px;
+  border: 1px solid var(--linea); border-bottom-width: 2px; border-radius: 4px;
+  background: var(--tinta-2); color: var(--cal-2);
+}
+.docs-md sup, .docs-md sub { font-size: 11px; }
+.docs-md abbr { border-bottom: 1px dotted var(--cal-3); cursor: help; }
+.docs-md details {
+  border: 1px solid var(--linea); border-radius: var(--r-sm);
+  padding: 10px 14px; margin: 14px 0; background: var(--tinta-2);
+}
+.docs-md summary { cursor: pointer; color: var(--cal); font-weight: 600; }
+.docs-md li.task-list-item { list-style: none; margin-left: -22px; }
+.docs-md input[type="checkbox"] { margin-right: 8px; accent-color: var(--plomo); }
+.docs-md figure { margin: 16px 0; }
+.docs-md figcaption { font-size: 12px; color: var(--cal-3); margin-top: 6px; }
+/* Una tabla ancha se desplaza sola en vez de romper la página. */
+.docs-md table { display: block; width: max-content; max-width: 100%; overflow-x: auto; }
+.docs-md h4, .docs-md h5, .docs-md h6 { color: var(--cal); margin: 22px 0 8px; font-family: var(--display); }
+.docs-md h4 { font-size: 15px; }
+.docs-md h5, .docs-md h6 { font-size: 13.5px; color: var(--cal-2); }
+
+/* Un documento HTML se lee con la misma tipografía que uno markdown. */
+.docs-md-html { line-height: 1.7; }
+
+/* El botón de carpetas del visor dejó de ser otro ☰: en el teléfono había dos
+   iguales, el del panel y este, y no se sabía cuál abría qué. */
+#docsMenu {
+  font-family: var(--texto);
+  font-size: 13px;
+  padding: 6px 12px;
+  border: 1px solid var(--linea);
+  border-radius: var(--r-sm);
+  background: var(--tinta-2);
+  color: var(--cal-2);
+  cursor: pointer;
+  white-space: nowrap;
+}
+#docsMenu:hover { border-color: var(--plomo); color: var(--cal); }

@@ -13,7 +13,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="/css/tokens.css">
-<link rel="stylesheet" href="/css/admin.css?v=22">
+<!-- El marco primero, después una hoja por sección y al final lo del
+     teléfono. El orden importa: es el mismo que tenía admin.css entero. -->
+<link rel="stylesheet" href="/css/panel/nucleo.css?v=1">
+<link rel="stylesheet" href="/css/panel/resumen.css?v=1">
+<link rel="stylesheet" href="/css/panel/usuarios.css?v=1">
+<link rel="stylesheet" href="/css/panel/trabajos.css?v=1">
+<link rel="stylesheet" href="/css/panel/calificaciones.css?v=1">
+<link rel="stylesheet" href="/css/panel/anunciantes.css?v=1">
+<link rel="stylesheet" href="/css/panel/creativos.css?v=1">
+<link rel="stylesheet" href="/css/panel/documentos.css?v=1">
+<link rel="stylesheet" href="/css/admin-movil.css?v=1">
 </head>
 <body class="admin-body">
 
@@ -33,6 +43,8 @@
     <div class="lateral-marca">
       <div class="marca-nombre">CONTRATÁ YA</div>
       <div class="marca-sub">Panel de administración</div>
+      <button type="button" id="plegarLateral" class="lateral-plegar"
+              aria-label="Ocultar el menú" title="Ocultar el menú">‹</button>
     </div>
 
     <nav class="lateral-nav" id="nav">
@@ -47,6 +59,7 @@
       <button data-sec="anunciantes">Anunciantes</button>
       <button data-sec="creativos">Creativos</button>
       <button data-sec="moderacion">Moderación</button>
+      <button data-sec="revendedores">Revendedores</button>
     </nav>
 
     <div class="lateral-pie">
@@ -64,6 +77,8 @@
   <div class="contenido">
 
     <header class="cabecera">
+      <button id="menuPanel" type="button" aria-label="Abrir el menú" aria-expanded="false">☰</button>
+
       <div class="cabecera-titulo">
         <h1 id="secTitulo">Resumen</h1>
         <p id="secBajada">Altas, matches y trabajos del período</p>
@@ -99,9 +114,27 @@
 <script src="/js/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.5/dist/purify.min.js"></script>
-<script src="/js/admin.js?v=72"></script>
-<script src="/js/admin-matches.js?v=2"></script>
-<script src="/js/admin-chat.js?v=2"></script>
-<script src="/js/admin-docs.js?v=2"></script>
+<!-- ══════ EL PANEL ══════
+     Un archivo por sección. El núcleo va primero (define Panel y el
+     router), después lo compartido, y al final las secciones: cada una
+     se anota sola con Panel.registrar y no toca a ninguna otra. Para
+     sacar una sección, se borra su renglón de acá y su botón del menú.
+     ══════════════════════════════════════════════════════════════ -->
+<script src="/js/panel/nucleo.js?v=1"></script>
+<script src="/js/panel/ui.js?v=1"></script>
+<script src="/js/panel/datos.js?v=1"></script>
+<script src="/js/panel/secciones/resumen.js?v=1"></script>
+<script src="/js/panel/secciones/actividad.js?v=1"></script>
+<script src="/js/panel/secciones/usuarios.js?v=1"></script>
+<script src="/js/panel/secciones/planes.js?v=1"></script>
+<script src="/js/panel/secciones/pedidos.js?v=1"></script>
+<script src="/js/panel/secciones/trabajos.js?v=1"></script>
+<script src="/js/panel/secciones/chats.js?v=1"></script>
+<script src="/js/panel/secciones/calificaciones.js?v=1"></script>
+<script src="/js/panel/secciones/anunciantes.js?v=1"></script>
+<script src="/js/panel/secciones/creativos.js?v=2"></script>
+<script src="/js/panel/secciones/revendedores.js?v=1"></script>
+<script src="/js/panel/secciones/moderacion.js?v=1"></script>
+<script src="/js/panel/secciones/documentos.js?v=1"></script>
 </body>
 </html>

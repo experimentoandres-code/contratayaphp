@@ -1,0 +1,173 @@
+/* ============================================================
+   CONTRATÁ YA — Panel de administración en el teléfono
+   ------------------------------------------------------------
+   El panel se pensó para una pantalla grande y densa. Este
+   archivo lo adapta al celular sin rediseñarlo: se carga
+   DESPUÉS de admin.css y sólo actúa por debajo de 900 px.
+
+   Dos decisiones que explican casi todo el archivo:
+
+   1. El menú lateral pasa a ser un cajón que se abre con el
+      botón de la cabecera. En 360 px no entra al lado del
+      contenido.
+   2. Las tablas dejan de ser tablas. Cada fila se convierte en
+      una tarjeta y cada celda en un renglón con su rótulo
+      adelante (sale del atributo data-rotulo). Es la única
+      forma de que no se desborden: el ancho de las columnas
+      viene escrito en el propio HTML, y con display:block ese
+      ancho deja de aplicarse.
+   ============================================================ */
+
+/* El botón del menú sólo existe en pantallas chicas. */
+#menuPanel { display: none; }
+
+@media (max-width: 900px) {
+
+  /* ── Estructura ──────────────────────────────────────────── */
+  .admin { grid-template-columns: 1fr; }
+
+  .lateral {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 30;
+    width: min(280px, 84vw); height: 100%;
+    transform: translateX(-102%);
+    transition: transform 220ms var(--ease);
+    box-shadow: var(--sombra);
+  }
+  .admin.menu-abierto .lateral { transform: none; }
+
+  .velo-menu {
+    position: fixed; inset: 0; z-index: 25;
+    background: rgba(4, 10, 15, .66);
+  }
+
+  .cabecera { padding: 12px 14px; gap: 10px; flex-wrap: wrap; }
+  .cabecera-titulo { flex: 1 1 100%; order: 2; }
+  .cabecera-titulo h1 { font-size: 19px; }
+  .marca-tiempo { margin-top: 4px; }
+
+  #menuPanel {
+    display: inline-flex; align-items: center; justify-content: center;
+    order: 0; width: 44px; height: 44px; flex: none;
+    border: 1px solid var(--linea); border-radius: var(--r-sm);
+    color: var(--cal); font-size: 18px; line-height: 1;
+  }
+  .btn-recargar { order: 1; margin-left: auto; min-height: 44px; }
+  .periodo { order: 3; flex: 1 1 100%; }
+  .periodo button { flex: 1; min-height: 38px; }
+
+  .cuerpo { padding: 14px; }
+
+  /* ── Todo lo que era de dos columnas, pasa a una ─────────── */
+  .paneles-2, .trabajos-2 { grid-template-columns: 1fr; }
+  .charla { position: static; }
+  .charla-cuerpo { max-height: 60vh; }
+  .metricas-admin { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .metrica-valor { font-size: 27px; }
+
+  /* ── Filtros: uno por línea, del ancho de la pantalla ────── */
+  .filtros { gap: 8px; }
+  .filtros input[type="search"] { flex: 1 1 100%; min-height: 44px; font-size: 16px; }
+  .filtros select { flex: 1 1 calc(50% - 4px); min-height: 44px; font-size: 11px; }
+  .filtros-conteo { flex: 1 1 100%; margin-left: 0; }
+  .filtro-check { flex: 1 1 100%; }
+
+  /* ── Tablas convertidas en tarjetas ──────────────────────── */
+  .tabla { background: none; border: 0; border-radius: 0; overflow: visible; }
+  .tabla-encabezado { display: none; }
+
+  .tabla-fila {
+    display: block;
+    background: var(--tinta-2); border: 1px solid var(--linea);
+    border-radius: var(--r-md); padding: 14px;
+    margin-bottom: 10px;
+  }
+  .tabla-fila:last-child { border-bottom: 1px solid var(--linea); }
+
+  .tabla-fila > div { min-width: 0; }
+  .tabla-fila > div + div { margin-top: 8px; }
+
+  /* El rótulo de la columna, adelante del dato. */
+  .tabla-fila > div[data-rotulo] {
+    display: flex; align-items: baseline; gap: 10px;
+    white-space: normal;
+  }
+  .tabla-fila > div[data-rotulo]::before {
+    content: attr(data-rotulo);
+    flex: none; min-width: 96px;
+    font-family: var(--dato); font-size: 9px;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--cal-3);
+  }
+  /* Las acciones se despliegan abajo, a lo ancho. */
+  .tabla-fila > .acciones-celda[data-rotulo] {
+    display: block; margin-top: 12px;
+  }
+  .tabla-fila > .acciones-celda[data-rotulo]::before { content: none; }
+
+  .acciones-celda { flex-wrap: wrap; gap: 8px; }
+  .celda-corta { white-space: normal; }
+  .persona-nombre { white-space: normal; }
+
+  /* ── Botones: nada por debajo de 40 px de alto ───────────── */
+  .btn-mini {
+    min-height: 40px; padding: 10px 12px; font-size: 10px;
+    display: inline-flex; align-items: center;
+  }
+  .btn-admin, .btn-admin-sec, .btn-admin-mal { min-height: 46px; width: 100%; }
+  .hacer-fila .btn-mini { width: auto; }
+
+  /* ── «Para hacer» ────────────────────────────────────────── */
+  .hacer-fila { flex-wrap: wrap; }
+  .hacer-txt { flex: 1 1 calc(100% - 46px); }
+  .hacer-fila .btn-mini { margin-left: 46px; }
+
+  /* ── Selección en lote: barra fija abajo ─────────────────── */
+  .barra-lote {
+    position: fixed; left: 10px; right: 10px; bottom: 10px;
+    margin: 0; z-index: 12;
+  }
+  .barra-lote .acciones-celda { width: 100%; }
+  .barra-lote .btn-mini { flex: 1 1 calc(50% - 4px); justify-content: center; }
+
+  /* ── Ficha lateral: ocupa la pantalla entera ─────────────── */
+  .ficha-panel, .ficha-ancha { width: 100vw; border-left: 0; }
+  .ficha-cuerpo { padding: 16px 16px 40px; }
+  .ficha-cuerpo h2 { font-size: 21px; }
+  .ficha-cabeza { position: sticky; top: 0; z-index: 2; background: var(--tinta-2); }
+  .ficha-cabeza .btn-mini { min-height: 40px; }
+  .datos-fila { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .datos-valor { text-align: left; }
+  .ficha-numeros { grid-template-columns: repeat(2, 1fr); }
+  .campo-admin input, .campo-admin select, .campo-admin textarea { font-size: 16px; min-height: 44px; }
+
+  /* ── Grilla de casilleros: se mira de costado ────────────── */
+  .grilla-anuncios { padding: 12px; }
+  .grilla-anuncios::before {
+    content: 'Deslizá de costado para ver todos los oficios. Abajo está la misma información en lista.';
+    display: block; margin-bottom: 10px;
+    font-size: 12px; color: var(--cal-3); text-wrap: pretty;
+  }
+  .resumen-anuncios { gap: 8px; }
+  .tarjeta-anuncio { min-width: calc(50% - 4px); flex: 1 1 calc(50% - 4px); padding: 12px; }
+  .tarjeta-anuncio .metrica-valor { font-size: 24px; }
+  .leyenda { margin-left: 0; flex: 1 1 100%; }
+
+  /* ── Creativos y reseñas ─────────────────────────────────── */
+  .grilla-creativos, .grilla-inter { grid-template-columns: 1fr; }
+  .creativos-cabeza { flex-direction: column; align-items: stretch; gap: 12px; }
+  .resena-cabeza-admin { flex-wrap: wrap; }
+
+  /* ── Bitácora ────────────────────────────────────────────── */
+  .mov-fila { grid-template-columns: 44px 1fr; gap: 8px; }
+  .mov-fila .mov-avatar { display: none; }
+
+  /* ── Estados vacíos: menos aire, se lee igual ───────────── */
+  .vacio-admin { padding: 40px 20px; }
+}
+
+/* Teléfonos angostos de verdad. */
+@media (max-width: 400px) {
+  .metricas-admin { grid-template-columns: 1fr; }
+  .tabla-fila > div[data-rotulo] { flex-direction: column; gap: 2px; }
+  .tabla-fila > div[data-rotulo]::before { min-width: 0; }
+  .barra-lote .btn-mini { flex: 1 1 100%; }
+}

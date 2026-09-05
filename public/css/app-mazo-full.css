@@ -1,0 +1,475 @@
+/* ═══════════════════════════════════════════════════════════
+   EL MAZO A PANTALLA COMPLETA
+   ───────────────────────────────────────────────────────────
+   La tarjeta dejaba de ser el centro: era un cuadro en el medio
+   de la pantalla, con la foto recortada adentro, y alrededor
+   filtros, un aviso, el cartel del comercio y la barra. Se veía
+   como una foto pegada en una ficha.
+
+   Ahora la foto ocupa TODA el área de la app —de borde a borde,
+   desde abajo de la barra hasta arriba de las pestañas— y lo
+   demás flota encima: los filtros arriba sobre un velo, los
+   datos y los botones abajo sobre el degradado. Es cómo funciona
+   cualquier app de tarjetas, y es la única forma de que una foto
+   se vea entera y no cortada.
+   ═══════════════════════════════════════════════════════════ */
+
+/* 1. La vista se sale del margen lateral del contenido. */
+.vista-mazo {
+  margin-left: calc(var(--s4) * -1);
+  margin-right: calc(var(--s4) * -1);
+  padding: 0;
+  height: calc(100svh - 4.75rem - env(safe-area-inset-top) - 5.4rem - env(safe-area-inset-bottom));
+  max-height: none;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 2. La zona de la tarjeta ocupa todo. */
+.vista-mazo .mazo-zona {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  min-height: 0;
+  border-radius: 0;
+}
+.vista-mazo .mazo-app { border-radius: 0; }
+.vista-mazo .carta {
+  border-radius: 0;
+  box-shadow: none;
+}
+/* La foto llena de verdad: sin marco, sin aire, sin recorte raro. */
+.vista-mazo .carta-foto { border-radius: 0; }
+
+/* 3. Los filtros flotan arriba, sobre un velo que los despega de la foto. */
+.vista-mazo .filtros-mazo {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 9;
+  margin: 0;
+  padding: 12px var(--s4) 28px;
+  background: linear-gradient(180deg, rgba(11,22,32,.78), rgba(11,22,32,.45) 55%, transparent);
+  pointer-events: none;
+}
+.vista-mazo .filtros-mazo > * { pointer-events: auto; }
+.vista-mazo .filtro-chip {
+  background: rgba(11, 22, 32, .62);
+  backdrop-filter: blur(10px);
+  border-color: rgba(237, 231, 218, .22);
+}
+.vista-mazo .filtro-cuenta { color: rgba(237, 231, 218, .75); }
+
+/* 4. El aviso de radio y el auspicio, abajo, flotando y chiquitos. */
+.vista-mazo .mazo-radio {
+  position: absolute;
+  left: var(--s4); right: var(--s4); bottom: 96px;
+  z-index: 7;
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(237, 231, 218, .72);
+  text-shadow: 0 1px 6px rgba(0,0,0,.7);
+}
+.vista-mazo .sponsor-franja {
+  position: absolute;
+  left: var(--s4); right: var(--s4); bottom: 8px;
+  z-index: 7;
+  margin: 0;
+  padding: 7px 11px;
+  background: rgba(11, 22, 32, .6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(237, 231, 218, .16);
+}
+.vista-mazo .sponsor-franja .sponsor-texto b { font-size: 12.5px; }
+.vista-mazo .sponsor-franja .sponsor-texto span { font-size: 11px; }
+
+/* 5. Los botones, más arriba para no chocar con el auspicio. */
+.vista-mazo .mazo-zona .controles { bottom: 52px; }
+.carta-cuerpo { padding-bottom: 124px; }
+.vista-mazo .mazo-voz { position: absolute; bottom: 0; left: 0; right: 0; z-index: 7; }
+
+/* 7. En escritorio, lo mismo: pantalla completa dentro de la columna, sin
+      recuadro. La tarjeta se ancla al alto de la ventana. */
+@media (min-width: 760px) {
+  .vista-mazo {
+    height: calc(100dvh - 58px);
+    margin-left: calc(var(--s6) * -1);
+    margin-right: calc(var(--s6) * -1);
+    padding-bottom: 0;
+    border-radius: 0;
+  }
+  .vista-mazo .mazo-zona,
+  .vista-mazo .filtros-mazo,
+  .vista-mazo .mazo-radio,
+  .vista-mazo .sponsor-franja,
+  .vista-mazo .mazo-voz { max-width: none; }
+  .vista-mazo .mazo-zona { height: auto; min-height: 0; }
+  /* Los controles y el texto se centran en una columna cómoda aunque la foto
+     ocupe todo el ancho. */
+  .vista-mazo .carta-cuerpo,
+  .vista-mazo .mazo-zona .controles {
+    max-width: 620px; margin-left: auto; margin-right: auto;
+  }
+  .vista-mazo .filtros-mazo { justify-content: center; }
+}
+
+/* ── Abajo va una sola cosa: los datos y los botones ────────
+   El aviso de radio y el cartel del comercio quedaban encimados con los
+   botones. Con la tarjeta a pantalla completa no hay lugar para tres cosas
+   flotando en el mismo lugar, y ninguna de las dos es lo que la persona vino
+   a hacer. El aviso ya está dicho por la pastilla de zona de arriba, y el
+   comercio tiene su propia pestaña —además de la tarjeta patrocinada que
+   entra en el mazo cada tantos deslizamientos. */
+.vista-mazo .mazo-radio,
+.vista-mazo .sponsor-franja { display: none; }
+
+.vista-mazo .mazo-zona .controles { bottom: 22px; }
+.carta-cuerpo { padding-bottom: 96px; }
+
+/* El fondo difuminado tiene que leerse como continuación de la foto, no como
+   una mancha negra: menos oscurecido y un poco más de saturación. */
+.carta-foto::before { filter: blur(30px) saturate(1.35) brightness(.82); }
+
+/* El dibujo del cliente se apoya más arriba, así el degradado de abajo cae
+   sobre fondo y no sobre la cara. */
+.carta-foto img[src$=".svg"] {
+  object-position: center 4%;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 62%, transparent 84%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 62%, transparent 84%);
+}
+
+/* Con la tarjeta a pantalla completa, el dibujo del cliente ya puede llenar
+   igual que una foto: se recorta a los costados —el busto está centrado, así
+   que no se pierde nada— y desaparece el último borde que quedaba abajo.
+   Sin máscara, sin franja oscura: la imagen ES la pantalla. */
+.vista-mazo .carta-foto img[src$=".svg"] {
+  object-fit: cover;
+  object-position: center 12%;
+  -webkit-mask-image: none;
+  mask-image: none;
+  padding: 0;
+  width: 100%; height: 100%;
+  top: 0; bottom: 0;
+}
+
+/* La foto llega hasta las pestañas: no queda una franja de fondo abajo. */
+@media (max-width: 759px) {
+  .vista-mazo {
+    height: calc(100svh - 4.75rem - env(safe-area-inset-top) - 4.6rem - env(safe-area-inset-bottom));
+  }
+}
+/* En escritorio no hay pestañas abajo —están a la izquierda—, así que la
+   tarjeta llega hasta el borde de la ventana. */
+@media (min-width: 760px) {
+  .vista-mazo { height: calc(100dvh - 58px); }
+}
+.vista-mazo .mazo-voz { display: none; }
+
+/* El glifo del oficio se va: el oficio ya está en la pastilla de arriba y
+   ahí chocaba con el contador. */
+.vista-mazo .carta-glifo { display: none; }
+
+/* El contador, alineado a la derecha del renglón de pastillas y sin pisar
+   nada: el sello de urgencia queda abajo de él. */
+.vista-mazo .filtro-cuenta { align-self: center; }
+.vista-mazo .carta-plan { top: 62px; }
+.vista-mazo .carta-pista { top: 104px; }
+
+/* Y un velo arriba para que las pastillas se lean sobre cualquier foto. */
+.vista-mazo .carta-foto::before { z-index: -1; }
+
+.vista-mazo .carta-cuerpo {
+  padding-bottom: 104px;
+  gap: 5px;
+}
+.vista-mazo .carta-nombre h3 { text-shadow: 0 2px 12px rgba(0,0,0,.6); }
+.vista-mazo .carta-meta,
+.vista-mazo .carta-puntaje span { text-shadow: 0 1px 8px rgba(0,0,0,.7); }
+
+/* El pie: puntaje a la izquierda, precio a la derecha, en el mismo renglón y
+   sin encimarse en pantallas angostas. */
+.vista-mazo .carta-pie { align-items: flex-end; gap: 12px; }
+.vista-mazo .carta-precio { text-align: right; flex-shrink: 0; }
+@media (max-width: 360px) {
+  .vista-mazo .carta-puntaje span { font-size: 11px; }
+}
+
+/* La tarjeta ocupa toda la zona, también en escritorio: quedaba limitada a
+   430 px por la hoja anterior, y por eso se veía una tira en el medio de la
+   pantalla en vez de una foto. */
+@media (min-width: 760px) {
+  .vista-mazo .mazo-app,
+  .vista-mazo .carta { max-width: none; width: 100%; }
+  .vista-mazo .filtros-mazo { max-width: none; }
+}
+
+/* En escritorio el contenido está limitado a 900 px, que está bien para leer
+   pero deja media pantalla negra al lado de una foto. Sólo esta vista se
+   estira hasta el borde de la ventana. */
+@media (min-width: 760px) {
+  body:has(.vista-mazo) main { max-width: none; }
+  .vista-mazo { margin-right: calc(var(--s6) * -1); }
+}
+
+/* ── Escritorio: tarjeta centrada, foto de fondo ────────────
+   A todo lo ancho, una foto vertical se recorta hasta quedar en un primer
+   plano de la cara. La tarjeta vuelve a su proporción de retrato, centrada, y
+   el resto de la pantalla lo llena la misma foto difuminada: no hay caja ni
+   vacío negro al costado, y la foto se ve entera. */
+@media (min-width: 760px) {
+  .vista-mazo::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: var(--foto);
+    background-size: cover;
+    background-position: center;
+    filter: blur(48px) saturate(1.2) brightness(.42);
+    transform: scale(1.1);
+    z-index: 0;
+  }
+  .vista-mazo .mazo-zona {
+    position: absolute;
+    left: 50%; transform: translateX(-50%);
+    top: 0; bottom: 0; right: auto;
+    width: min(560px, 46vw);
+    z-index: 1;
+  }
+  .vista-mazo .mazo-app,
+  .vista-mazo .carta { max-width: none; width: 100%; }
+  .vista-mazo .carta { border-radius: var(--r-lg); overflow: hidden; }
+  .vista-mazo .carta-foto { border-radius: var(--r-lg); }
+  /* Los filtros quedan arriba de todo, centrados sobre el fondo. */
+  .vista-mazo .filtros-mazo { z-index: 3; background: none; padding-top: 16px; }
+  .vista-mazo .filtro-chip { background: rgba(11, 22, 32, .72); }
+}
+
+/* Ajustes finales del escritorio, mirando la captura:
+   · el fondo difuminado estaba tan oscuro que parecía negro;
+   · la tarjeta quedaba corrida a la derecha porque la vista se salía del
+     margen sólo de un lado;
+   · y la marca de agua de las fotos de muestra asomaba abajo, encima del
+     nombre: el degradado ahora termina opaco. */
+@media (min-width: 760px) {
+  .vista-mazo { margin-left: calc(var(--s6) * -1); margin-right: calc(var(--s6) * -1); }
+  .vista-mazo::before { filter: blur(44px) saturate(1.3) brightness(.6); }
+}
+/* La vista no se sale de la ventana en escritorio: sin márgenes negativos, la
+   tarjeta queda centrada de verdad en el espacio que hay al lado del menú. */
+@media (min-width: 760px) {
+  .vista-mazo { margin-left: 0; margin-right: 0; }
+}
+
+/* ── Escritorio, versión definitiva ─────────────────────────
+   La vista se ancla a la ventana en vez de depender de la caja del contenido:
+   así ocupa exactamente el espacio que queda al lado del menú, sin desbordes
+   ni centrados falsos. La tarjeta va centrada ahí adentro. */
+@media (min-width: 760px) {
+  .vista-mazo {
+    position: fixed;
+    left: 218px; right: 0; top: 58px; bottom: 0;
+    width: auto; height: auto; max-height: none;
+    margin: 0; padding: 0;
+    overflow: hidden;
+  }
+  .vista-mazo .mazo-zona {
+    width: min(520px, 42vw);
+    height: auto; top: 18px; bottom: 18px;
+  }
+  .vista-mazo .filtros-mazo { padding: 18px var(--s6) 28px; }
+}
+
+/* ── El velo de abajo, único y definitivo ───────────────────
+   Antes llegaba a color pleno a mitad de camino, y eso convertía el tercio
+   inferior en un panel negro: la foto desaparecía justo donde están el nombre
+   y los botones, y la pantalla se leía como "foto arriba, caja abajo". Ahora
+   el degradado nunca cierra del todo — la cara y la ropa se siguen viendo
+   detrás de todo — y la letra se sostiene con sombra, no tapando la imagen.
+   Es la única regla de este degradado: si hace falta ajustarlo, se toca acá. */
+.carta-foto::after {
+  height: 72%;
+  background: linear-gradient(180deg,
+    transparent 0,
+    rgba(11, 22, 32, .08) 34%,
+    rgba(11, 22, 32, .34) 60%,
+    rgba(11, 22, 32, .58) 80%,
+    rgba(11, 22, 32, .74) 100%);
+}
+
+/* Con el velo más liviano, el texto se apoya en su propia sombra. */
+.carta-cuerpo,
+.carta-cuerpo h3,
+.carta-cuerpo .carta-meta,
+.carta-cuerpo .carta-precio,
+.carta-cuerpo .carta-puntaje {
+  text-shadow: 0 1px 2px rgba(6, 14, 20, .85), 0 6px 22px rgba(6, 14, 20, .65);
+}
+
+/* Las fotos de muestra traen escrito "Imagen de muestra generada con IA" en la
+   franja de abajo. Se acerca apenas la imagen desde arriba: la marca queda
+   fuera del recorte y no hay que tocar los archivos. Cuando las fotos sean las
+   de verdad, esto se saca y no cambia nada más. */
+/* Las fotos ya vienen recortadas: la marca de agua de las imágenes de muestra
+   se sacó de los archivos (los originales están en respaldos/fotos-originales).
+   Acá sólo se elige qué parte se ve: la cara, no el pecho. */
+.carta-foto img:not([src$=".svg"]) { object-position: center 18%; }
+
+/* La tarjeta llega hasta las pestañas: no queda una franja de fondo abajo. */
+@media (max-width: 759px) {
+  .vista-mazo {
+    height: calc(100svh - 4.75rem - env(safe-area-inset-top) - 3.9rem - env(safe-area-inset-bottom));
+  }
+}
+
+/* ── Una sola tarjeta a la vista ────────────────────────────
+   Con la tarjeta ocupando toda la pantalla, las de atrás asomaban por arriba
+   y por los costados: se veía como una foto metida adentro de otra caja. En
+   un mazo a pantalla completa la pila no aporta nada —no hay borde donde
+   asomar—, así que sólo se ve la de arriba. El motor sigue igual: las de
+   atrás existen, se preparan y se muestran cuando les toca. */
+@media (max-width: 999px) {
+  .vista-mazo .mazo-app .carta:not(.carta-arriba) { visibility: hidden; }
+  /* Y la de arriba llena de verdad, sin quedar escalada después de un desliz. */
+  .vista-mazo .mazo-app .carta.carta-arriba:not(.agarrada):not(.volando) {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* ── Deshacer, arriba a la derecha ──────────────────────────
+   Estaba a la izquierda de la fila de botones y se montaba encima de la ✕.
+   Es una acción secundaria: va arriba, donde no compite con nada. */
+.vista-mazo .mazo-zona .btn-deshacer {
+  /* Va dentro de la fila de botones, así que se posiciona respecto de ella:
+     arriba y a la derecha, despegado de la ✕. */
+  left: auto; right: 4px;
+  top: auto; bottom: 64px;
+  width: auto;
+  flex-direction: row; gap: 6px;
+  padding: 7px 13px;
+  background: rgba(11, 22, 32, .72);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(237, 231, 218, .18);
+  border-radius: 999px;
+  font-size: 10.5px;
+  transform: translateY(-6px) scale(.94);
+}
+.vista-mazo .mazo-zona .btn-deshacer::before { font-size: 15px; }
+.vista-mazo .mazo-zona .btn-deshacer.a-la-vista { transform: none; }
+.vista-mazo .mazo-zona .btn-deshacer:active { transform: scale(.95); }
+
+/* ── Teléfono: la foto ocupa todo lo que queda ──────────────
+   Antes el mazo vivía en el hueco entre la cabecera y las pestañas, y abajo
+   sobraba una franja de fondo liso: se leía como dos bloques — imagen arriba,
+   panel de botones abajo. Ahora la cabecera con el menú se queda donde está,
+   sólida y siempre visible, y la foto ocupa el 100% de lo que queda por
+   debajo, hasta el borde inferior de la ventana. El nombre, los datos y los
+   botones flotan encima, sostenidos por el degradado negro de abajo.
+   --alto-barra lo mide app-nav.js con la altura real de la cabecera. */
+@media (max-width: 759px) {
+  body:has(.vista-mazo) { overflow: hidden; }
+
+  body:has(.vista-mazo) .barra {
+    position: fixed; left: 0; right: 0; top: 0;
+    z-index: 60;
+  }
+
+  .vista-mazo {
+    position: fixed;
+    left: 0; right: 0;
+    top: var(--alto-barra, calc(64px + env(safe-area-inset-top)));
+    bottom: 0;
+    width: auto;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    overflow: hidden;
+    z-index: 1;
+  }
+  /* Cada capa de adentro llena esa caja: la foto no queda en un recuadro. */
+  .vista-mazo .mazo-zona,
+  .vista-mazo .mazo-app {
+    position: absolute;
+    inset: 0;
+    width: auto; height: auto;
+    max-width: none; max-height: none; min-height: 0;
+    margin: 0;
+  }
+  .vista-mazo .mazo-app .carta.carta-arriba {
+    position: absolute;
+    inset: 0;
+    width: auto; height: auto;
+  }
+  .vista-mazo .mazo-zona,
+  .vista-mazo .mazo-app,
+  .vista-mazo .carta,
+  .vista-mazo .carta-foto { border-radius: 0; }
+
+  /* En pantallas bajas —casi todos los teléfonos con la barra del navegador a
+     la vista— había una regla vieja que le daba a la foto el 32% del alto y
+     dejaba el resto como panel de texto: eso era lo que se veía como dos
+     bloques. Acá la foto es el fondo, siempre, sin importar el alto. */
+  .vista-mazo .carta .carta-foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-height: none;
+  }
+  .vista-mazo .carta .carta-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Las pestañas se apoyan sobre la foto con un degradado, no con una barra
+     opaca que la corte. */
+  body:has(.vista-mazo) .tabs {
+    background: linear-gradient(0deg, rgba(6, 14, 20, .94) 55%, rgba(6, 14, 20, 0));
+    backdrop-filter: none;
+    border-top: 0;
+  }
+
+  /* Cada cosa en su franja, sin pisarse y sin tocar la cabecera:
+       0      los filtros (ya arrancan debajo de la barra)
+       86     el sello del plan
+       122    la pista de deslizar                                   */
+  .vista-mazo .filtros-mazo { top: 0; }
+  .vista-mazo .carta .carta-plan { top: 86px; }
+  .vista-mazo .carta .carta-pista { top: 122px; }
+  .vista-mazo .mazo-zona .controles { bottom: calc(92px + env(safe-area-inset-bottom)); }
+  .vista-mazo .carta-cuerpo { padding-bottom: calc(168px + env(safe-area-inset-bottom)); }
+  .vista-mazo .mazo-voz { bottom: calc(74px + env(safe-area-inset-bottom)); }
+
+  /* El velo negro va de arriba abajo, subiendo de a poco: la foto se sigue
+     viendo entera y aun así el nombre, la bio y los botones se leen sobre
+     cualquier imagen, clara u oscura. Sin corte duro: nunca tiene que
+     parecer un panel apoyado sobre la foto. */
+  .vista-mazo .carta .carta-foto::after {
+    top: auto;
+    bottom: 0;
+    height: 100%;
+    background: linear-gradient(180deg,
+      rgba(6, 14, 20, 0) 28%,
+      rgba(6, 14, 20, .34) 44%,
+      rgba(6, 14, 20, .68) 62%,
+      rgba(6, 14, 20, .82) 84%,
+      rgba(6, 14, 20, .90) 100%);
+  }
+}
+
+/* El renglón de datos entraba en dos líneas y dejaba "min" colgando solo.
+   Le damos todo el ancho que sobra al lado del precio y va en una sola línea. */
+@media (max-width: 759px) {
+  .vista-mazo .carta-pie { gap: var(--s3); }
+  .vista-mazo .carta-puntaje { flex: 1 1 auto; min-width: 0; }
+  .vista-mazo .carta-puntaje span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .vista-mazo .carta-precio { flex: 0 0 auto; }
+}

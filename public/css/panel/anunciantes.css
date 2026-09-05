@@ -1,0 +1,98 @@
+/* ============================================================
+   CONTRATÁ YA — Panel · Anunciantes
+   La grilla de casilleros y la vista previa del cartel.
+   ============================================================ */
+
+.resumen-anuncios { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+.tarjeta-anuncio {
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: var(--r-md); padding: 14px 16px; min-width: 200px;
+}
+.tarjeta-anuncio .metrica-valor { font-size: 32px; }
+.tarjeta-anuncio .sufijo { font-size: 16px; color: var(--cal-3); }
+
+.leyenda { display: flex; gap: 16px; flex-wrap: wrap; margin-left: auto; }
+.leyenda span { display: flex; align-items: center; gap: 7px;
+  font-family: var(--dato); font-size: 9px;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--cal-2); }
+.leyenda i { width: 10px; height: 10px; border-radius: 3px; display: block; }
+.l-ocupado { background: var(--tinta-3); border: 1px solid var(--marea); }
+.l-vence   { background: var(--coral); }
+.l-libre   { background: var(--plomo); }
+
+.grilla-anuncios {
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: var(--r-md); padding: 16px;
+  box-shadow: 0 30px 60px -18px rgba(0,0,0,.85);
+  overflow-x: auto;
+}
+.grilla-fila {
+  display: grid; grid-template-columns: 168px repeat(7, minmax(108px, 1fr));
+  gap: 8px;
+  min-width: 1100px;
+}
+.grilla-encabezado { margin-bottom: 8px; }
+.grilla-encabezado > div {
+  font-family: var(--dato); font-size: 10px;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--cal);
+  line-height: 1.25;
+}
+.grilla-localidad {
+  font-size: 13px; color: var(--cal-2); align-self: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* min-width:0 es imprescindible: sin eso los textos nowrap empujan la
+   grilla y rompen la alineación con los encabezados. */
+.casillero {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; min-height: 52px; padding: 8px 10px; border-radius: var(--r-sm);
+  min-width: 0; overflow: hidden; cursor: pointer;
+  transition: border-color 220ms var(--ease);
+}
+.casillero:hover { border-color: var(--plomo); }
+.casillero b {
+  font-size: 13px; font-weight: 600; max-width: 100%;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.casillero span {
+  font-family: var(--dato); font-size: 9px;
+  letter-spacing: .06em; text-transform: uppercase; max-width: 100%;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.c-ocupado { background: var(--tinta-3); border: 1px solid var(--marea); }
+.c-ocupado b { color: var(--cal); }
+.c-ocupado span { color: var(--cal-3); }
+
+.c-vence { background: var(--coral); border: 1px solid var(--coral); }
+.c-vence b { color: var(--tinta); }
+.c-vence span { color: rgba(11,22,32,.75); }
+
+.c-libre { background: rgba(240,166,58,.09); border: 1px dashed var(--plomo); }
+.c-libre b { color: var(--plomo); }
+.c-libre span { color: var(--cal-3); }
+
+
+
+/* ── Vista previa del cartel ──────────────────────────────────
+   Con la misma proporción que la franja de la app, para que lo
+   que se ve acá sea lo que va a ver el profesional.
+   ─────────────────────────────────────────────────────────── */
+.vista-cartel {
+  aspect-ratio: 4 / 1;
+  border-radius: var(--r-sm);
+  border: 1px dashed var(--linea);
+  background: var(--tinta-0);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--s3);
+}
+.vista-cartel img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.vista-cartel span {
+  font-family: var(--dato); font-size: 10px;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--cal-3);
+}
+
+

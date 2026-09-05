@@ -1,0 +1,22 @@
+/* ============================================================
+   CONTRATÁ YA — Panel · Resumen
+   La lista de «para hacer»: lo que quedó pendiente, con la puerta al lado.
+   ============================================================ */
+
+/* ── «Para hacer»: lo que quedó pendiente, con la puerta al lado ── */
+.panel-hacer { border-color: var(--plomo); }
+.hacer-lista { display: flex; flex-direction: column; gap: 1px;
+  background: var(--linea); border-radius: var(--r-sm); overflow: hidden; }
+.hacer-fila {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--tinta-2); padding: 10px 14px;
+}
+.hacer-fila.hacer-urgente { box-shadow: inset 3px 0 0 var(--coral); }
+.hacer-num {
+  font-family: var(--dato); font-size: 16px; font-weight: 600;
+  color: var(--plomo); min-width: 34px;
+}
+.hacer-urgente .hacer-num { color: var(--coral); }
+.hacer-txt { flex: 1; color: var(--cal-2); font-size: 13px; text-wrap: pretty; }
+.hacer-fila .btn-mini { flex: none; }
+

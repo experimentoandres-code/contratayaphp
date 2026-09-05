@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi zona · Contratá Ya</title>
+<meta name="theme-color" content="#0B1620">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/img/isotipo.svg" type="image/svg+xml">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/panel-revendedor.css">
+</head>
+<body class="pr-body">
+
+<!-- ══════ PORTÓN ══════ -->
+<div class="pr-porton" id="porton" hidden>
+  <form class="pr-porton-caja" id="formEntrar">
+    <div class="pr-marca">CONTRATÁ YA</div>
+    <h1>Tu zona</h1>
+    <p class="pr-porton-texto" id="portonTexto">
+      Entrá con el correo y la contraseña que te pasamos cuando te dimos la zona.
+    </p>
+    <label class="pr-campo">
+      <span>Correo</span>
+      <input name="email" type="email" required autocomplete="username" placeholder="vos@correo.com">
+    </label>
+    <label class="pr-campo">
+      <span>Contraseña</span>
+      <input name="clave" type="password" required autocomplete="current-password" placeholder="••••••••">
+    </label>
+    <button class="pr-btn pr-btn-plomo" type="submit" id="btnEntrar">Entrar</button>
+    <p class="pr-porton-pie">
+      ¿Todavía no tenés zona? <a href="/revendedores">Mirá cuáles están libres</a>.
+    </p>
+  </form>
+</div>
+
+<!-- ══════ PANEL ══════ -->
+<div class="pr-panel" id="panel" hidden>
+
+  <header class="pr-cabecera">
+    <div>
+      <div class="pr-marca">CONTRATÁ YA · REVENDEDORES</div>
+      <h1 id="revNombre">—</h1>
+      <p class="pr-sub" id="revZonas">—</p>
+    </div>
+    <button class="pr-btn pr-btn-linea" id="btnSalir">Salir</button>
+  </header>
+
+  <section class="pr-plata">
+    <article class="pr-plata-grande">
+      <span class="pr-rotulo" id="rotuloMes">Este mes</span>
+      <span class="pr-monto dato" id="montoMes">—</span>
+      <span class="pr-pie" id="pieMes">lo que te corresponde por lo facturado en tu zona</span>
+    </article>
+    <article>
+      <span class="pr-rotulo">Todavía sin cobrar</span>
+      <span class="pr-monto-chico dato" id="montoPorCobrar">—</span>
+      <span class="pr-pie">se liquida del 1 al 10 del mes siguiente</span>
+    </article>
+    <article>
+      <span class="pr-rotulo">Ya cobraste</span>
+      <span class="pr-monto-chico dato" id="montoCobrado">—</span>
+      <span class="pr-pie">desde que empezaste</span>
+    </article>
+    <article>
+      <span class="pr-rotulo">Tu cartera</span>
+      <span class="pr-monto-chico dato" id="montoCartera">—</span>
+      <span class="pr-pie" id="pieCartera">factura por mes lo que trajiste</span>
+    </article>
+  </section>
+
+  <section id="avisos" class="pr-avisos"></section>
+
+  <section class="pr-seccion">
+    <h2>Tus zonas</h2>
+    <p class="pr-bajada">Los casilleros en verde son los que están libres: esos son los que podés
+      vender. Un comercio por rubro y por localidad, nada más.</p>
+    <div id="zonas" class="pr-zonas"></div>
+  </section>
+
+  <section class="pr-seccion">
+    <h2>Lo que trajiste</h2>
+    <p class="pr-bajada">Cada línea paga todos los meses mientras siga activa.</p>
+    <div id="ventas"></div>
+  </section>
+
+  <section class="pr-seccion">
+    <h2>Mes a mes</h2>
+    <p class="pr-bajada">Lo que se facturó en tu zona y lo que te tocó a vos.</p>
+    <div class="pr-tabla-envase">
+      <table class="pr-tabla" id="tablaMeses">
+        <thead>
+          <tr><th>Mes</th><th class="pr-der">Facturado en tu zona</th>
+              <th class="pr-der">Tu comisión</th><th class="pr-der">Cobrado</th><th>Estado</th></tr>
+        </thead>
+        <tbody id="cuerpoMeses"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="pr-seccion" id="detalleSeccion">
+    <h2 id="detalleTitulo">El detalle del mes</h2>
+    <p class="pr-bajada">De dónde sale cada peso del mes en curso.</p>
+    <div id="detalle"></div>
+  </section>
+
+  <footer class="pr-pie-largo">
+    <h3>Cómo se cobra</h3>
+    <ul>
+      <li><strong>30%</strong> del abono de cada casillero durante los primeros 12 meses del
+        contrato, y <strong>15%</strong> de ahí en adelante, mientras el comercio siga pagando.</li>
+      <li><strong>20%</strong> del plan Pro que consigas, durante 12 meses.</li>
+      <li>Se liquida del 1 al 10 por lo cobrado el mes anterior, a partir de $20.000 acumulados.</li>
+      <li>Si pasan 90 días sin una venta nueva ni una renovación, la zona vuelve al pool. A los 60
+        te avisamos acá arriba.</li>
+    </ul>
+    <p>¿Algo no cierra? Escribinos y lo miramos juntos. <a href="/revendedores">Ver el programa</a>.</p>
+  </footer>
+</div>
+
+<div class="pr-brindis" id="brindis" hidden></div>
+
+<script src="/js/panel-revendedor.js"></script>
+</body>
+</html>

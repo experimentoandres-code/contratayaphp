@@ -1,0 +1,262 @@
+/* ═══════════════════════════════════════════════════════════
+   CONTRATÁ YA — Capa de interfaz
+   ───────────────────────────────────────────────────────────
+   Rediseño transversal. No cambia lo que hace la app: cambia
+   cómo se lee y cómo se toca, en todas las pantallas a la vez.
+
+   Cinco decisiones, y de dónde salen:
+
+   1. TEXTO MÁS GRANDE. La usa gente de 50 y 60 años, muchas
+      veces con sol de frente y el celular en la mano sucia.
+      El cuerpo pasa de 16 a 17 px y los datos secundarios de
+      12,5 a 14. Nada por debajo de 13.
+
+   2. LA MONOESPACIADA VUELVE A SU LUGAR. Estaba usada para
+      metadatos largos en mayúsculas —"SANTA TERESITA · 5.0 ★ ·
+      TRABAJO TERMINADO"—, que es justo lo que peor se lee.
+      Queda para números y códigos, que es para lo que sirve.
+
+   3. TODO LO QUE SE TOCA MIDE 48. Y lo principal, 56. Antes
+      había botones de 30 px de alto al lado de otros de 60.
+
+   4. MÁS CONTRASTE. El gris más apagado (#6F818D) quedaba en
+      4,3:1 sobre el fondo: por debajo de lo que se lee cómodo.
+      Sube a #8497A3.
+
+   5. UNA SOLA ACCIÓN PRINCIPAL POR PANTALLA, siempre del mismo
+      color y en el mismo lugar.
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --cal-3: #8497A3;            /* era #6F818D: no llegaba al contraste mínimo */
+  --linea: #2A4A5B;            /* bordes un punto más visibles */
+  --toque: 48px;               /* nada que se toque mide menos */
+  --toque-grande: 56px;
+  --r-md: 14px;
+  --r-lg: 22px;
+}
+
+body { font-size: 17px; line-height: 1.55; }
+
+/* ── Títulos y textos ─────────────────────────────────────── */
+.titulo-vista {
+  font-family: var(--display);
+  font-size: clamp(26px, 6.4vw, 34px);
+  line-height: 1.08;
+  letter-spacing: -.02em;
+  margin-bottom: 6px;
+}
+.sub-vista { font-size: 15.5px; color: var(--cal-2); margin-bottom: var(--s5); }
+.bloque-titulo { font-size: 12px; letter-spacing: .1em; color: var(--cal-3); }
+
+/* ── Botones ──────────────────────────────────────────────── */
+.btn {
+  min-height: var(--toque);
+  padding: 13px 20px;
+  border-radius: var(--r-md);
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: 0;
+  transition: transform .12s var(--ease), border-color .16s var(--ease), background .16s var(--ease);
+}
+.btn:active { transform: scale(.985); }
+.btn-bloque { min-height: var(--toque-grande); font-size: 16.5px; }
+.btn-plomo { background: var(--plomo); color: #0B1620; border: 0; }
+.btn-plomo:hover { background: #F5B255; }
+.btn-fantasma {
+  background: transparent; color: var(--cal);
+  border: 1px solid var(--linea);
+}
+.btn-fantasma:hover { border-color: var(--plomo); }
+.btn-sm { min-height: 42px; padding: 10px 16px; font-size: 14.5px; }
+
+/* ── Filas de lista (matches, beneficios, capas) ──────────── */
+.match-fila {
+  display: flex; align-items: center; gap: var(--s4);
+  width: 100%; text-align: left;
+  min-height: 76px;
+  padding: 14px var(--s4);
+  margin-bottom: 10px;
+  background: var(--tinta-2);
+  border: 1px solid var(--linea);
+  border-radius: var(--r-md);
+  color: var(--cal);
+  transition: border-color .16s var(--ease), transform .12s var(--ease);
+}
+.match-fila:hover { border-color: var(--plomo); }
+.match-fila:active { transform: scale(.995); }
+img.match-avatar { width: 54px; height: 54px; border-radius: 14px; }
+.match-cuerpo b {
+  font-size: 17px; font-weight: 600; display: block; margin-bottom: 2px;
+  font-family: var(--texto); letter-spacing: 0;
+}
+/* El dato de abajo se lee, no se descifra: sin mayúsculas ni monoespaciada. */
+.match-cuerpo p {
+  font-family: var(--texto);
+  font-size: 14px;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--cal-2);
+  line-height: 1.35;
+}
+/* Lo que falta hacer es lo único que importa en esa fila: va destacado. */
+.match-accion {
+  display: inline-block; margin-top: 6px;
+  background: rgba(240, 166, 58, .16);
+  color: var(--plomo);
+  border: 1px solid rgba(240, 166, 58, .35);
+  border-radius: 100px;
+  padding: 3px 11px;
+  font-size: 13px; font-weight: 600;
+}
+.match-estado {
+  margin-left: auto; flex-shrink: 0;
+  font-family: var(--dato); font-size: 12px;
+  padding: 6px 11px; border-radius: 100px;
+}
+.estado-nuevo { background: var(--plomo); color: #0B1620; font-weight: 600; }
+/* "Ver" no es un botón: la fila entera se toca. Queda como una flecha. */
+.estado-hecho {
+  background: none; border: 0; color: var(--cal-3);
+  font-size: 20px; padding: 0 4px;
+}
+.estado-hecho::before { content: '›'; }
+.estado-hecho { font-size: 0; }
+.estado-hecho::before { font-size: 24px; }
+
+/* ── Estados vacíos ───────────────────────────────────────── */
+.vacio {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; gap: 10px;
+  padding: var(--s6) var(--s4);
+  border: 1px dashed var(--linea);
+  border-radius: var(--r-lg);
+}
+.vacio-glifo { font-size: 34px; color: var(--cal-3); opacity: .8; }
+.vacio h3 { font-family: var(--display); font-size: 20px; }
+.vacio p { color: var(--cal-2); font-size: 15px; max-width: 34ch; }
+.vacio-clave { color: var(--cal) !important; font-weight: 500; }
+.vacio-acciones { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 6px; }
+
+/* ── Campos ───────────────────────────────────────────────── */
+.campo-rotulo { font-size: 12.5px; letter-spacing: .08em; color: var(--cal-3); }
+.area, input[type="text"], input[type="email"], input[type="tel"], input[type="password"], select {
+  min-height: var(--toque);
+  font-size: 16px;              /* menos de 16 hace que iOS haga zoom */
+  border-radius: var(--r-md);
+}
+.ficha, .urgencia {
+  min-height: var(--toque);
+  border-radius: var(--r-md);
+  font-size: 15px;
+}
+.ficha.elegida, .urgencia.elegida { border-color: var(--plomo); background: rgba(240,166,58,.1); }
+
+/* ── La hoja de abajo ─────────────────────────────────────── */
+.hoja-panel {
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  padding-top: var(--s5);
+  padding-bottom: calc(var(--s6) + env(safe-area-inset-bottom));
+}
+/* Agarradera: dice "esto se arrastra" sin escribirlo. */
+.hoja-panel::before {
+  content: '';
+  position: absolute; top: 9px; left: 50%; transform: translateX(-50%);
+  width: 38px; height: 4px; border-radius: 100px;
+  background: var(--linea);
+}
+.hoja-panel h2 { font-family: var(--display); font-size: 22px; margin-bottom: 6px; }
+
+/* ── Barras ───────────────────────────────────────────────── */
+.barra-titulo { font-size: 17px; font-weight: 600; }
+.barra-btn { min-height: 40px; border-radius: 100px; font-size: 13px; }
+.tab { min-height: 58px; font-size: 11px; }
+.tab span { letter-spacing: 0; }
+
+/* ── Avisos y brindis ─────────────────────────────────────── */
+.brindis {
+  min-height: var(--toque);
+  border-radius: var(--r-md);
+  font-size: 15px;
+  padding: 13px 18px;
+}
+
+/* ── Movimiento ───────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* ── Foco visible: se navega también con teclado ──────────── */
+:focus-visible {
+  outline: 2px solid var(--plomo);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Escritorio: los textos no se agrandan más, el aire sí ── */
+@media (min-width: 1000px) {
+  .titulo-vista { font-size: 32px; }
+  .vista { padding-top: var(--s5); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MENOS CAJAS
+   ───────────────────────────────────────────────────────────
+   La pantalla del mazo tenía ocho cajas apiladas: filtros,
+   contador, aviso de radio, tarjeta con borde, adentro otra
+   caja con la foto, separador, etiquetas, la pila asomando y
+   el cartel del comercio. Cada borde es una frontera que el ojo
+   procesa. Quedan tres cosas: los filtros, la tarjeta y una
+   línea de auspicio.
+   ═══════════════════════════════════════════════════════════ */
+
+/* 1. La tarjeta no tiene marco: la foto es la superficie. */
+.vista-mazo .carta { border: 0; }
+
+/* 2. El aviso de radio deja de ser un cartel y pasa a ser una línea. */
+.vista-mazo .mazo-radio {
+  border: 0; background: none; padding: 0 2px; margin: 0 0 10px;
+  font-size: 13px; color: var(--cal-3); text-align: left;
+}
+.vista-mazo .mazo-radio b { color: var(--cal-2); font-weight: 500; }
+
+/* 3. El contador vuelve al renglón de los filtros. */
+.filtro-cuenta { width: auto !important; margin-top: 0 !important; margin-left: auto; }
+@media (max-width: 380px) { .filtro-cuenta { display: none; } }
+
+/* 4. Adentro de la tarjeta: sin separador y sin etiquetas repetidas.
+   El oficio ya está en el filtro de arriba y la urgencia en el sello. */
+.vista-mazo .carta-pie { border-top: 0; padding-top: 4px; }
+.vista-mazo .carta .etiquetas { display: none; }
+
+/* 5. La pila de atrás se insinúa, no se muestra. */
+.vista-mazo .carta:not(.carta-arriba) { opacity: .35; }
+
+/* 6. El auspicio es una línea, no un bloque de color. */
+.vista-mazo .sponsor-franja {
+  background: none;
+  border: 1px solid var(--linea);
+  color: var(--cal-2);
+  padding: 10px 13px;
+}
+.vista-mazo .sponsor-franja .sponsor-texto b { color: var(--cal); }
+.vista-mazo .sponsor-franja .sponsor-rotulo { color: var(--cal-3); }
+
+/* 7. Los sellos de arriba, más chicos: son datos, no titulares. */
+.vista-mazo .carta-plan { font-size: 9px; padding: 4px 10px; }
+
+/* Cuando no se pudo actualizar, se dice, y se puede reintentar. Antes la app
+   mostraba la lista vieja —o peor, una lista vacía— sin avisar nada. */
+.aviso-sin-red {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  border: 1px solid var(--linea);
+  border-left: 3px solid var(--coral);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  margin-bottom: var(--s4);
+  font-size: 14px; color: var(--cal-2);
+}
+.aviso-sin-red button { margin-left: auto; }

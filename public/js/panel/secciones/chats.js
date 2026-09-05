@@ -1,3 +1,10 @@
+/* ============================================================
+   CONTRATÁ YA — Panel · Chats
+   La conversación de un match, de sólo lectura, y el aviso al
+   celular cuando alguno de los dos se durmió.
+   No se registra como sección: es la mitad derecha de «trabajos».
+   ============================================================ */
+
 async function traerMensajesMatch(m) {
   const { data: porMatch, error: e1 } = await sb.from('mensajes').select('id,autor_id,texto,creado_en,match_id,trabajo_id').eq('match_id', m.id).order('creado_en', { ascending: true });
   let extra = [];

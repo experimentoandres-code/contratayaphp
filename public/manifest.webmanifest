@@ -3,7 +3,7 @@
   "short_name": "Contratá Ya",
   "description": "Encontrá albañiles, electricistas, plomeros y contratistas verificados en las 14 localidades del Partido de la Costa.",
   "id": "/",
-  "start_url": "/app.html",
+  "start_url": "/app",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",

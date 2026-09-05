@@ -1,0 +1,82 @@
+/* ═══════════════════════════════════════════════════════════
+   CHAT — pensado para el teléfono
+   ───────────────────────────────────────────────────────────
+   Tres cosas que hacían que no se sintiera un chat:
+   1. La barra para escribir estaba en el medio de la página:
+      había que buscarla scrolleando, y al llegar un mensaje
+      quedaba más abajo todavía.
+   2. El campo era de 15 px y iPhone hace zoom en cualquier
+      campo de menos de 16: al tocarlo, la pantalla saltaba.
+   3. La hora ocupaba un renglón entero abajo de cada mensaje,
+      así que en una pantalla chica entraban la mitad.
+   ═══════════════════════════════════════════════════════════ */
+
+/* La barra queda pegada abajo, arriba de las pestañas. */
+.chat-barra {
+  position: sticky;
+  bottom: calc(64px + env(safe-area-inset-bottom));
+  z-index: 20;
+  gap: 8px;
+  padding: 10px 0 12px;
+  margin-top: 4px;
+  background: linear-gradient(180deg, transparent, var(--tinta) 22%);
+  border-top: 0;
+}
+.chat-campo {
+  /* 16 px o más: menos que eso, iOS hace zoom al tocar el campo. */
+  font-size: 16px;
+  padding: 13px 18px;
+  min-height: 48px;
+}
+.chat-campo::placeholder { color: var(--cal-3); }
+
+/* Las burbujas: la hora va al final del texto, no en un renglón nuevo. */
+.chat { gap: 6px; padding-bottom: 4px; }
+.burbuja {
+  max-width: 82%;
+  padding: 10px 14px 8px;
+  position: relative;
+  overflow-wrap: anywhere;
+}
+.chat-hora {
+  display: inline;
+  margin: 0 0 0 8px;
+  font-size: 10.5px;
+  opacity: .5;
+  float: right;
+  transform: translateY(4px);
+}
+/* Mensajes seguidos de la misma persona: se agrupan y la punta va sólo en el
+   último, como en cualquier chat. */
+.burbuja-yo + .burbuja-yo,
+.burbuja-otro + .burbuja-otro { margin-top: -2px; }
+.burbuja-yo:not(:last-child) + .burbuja-yo { border-bottom-right-radius: 16px; }
+.burbuja-otro:not(:last-child) + .burbuja-otro { border-bottom-left-radius: 16px; }
+
+/* Lo que se acaba de enviar y todavía no confirmó el servidor. */
+.burbuja-enviando { opacity: .55; }
+.burbuja-enviando::after {
+  content: '·  ·  ·';
+  display: block;
+  font-family: var(--dato);
+  font-size: 10px;
+  text-align: right;
+  opacity: .7;
+  animation: enviando 1.1s infinite steps(1);
+}
+@keyframes enviando { 0% { opacity: .25; } 50% { opacity: .8; } 100% { opacity: .25; } }
+
+/* El cartel del trabajo cuando aparece por primera vez: entra, no está. */
+.trabajo-panel-entra {
+  animation: entraPanel .42s var(--ease) both;
+}
+@keyframes entraPanel {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* En escritorio la barra de pestañas está a la izquierda, así que la barra de
+   escribir no tiene que esquivar nada abajo. */
+@media (min-width: 1000px) {
+  .chat-barra { bottom: 0; padding-bottom: 16px; }
+}

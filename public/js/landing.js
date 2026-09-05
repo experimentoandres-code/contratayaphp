@@ -372,7 +372,7 @@ document.querySelectorAll('.estrellas').forEach(el => {
   const el = document.getElementById('cifraPros');
   if (!el) return;
 
-  const url = 'https://cehyemmwhcthijzuatmz.supabase.co/rest/v1/rpc/contar_profesionales';
+  const url = ''+location.origin+'/sb/rest/v1/rpc/contar_profesionales';
   const key = (typeof SUPABASE_KEY === 'string' && SUPABASE_KEY)
     ? SUPABASE_KEY
     : 'sb_publishable_Qn57IXRAcSGkzMQvGDyIbw_IvsDm5Ac';

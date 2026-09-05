@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contratá Ya · El plan</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/img/favicon-64.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --tinta:#0B1620; --tinta-2:#12222E; --tinta-3:#1B303E; --linea:#24404F;
+  --cal:#EDE7DA; --cal-2:#A9B7C1; --cal-3:#6F818D;
+  --plomo:#F0A63A; --plomo-2:#C4832A; --marea:#2FB2A6; --coral:#E4574C;
+  --display:'Archivo','Arial Black',system-ui,sans-serif;
+  --texto:'Inter Tight',system-ui,-apple-system,sans-serif;
+  --dato:'IBM Plex Mono',ui-monospace,monospace;
+  --ancho:1080px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--tinta);color:var(--cal);font-family:var(--texto);
+     font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.env{max-width:var(--ancho);margin:0 auto;padding:0 22px}
+
+/* ── barra ── */
+.barra{position:sticky;top:0;z-index:50;background:rgba(11,22,32,.86);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--linea)}
+.barra .env{display:flex;align-items:center;gap:18px;height:58px}
+.barra b{font-family:var(--display);font-size:15px;letter-spacing:.02em;white-space:nowrap}
+.barra nav{display:flex;gap:16px;overflow-x:auto;scrollbar-width:none}
+.barra nav::-webkit-scrollbar{display:none}
+.barra a{color:var(--cal-3);text-decoration:none;font-size:13.5px;white-space:nowrap}
+.barra a:hover{color:var(--plomo)}
+
+/* ── portada ── */
+.portada{padding:90px 0 70px;background:
+   radial-gradient(1000px 400px at 15% -10%, rgba(240,166,58,.16), transparent 60%),
+   radial-gradient(800px 400px at 90% 10%, rgba(47,178,166,.12), transparent 60%)}
+.sello{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--linea);
+  background:var(--tinta-2);border-radius:100px;padding:7px 15px;font-family:var(--dato);
+  font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--cal-2)}
+.sello i{width:7px;height:7px;border-radius:50%;background:var(--marea);font-style:normal}
+h1{font-family:var(--display);font-size:clamp(38px,7vw,74px);line-height:1.02;
+   letter-spacing:-.025em;margin:22px 0 0;font-weight:800}
+h1 em{font-style:normal;color:var(--plomo)}
+.bajada{font-size:clamp(18px,2.4vw,23px);color:var(--cal-2);max-width:730px;margin:22px 0 0}
+
+/* ── números grandes ── */
+.cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:44px 0 0}
+.cifra{background:var(--tinta-2);border:1px solid var(--linea);border-radius:16px;padding:20px}
+.cifra b{display:block;font-family:var(--display);font-size:38px;line-height:1;color:var(--plomo)}
+.cifra span{display:block;margin-top:8px;font-size:13.5px;color:var(--cal-2);line-height:1.4}
+
+/* ── secciones ── */
+section{padding:74px 0;border-top:1px solid var(--linea)}
+.rotulo{font-family:var(--dato);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--plomo);margin:0 0 12px}
+h2{font-family:var(--display);font-size:clamp(27px,4.2vw,42px);line-height:1.08;
+   letter-spacing:-.02em;margin:0 0 16px;font-weight:800}
+h3{font-family:var(--display);font-size:21px;margin:34px 0 10px;font-weight:700}
+p{margin:0 0 16px;max-width:78ch}
+.grande{font-size:20px;color:var(--cal)}
+.apunte{color:var(--cal-3);font-size:14.5px}
+strong{color:#fff}
+mark{background:rgba(240,166,58,.2);color:var(--plomo);padding:1px 5px;border-radius:4px}
+
+/* ── tarjetas ── */
+.tarjetas{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:16px;margin:26px 0}
+.t{background:var(--tinta-2);border:1px solid var(--linea);border-radius:16px;padding:22px;
+   transition:border-color .2s,transform .2s}
+.t:hover{border-color:var(--plomo);transform:translateY(-2px)}
+.t h4{font-family:var(--display);font-size:17px;margin:0 0 8px}
+.t p{font-size:14.5px;color:var(--cal-2);margin:0}
+.t .num{font-family:var(--dato);font-size:12px;color:var(--plomo);letter-spacing:.1em}
+.t.ok{border-left:3px solid var(--marea)}
+.t.mal{border-left:3px solid var(--coral)}
+.t.eje{border-left:3px solid var(--plomo)}
+
+/* ── tabla ── */
+.tabla{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;display:block;overflow-x:auto}
+.tabla th{text-align:left;font-family:var(--dato);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--cal-3);padding:11px 14px;border-bottom:1px solid var(--linea)}
+.tabla td{padding:13px 14px;border-bottom:1px solid var(--linea-soft,rgba(237,231,218,.08));vertical-align:top}
+.tabla tr:hover td{background:rgba(255,255,255,.02)}
+
+/* ── barras comparativas ── */
+.barras{display:flex;flex-direction:column;gap:18px;margin:28px 0}
+.fila b{display:block;font-size:14.5px;margin-bottom:7px}
+.pista{height:44px;background:var(--tinta-2);border:1px solid var(--linea);border-radius:10px;overflow:hidden}
+.relleno{height:100%;display:flex;align-items:center;padding:0 14px;font-family:var(--dato);
+  font-size:14px;color:#0B1620;font-weight:600;white-space:nowrap}
+.relleno.chico{background:linear-gradient(90deg,#3a4b57,#4d616f);color:var(--cal)}
+.relleno.grande{background:linear-gradient(90deg,var(--plomo-2),var(--plomo))}
+.relleno.medio{background:linear-gradient(90deg,#1f7d75,var(--marea))}
+
+/* ── grilla de casilleros ── */
+.grilla{display:grid;grid-template-columns:repeat(14,1fr);gap:5px;margin:24px 0;max-width:560px}
+.casillero{aspect-ratio:1;border-radius:3px;background:var(--tinta-3);display:block}
+.casillero.vendible{background:#3c5a6b}
+.casillero.meta{background:var(--plomo)}
+.leyenda{display:flex;gap:20px;flex-wrap:wrap;font-size:13.5px;color:var(--cal-2);margin-top:6px}
+.leyenda span{display:flex;align-items:center;gap:8px}
+.leyenda i{width:12px;height:12px;border-radius:3px;display:block}
+
+/* ── línea de tiempo ── */
+.linea{position:relative;margin:30px 0 0;padding-left:26px}
+.linea::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;
+  background:linear-gradient(180deg,var(--linea),var(--plomo),var(--linea))}
+.hito{position:relative;padding:0 0 30px}
+.hito::before{content:"";position:absolute;left:-24px;top:7px;width:12px;height:12px;
+  border-radius:50%;background:var(--tinta);border:2px solid var(--plomo)}
+.hito.suave::before{border-color:var(--linea)}
+.hito b{font-family:var(--display);font-size:17px;display:block}
+.hito .cuando{font-family:var(--dato);font-size:12px;color:var(--plomo);letter-spacing:.08em}
+.hito p{font-size:15px;color:var(--cal-2);margin:6px 0 0}
+
+/* ── avisos ── */
+.aviso{border:1px solid var(--linea);border-left:3px solid var(--plomo);background:var(--tinta-2);
+  border-radius:12px;padding:20px 22px;margin:24px 0}
+.aviso.no{border-left-color:var(--coral)}
+.aviso.si{border-left-color:var(--marea)}
+.aviso p:last-child{margin-bottom:0}
+
+/* ── pasos ── */
+.pasos{counter-reset:paso;margin:24px 0;padding:0;list-style:none}
+.pasos li{counter-increment:paso;position:relative;padding:0 0 22px 52px;max-width:80ch}
+.pasos li::before{content:counter(paso);position:absolute;left:0;top:-2px;width:34px;height:34px;
+  display:grid;place-items:center;border-radius:50%;background:var(--plomo);color:#0B1620;
+  font-family:var(--display);font-size:16px;font-weight:800}
+.pasos b{display:block;font-size:17px}
+.pasos span{color:var(--cal-2);font-size:15px}
+
+svg{max-width:100%;height:auto;display:block}
+.pie{padding:46px 0 70px;color:var(--cal-3);font-size:14px;text-align:center;border-top:1px solid var(--linea)}
+@media(max-width:640px){
+  section{padding:52px 0}
+  .grilla{grid-template-columns:repeat(7,1fr);max-width:330px}
+}
+</style>
+</head>
+<body>
+
+<header class="barra"><div class="env">
+  <b>CONTRATÁ&nbsp;YA</b>
+  <nav>
+    <a href="#donde">Dónde estamos</a>
+    <a href="#negocio">El negocio</a>
+    <a href="#comercios">Comercios</a>
+    <a href="#mejoras">Mejoras</a>
+    <a href="#clientes">Clientes</a>
+    <a href="#calendario">Calendario</a>
+    <a href="#medir">Qué medir</a>
+  </nav>
+</div></header>
+
+<div class="portada"><div class="env">
+  <span class="sello"><i></i>Plan comercial · septiembre 2026</span>
+  <h1>70 profesionales<br>en 10 días.<br><em>Ahora falta el trabajo.</em></h1>
+  <p class="bajada">Contratá Ya conecta oficios de la construcción con vecinos del Partido de la
+  Costa. La oferta llegó sola y gratis. Esto es lo que hay que hacer para que llegue la demanda,
+  y cómo se paga solo mientras tanto.</p>
+
+  <div class="cifras">
+    <div class="cifra"><b>70</b><span>profesionales anotados, sin gastar un peso en publicidad</span></div>
+    <div class="cifra"><b>7</b><span>altas por día durante diez días seguidos</span></div>
+    <div class="cifra"><b>14</b><span>localidades del partido, de San Clemente a Costa Esmeralda</span></div>
+    <div class="cifra"><b>98</b><span>casilleros exclusivos de comercio para vender</span></div>
+  </div>
+</div></div>
+<section id="donde"><div class="env">
+  <p class="rotulo">Dónde estamos</p>
+  <h2>El 70 es buena noticia con reloj</h2>
+  <p class="grande">Un albañil que se anota gratis no está comprando nada: está poniendo una caña
+  más en el agua. Por eso en este tipo de apps <strong>la oferta siempre llega sola y llega
+  primero</strong>. Lo que no llega solo es el trabajo.</p>
+
+  <div class="tarjetas">
+    <div class="t ok">
+      <span class="num">LO BUENO</span>
+      <h4>La distribución existe</h4>
+      <p>Siete altas por día sin publicidad. El boca a boca entre oficios es rápido y el partido es
+      chico. Ese canal es gratis y hay que exprimirlo.</p>
+    </div>
+    <div class="t mal">
+      <span class="num">EL RIESGO</span>
+      <h4>Se está cargando un reloj</h4>
+      <p>Cada profesional que se anota empieza a contar los días hasta el primer trabajo. Si no
+      llega, se va, y se va contando por qué. En un partido donde todos se conocen, treinta
+      albañiles decepcionados son difíciles de revertir.</p>
+    </div>
+    <div class="t eje">
+      <span class="num">LA FECHA</span>
+      <h4>1º de noviembre</h4>
+      <p>Octubre y noviembre son el pico de contratación del año: los dueños preparan las casas
+      para alquilar. La app tiene que tener demanda andando antes de eso.</p>
+    </div>
+  </div>
+
+  <h3>Lo primero que hay que medir esta semana</h3>
+  <p>De esos 70, ¿cuántos completaron el perfil, se verificaron, instalaron la app y deslizaron al
+  menos una vez? <strong>Ese número, y no el 70, es la base real.</strong> Sale de la base de
+  datos hoy mismo, sin construir nada.</p>
+
+  <svg viewBox="0 0 720 250" role="img" aria-label="Embudo de los 70 profesionales, a completar con datos">
+    <defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#C4832A"/><stop offset="1" stop-color="#F0A63A"/></linearGradient></defs>
+    <rect x="0"   y="30" width="700" height="34" rx="6" fill="url(#g1)"/>
+    <text x="14"  y="52" font-family="IBM Plex Mono" font-size="14" fill="#0B1620">70 · se anotaron</text>
+    <rect x="0"   y="76" width="520" height="34" rx="6" fill="#3c5a6b"/>
+    <text x="14"  y="98" font-family="IBM Plex Mono" font-size="14" fill="#EDE7DA">¿? · completaron el perfil</text>
+    <rect x="0"   y="122" width="380" height="34" rx="6" fill="#31485a"/>
+    <text x="14"  y="144" font-family="IBM Plex Mono" font-size="14" fill="#EDE7DA">¿? · se verificaron</text>
+    <rect x="0"   y="168" width="250" height="34" rx="6" fill="#27394a"/>
+    <text x="14"  y="190" font-family="IBM Plex Mono" font-size="14" fill="#EDE7DA">¿? · usaron el mazo</text>
+    <rect x="0"   y="214" width="140" height="34" rx="6" fill="#1B303E"/>
+    <text x="14"  y="236" font-family="IBM Plex Mono" font-size="14" fill="#A9B7C1">¿? · tuvieron un match</text>
+    <text x="300" y="18" font-family="Inter Tight" font-size="13" fill="#6F818D">Los anchos son ilustrativos: los números salen de la consulta que está en «Qué medir»</text>
+  </svg>
+
+  <div class="aviso">
+    <p><strong>Si «usaron el mazo» es menos de la mitad de «se anotaron»</strong>, el problema no es
+    traer más profesionales: es que al entrar no encuentran nada que hacer. Y eso se arregla con
+    demanda, no con más altas.</p>
+  </div>
+</div></section>
+
+<section id="negocio"><div class="env">
+  <p class="rotulo">El negocio</p>
+  <h2>Hay dos negocios adentro, y no maduran juntos</h2>
+
+  <table class="tabla">
+    <tr><th></th><th>Plan Pro (profesionales)</th><th>Casilleros (comercios)</th></tr>
+    <tr>
+      <td><b>Qué se vende</b></td>
+      <td>Salir primero en el mazo, cubrir más zonas, aviso al toque</td>
+      <td>Exclusividad de rubro por localidad</td>
+    </tr>
+    <tr>
+      <td><b>Precio</b></td>
+      <td>$15.000 por mes</td>
+      <td>$80.000 por mes</td>
+    </tr>
+    <tr>
+      <td><b>¿Necesita demanda para valer?</b></td>
+      <td><span style="color:var(--coral)"><b>Sí.</b></span> Salir primero en un mazo vacío no vale nada</td>
+      <td><span style="color:var(--marea)"><b>No.</b></span> El comercio le vende al profesional, que ya está</td>
+    </tr>
+    <tr>
+      <td><b>Techo realista hoy</b></td>
+      <td>70 × 10% de conversión = <b>$105.000/mes</b></td>
+      <td>11 casilleros vendidos = <b>$880.000/mes</b></td>
+    </tr>
+  </table>
+
+  <div class="barras">
+    <div class="fila">
+      <b>Plan Pro, con el mismo esfuerzo comercial</b>
+      <div class="pista"><div class="relleno chico" style="width:12%">$105.000</div></div>
+    </div>
+    <div class="fila">
+      <b>Casilleros de comercio, con el mismo esfuerzo comercial</b>
+      <div class="pista"><div class="relleno grande" style="width:100%">$880.000</div></div>
+    </div>
+  </div>
+
+  <div class="aviso si">
+    <p class="grande" style="margin:0"><strong>Ocho veces más, y sin depender de que haya
+    trabajos.</strong> Por eso el negocio de hoy son los comercios.</p>
+  </div>
+
+  <p>Y hay una razón de fondo además de la aritmética: <strong>cobrarle al profesional antes de
+  haberle dado un trabajo es cobrarle por una promesa.</strong> Si la promesa no se cumple, se
+  pierde el profesional <em>y</em> los $15.000. El comercio, en cambio, recibe algo que ya existe:
+  setenta personas que compran materiales todas las semanas, y una manera de contarlas.</p>
+
+  <div class="aviso no">
+    <p><strong>La decisión:</strong> no salir a vender el plan Pro hasta diciembre. No se apaga
+    —el que lo pide, lo compra—, pero el esfuerzo comercial va entero a los comercios, y con eso se
+    financia la campaña que trae la demanda.</p>
+  </div>
+</div></section>
+<section id="comercios"><div class="env">
+  <p class="rotulo">El sistema de comercios</p>
+  <h2>Un corralón por localidad. Nada más.</h2>
+  <p class="grande">Es lo que ya está construido y andando. El comercio compra
+  <strong>exclusividad de su rubro en su localidad</strong> y recibe cuatro cosas.</p>
+
+  <div class="tarjetas">
+    <div class="t"><span class="num">01</span><h4>Presencia donde importa</h4>
+      <p>Aparece como proveedor sugerido justo cuando un profesional de su rubro está por agarrar
+      un trabajo en su zona.</p></div>
+    <div class="t"><span class="num">02</span><h4>Un beneficio propio</h4>
+      <p>El profesional muestra su credencial con foto y código; el comercio le hace el descuento
+      que decidió. Sólo dentro de la app.</p></div>
+    <div class="t"><span class="num">03</span><h4>Su panel de mostrador</h4>
+      <p>Cuántos profesionales pasaron este mes, cuáles son nuevos, quién vuelve más seguido. Sin
+      instalar nada: la llave viene en el enlace.</p></div>
+    <div class="t"><span class="num">04</span><h4>Exclusividad</h4>
+      <p>Mientras dure el acuerdo, ninguna otra ferretería de esa localidad entra.</p></div>
+  </div>
+
+  <h3>Lo que está muy bien resuelto, y conviene no tocar</h3>
+  <div class="aviso si">
+    <p><strong>El beneficio es para el profesional, no para el cliente.</strong> El corralón no le
+    vende al vecino que arregla el techo una vez cada cinco años: le vende al albañil que compra
+    bolsas todas las semanas. Dirigir el descuento al comprador recurrente hace que el comercio
+    esté pagando por acceso a <em>sus</em> clientes. Muchas plataformas se equivocan justo acá y
+    ofrecen descuentos al consumidor final, que al comercio no le mueve la aguja.</p>
+    <p><strong>El panel convierte la publicidad en algo medible.</strong> Un comercio que pone
+    $80.000 en un cartel de la ruta no sabe si sirvió. Acá abre una dirección y ve nombres, caras y
+    fechas. Eso es lo que evita la baja al tercer mes, que es donde se muere toda la publicidad
+    local.</p>
+  </div>
+
+  <h3>El inventario: 98 casilleros</h3>
+  <p>14 localidades × 7 rubros de comercio. Pero no todos valen lo mismo ni se pueden vender hoy.</p>
+
+  <div class="grilla">
+      <i class="casillero vendible meta" title="Corralón · San Clemente del Tuyú"></i>
+      <i class="casillero vendible meta" title="Ferretería · San Clemente del Tuyú"></i>
+      <i class="casillero vendible meta" title="Pinturería · San Clemente del Tuyú"></i>
+      <i class="casillero vendible meta" title="Aberturas · San Clemente del Tuyú"></i>
+      <i class="casillero" title="Químicas · San Clemente del Tuyú"></i>
+      <i class="casillero" title="Hoteles · San Clemente del Tuyú"></i>
+      <i class="casillero" title="Electrónica · San Clemente del Tuyú"></i>
+      <i class="casillero vendible meta" title="Corralón · Las Toninas"></i>
+      <i class="casillero vendible meta" title="Ferretería · Las Toninas"></i>
+      <i class="casillero vendible meta" title="Pinturería · Las Toninas"></i>
+      <i class="casillero vendible meta" title="Aberturas · Las Toninas"></i>
+      <i class="casillero" title="Químicas · Las Toninas"></i>
+      <i class="casillero" title="Hoteles · Las Toninas"></i>
+      <i class="casillero" title="Electrónica · Las Toninas"></i>
+      <i class="casillero" title="Corralón · Costa Chica"></i>
+      <i class="casillero" title="Ferretería · Costa Chica"></i>
+      <i class="casillero" title="Pinturería · Costa Chica"></i>
+      <i class="casillero" title="Aberturas · Costa Chica"></i>
+      <i class="casillero" title="Químicas · Costa Chica"></i>
+      <i class="casillero" title="Hoteles · Costa Chica"></i>
+      <i class="casillero" title="Electrónica · Costa Chica"></i>
+      <i class="casillero vendible meta" title="Corralón · Santa Teresita"></i>
+      <i class="casillero vendible meta" title="Ferretería · Santa Teresita"></i>
+      <i class="casillero vendible meta" title="Pinturería · Santa Teresita"></i>
+      <i class="casillero vendible" title="Aberturas · Santa Teresita"></i>
+      <i class="casillero" title="Químicas · Santa Teresita"></i>
+      <i class="casillero" title="Hoteles · Santa Teresita"></i>
+      <i class="casillero" title="Electrónica · Santa Teresita"></i>
+      <i class="casillero vendible" title="Corralón · Mar del Tuyú"></i>
+      <i class="casillero vendible" title="Ferretería · Mar del Tuyú"></i>
+      <i class="casillero vendible" title="Pinturería · Mar del Tuyú"></i>
+      <i class="casillero vendible" title="Aberturas · Mar del Tuyú"></i>
+      <i class="casillero" title="Químicas · Mar del Tuyú"></i>
+      <i class="casillero" title="Hoteles · Mar del Tuyú"></i>
+      <i class="casillero" title="Electrónica · Mar del Tuyú"></i>
+      <i class="casillero vendible" title="Corralón · Costa del Este"></i>
+      <i class="casillero vendible" title="Ferretería · Costa del Este"></i>
+      <i class="casillero vendible" title="Pinturería · Costa del Este"></i>
+      <i class="casillero vendible" title="Aberturas · Costa del Este"></i>
+      <i class="casillero" title="Químicas · Costa del Este"></i>
+      <i class="casillero" title="Hoteles · Costa del Este"></i>
+      <i class="casillero" title="Electrónica · Costa del Este"></i>
+      <i class="casillero" title="Corralón · Aguas Verdes"></i>
+      <i class="casillero" title="Ferretería · Aguas Verdes"></i>
+      <i class="casillero" title="Pinturería · Aguas Verdes"></i>
+      <i class="casillero" title="Aberturas · Aguas Verdes"></i>
+      <i class="casillero" title="Químicas · Aguas Verdes"></i>
+      <i class="casillero" title="Hoteles · Aguas Verdes"></i>
+      <i class="casillero" title="Electrónica · Aguas Verdes"></i>
+      <i class="casillero" title="Corralón · La Lucila del Mar"></i>
+      <i class="casillero" title="Ferretería · La Lucila del Mar"></i>
+      <i class="casillero" title="Pinturería · La Lucila del Mar"></i>
+      <i class="casillero" title="Aberturas · La Lucila del Mar"></i>
+      <i class="casillero" title="Químicas · La Lucila del Mar"></i>
+      <i class="casillero" title="Hoteles · La Lucila del Mar"></i>
+      <i class="casillero" title="Electrónica · La Lucila del Mar"></i>
+      <i class="casillero" title="Corralón · Costa Azul"></i>
+      <i class="casillero" title="Ferretería · Costa Azul"></i>
+      <i class="casillero" title="Pinturería · Costa Azul"></i>
+      <i class="casillero" title="Aberturas · Costa Azul"></i>
+      <i class="casillero" title="Químicas · Costa Azul"></i>
+      <i class="casillero" title="Hoteles · Costa Azul"></i>
+      <i class="casillero" title="Electrónica · Costa Azul"></i>
+      <i class="casillero vendible" title="Corralón · San Bernardo"></i>
+      <i class="casillero vendible" title="Ferretería · San Bernardo"></i>
+      <i class="casillero vendible" title="Pinturería · San Bernardo"></i>
+      <i class="casillero vendible" title="Aberturas · San Bernardo"></i>
+      <i class="casillero" title="Químicas · San Bernardo"></i>
+      <i class="casillero" title="Hoteles · San Bernardo"></i>
+      <i class="casillero" title="Electrónica · San Bernardo"></i>
+      <i class="casillero vendible" title="Corralón · Mar de Ajó"></i>
+      <i class="casillero vendible" title="Ferretería · Mar de Ajó"></i>
+      <i class="casillero vendible" title="Pinturería · Mar de Ajó"></i>
+      <i class="casillero vendible" title="Aberturas · Mar de Ajó"></i>
+      <i class="casillero" title="Químicas · Mar de Ajó"></i>
+      <i class="casillero" title="Hoteles · Mar de Ajó"></i>
+      <i class="casillero" title="Electrónica · Mar de Ajó"></i>
+      <i class="casillero" title="Corralón · Nueva Atlantis"></i>
+      <i class="casillero" title="Ferretería · Nueva Atlantis"></i>
+      <i class="casillero" title="Pinturería · Nueva Atlantis"></i>
+      <i class="casillero" title="Aberturas · Nueva Atlantis"></i>
+      <i class="casillero" title="Químicas · Nueva Atlantis"></i>
+      <i class="casillero" title="Hoteles · Nueva Atlantis"></i>
+      <i class="casillero" title="Electrónica · Nueva Atlantis"></i>
+      <i class="casillero" title="Corralón · Punta Médanos"></i>
+      <i class="casillero" title="Ferretería · Punta Médanos"></i>
+      <i class="casillero" title="Pinturería · Punta Médanos"></i>
+      <i class="casillero" title="Aberturas · Punta Médanos"></i>
+      <i class="casillero" title="Químicas · Punta Médanos"></i>
+      <i class="casillero" title="Hoteles · Punta Médanos"></i>
+      <i class="casillero" title="Electrónica · Punta Médanos"></i>
+      <i class="casillero" title="Corralón · Costa Esmeralda"></i>
+      <i class="casillero" title="Ferretería · Costa Esmeralda"></i>
+      <i class="casillero" title="Pinturería · Costa Esmeralda"></i>
+      <i class="casillero" title="Aberturas · Costa Esmeralda"></i>
+      <i class="casillero" title="Químicas · Costa Esmeralda"></i>
+      <i class="casillero" title="Hoteles · Costa Esmeralda"></i>
+      <i class="casillero" title="Electrónica · Costa Esmeralda"></i>
+  </div>
+  <div class="leyenda">
+    <span><i style="background:var(--tinta-3)"></i>98 casilleros posibles</span>
+    <span><i style="background:#3c5a6b"></i>28 vendibles hoy (localidades con comercio, rubros que pagan)</span>
+    <span><i style="background:var(--plomo)"></i>11 la meta de la primera temporada</span>
+  </div>
+
+  <p class="apunte">Los 98 del papel son $7,8 millones por mes y no van a pasar: no sirven para
+  planificar. Los 28 vendibles salen de cruzar las siete localidades con comercio de verdad
+  —San Clemente, Santa Teresita, Mar del Tuyú, San Bernardo, Mar de Ajó, Las Toninas y Costa del
+  Este— con los cuatro rubros que pueden pagar el abono. Colocar el 40% de eso en la primera
+  temporada son 11 casilleros.</p>
+
+  <h3>Dónde se rompe</h3>
+  <div class="tarjetas">
+    <div class="t mal"><h4>El panel cuenta visitas, no pesos</h4>
+      <p>«Vinieron 23 profesionales» es lindo. «$1.840.000 en compras trazadas por la app» es una
+      renovación firmada.</p></div>
+    <div class="t mal"><h4>El precio es plano</h4>
+      <p>San Bernardo sale lo mismo que Nueva Atlantis. Así se regalan las buenas y no se venden
+      las chicas.</p></div>
+    <div class="t mal"><h4>No hay prueba de valor antes de firmar</h4>
+      <p>El panel es excelente… después de comprar. Para vender falta lo de antes: cuántos
+      profesionales de su rubro hay hoy en su localidad.</p></div>
+    <div class="t mal"><h4>Todo es a mano</h4>
+      <p>Alta, casillero, cobro y renovación por WhatsApp. Con 5 comercios va bien; con 30 se cae.</p></div>
+    <div class="t mal"><h4>Los vencimientos no se manejan solos</h4>
+      <p>Un casillero vencido que sigue ocupado es plata que no entra y un competidor que no puede
+      comprar.</p></div>
+    <div class="t mal"><h4>«Hoteles» está en la lista equivocada</h4>
+      <p>No es un proveedor: <strong>contrata</strong>. Está entre los comercios y eso tapa una
+      fuente de demanda grande.</p></div>
+  </div>
+</div></section>
+
+<section id="mejoras"><div class="env">
+  <p class="rotulo">Las mejoras</p>
+  <h2>Cinco cambios que hay que hacer sí o sí</h2>
+  <p>Están ordenados por lo que más rinde contra lo que cuesta. Casi todos son chicos: la parte
+  difícil ya está construida.</p>
+
+  <ol class="pasos">
+    <li><b>Que el canje registre el monto de la compra</b>
+      <span>Un campo opcional al canjear y una columna en la base. El panel pasa de «23 visitas» a
+      «23 visitas y $1.840.000 en compras». Es la diferencia entre renovar y preguntarse para qué
+      paga. <mark>Opcional de verdad</mark>: si el que atiende tiene que cargarlo sí o sí, deja de
+      canjear.</span></li>
+    <li><b>Precio por tamaño de localidad</b>
+      <span>Tres escalones, calculados con los datos que ya están en la base.</span></li>
+    <li><b>La ficha de zona, para vender</b>
+      <span>Una página por localidad con cuántos profesionales activos hay, de qué oficios, cuántos
+      pedidos entraron el último mes y qué casilleros quedan libres. Es el folleto de venta y se
+      actualiza solo. De regalo, lo indexa Google: «albañiles en San Bernardo» lo busca gente
+      real.</span></li>
+    <li><b>Cartel con QR en el mostrador</b>
+      <span>El corralón tiene adentro, todos los días, exactamente a la gente que la app quiere
+      sumar. Cada alta que entra por ahí queda anotada y se le muestra al comercio: «trajiste 9
+      profesionales». Le conviene a él: más profesionales en la app son más visitas a su
+      local.</span></li>
+    <li><b>Vencimientos que se manejan solos</b>
+      <span>Aviso a 30 y a 7 días, y al vencer el casillero se libera con una semana de gracia.</span></li>
+  </ol>
+
+  <h3>Los escalones de precio</h3>
+  <table class="tabla">
+    <tr><th>Escalón</th><th>Localidades</th><th>Precio sugerido</th></tr>
+    <tr><td><b style="color:var(--plomo)">A</b></td>
+        <td>San Bernardo · Santa Teresita · San Clemente del Tuyú · Mar de Ajó</td>
+        <td><b>$120.000</b></td></tr>
+    <tr><td><b>B</b></td>
+        <td>Las Toninas · Costa del Este · Mar del Tuyú · La Lucila del Mar · Costa Azul</td>
+        <td><b>$80.000</b></td></tr>
+    <tr><td><b>C</b></td>
+        <td>Aguas Verdes · Costa Chica · Nueva Atlantis · Punta Médanos · Costa Esmeralda</td>
+        <td><b>$45.000</b></td></tr>
+  </table>
+  <p class="apunte">Los escalones son una hipótesis: la lista definitiva sale de contar
+  profesionales y pedidos por localidad cuando haya un mes de datos. Con precio por escalón, el
+  mismo esfuerzo comercial da entre $1.100.000 y $1.300.000 por mes en vez de $880.000.</p>
+
+  <h3>Lo que no hay que hacer</h3>
+  <div class="aviso no">
+    <p><strong>Bajar el precio para llenar casilleros.</strong> La exclusividad es el producto; si
+    sale barata, no vale. Antes de bajar el precio, bajá el escalón de la localidad.</p>
+    <p><strong>Vender dos comercios del mismo rubro en la misma localidad.</strong> Rompe lo único
+    que hace especial al producto. Si dos quieren la misma zona, se subasta.</p>
+    <p><strong>Cobrarle al comercio por profesional que llega.</strong> Suena justo y es una
+    trampa: convierte cada visita en un costo, el comercio empieza a desalentar canjes y se muere
+    la medición. Abono fijo, medición gratis.</p>
+  </div>
+</div></section>
+<section id="clientes"><div class="env">
+  <p class="rotulo">La demanda</p>
+  <h2>No hay un cliente: hay cuatro</h2>
+  <p class="grande">Y son muy distintos. Por dónde empezar es evidente cuando se los pone al lado.</p>
+
+  <table class="tabla">
+    <tr><th>Quién</th><th>Cuándo necesita</th><th>Cuánto vale</th><th>Qué tan fácil es llegarle</th></tr>
+    <tr><td><b>Inmobiliaria o administrador</b></td><td>Todo el año, mucho antes de la temporada</td>
+        <td><span style="color:var(--marea)">Muy alto</span> · decenas de casas</td>
+        <td><b style="color:var(--marea)">Fácil</b>: son pocos y están identificados</td></tr>
+    <tr><td><b>Hotel, cabañas, balneario</b></td><td>Octubre a diciembre</td>
+        <td><span style="color:var(--marea)">Alto</span> y recurrente</td>
+        <td><b style="color:var(--marea)">Fácil</b>: son pocos y visibles</td></tr>
+    <tr><td><b>Dueño que alquila su casa</b></td><td>Octubre-noviembre y marzo</td>
+        <td>Alto: varios arreglos juntos</td>
+        <td><b style="color:var(--coral)">Difícil</b>: muchos viven en Buenos Aires</td></tr>
+    <tr><td><b>Vecino que vive todo el año</b></td><td>Cuando se rompe algo</td>
+        <td>Bajo por vez, pero repite</td>
+        <td>Fácil: está acá, en los grupos del barrio</td></tr>
+  </table>
+
+  <div class="aviso si">
+    <p><strong>Una inmobiliaria con 40 casas genera más trabajo que 200 vecinos sueltos</strong>, y
+    se cierra con una sola reunión. Ese es el primer blanco, y llega justo para octubre.</p>
+  </div>
+
+  <h3>Los canales, del que más rinde al que menos</h3>
+  <ol class="pasos">
+    <li><b>Las inmobiliarias y administradores, a pie</b>
+      <span>Se los visita, no se les manda un mail. El argumento no es la app: es el problema que
+      ya tienen. <em>«¿A quién llamás cuando en enero una casa se queda sin agua un domingo? ¿Y si
+      ese plomero no atiende?»</em> · Meta: <mark>12 visitados y 4 usando la app antes del 31 de
+      octubre</mark>.</span></li>
+    <li><b>Los propios profesionales como distribución</b>
+      <span>Cada uno de los 70 tiene clientes que ya lo contratan. Un enlace propio: «pedime por
+      Contratá Ya». No pierde el trabajo —lo recibe igual— y gana la calificación que lo hace
+      visible para los que no lo conocen. Es lo más barato que hay y hoy no se usa.</span></li>
+    <li><b>Los grupos de vecinos de Facebook y WhatsApp</b>
+      <span>Es donde hoy se pide un electricista. <strong>Cómo no hacerlo</strong>: publicar
+      «descargá nuestra app»; te echan. <strong>Cómo sí</strong>: cuando alguien pide un plomero,
+      aparecer con dos o tres nombres reales de la app, con su calificación, y ofrecer pasarlos por
+      privado. Lento, barato, y el que mejor convierte en este tamaño de mercado.</span></li>
+    <li><b>El comercio como punto de contacto</b>
+      <span>Dos carteles distintos en el mismo mostrador: uno mirando al profesional y otro al
+      dueño que está arreglando la casa.</span></li>
+    <li><b>Pauta paga, y recién acá</b>
+      <span>Antes de que la app resuelva bien un pedido, pagar publicidad es pagar por
+      decepcionar más rápido.</span></li>
+  </ol>
+
+  <div class="aviso no">
+    <p><strong>No salir a las 14 localidades a la vez.</strong> Con 70 profesionales repartidos en
+    catorce no alcanza para nada en ninguna. Elegí <mark>dos localidades</mark> —San Bernardo y
+    Santa Teresita son las candidatas por tamaño y comercio—, que funcionen de verdad, y recién
+    ahí abrí la tercera.</p>
+  </div>
+</div></section>
+
+<section id="fuentes"><div class="env">
+  <p class="rotulo">Otras fuentes</p>
+  <h2>De dónde más puede salir la plata</h2>
+
+  <table class="tabla">
+    <tr><th>Fuente</th><th>Cuándo</th><th>Estimación mensual en temporada</th><th>Qué falta</th></tr>
+    <tr><td><b>Casilleros de comercio</b></td><td><b style="color:var(--marea)">Ya</b></td>
+        <td>$880.000 – $1.300.000</td><td>Nada: se vende hoy</td></tr>
+    <tr><td><b>Administraciones e inmobiliarias</b></td><td>Octubre</td>
+        <td>$300.000 – $600.000</td><td>Cuenta con varias propiedades</td></tr>
+    <tr><td><b>Hoteles y cabañas</b></td><td>Octubre</td>
+        <td>$150.000 – $400.000</td><td>Lo mismo</td></tr>
+    <tr><td><b>Sello con matrícula</b></td><td>Noviembre</td>
+        <td>$50.000 – $120.000</td><td>Revisión a mano</td></tr>
+    <tr><td><b>Plan Pro</b></td><td>Diciembre</td>
+        <td>$200.000 – $500.000</td><td>Que haya trabajos</td></tr>
+  </table>
+  <p class="apunte">Las cifras son hipótesis para validar, no proyecciones. Lo sólido es el
+  <strong>orden</strong>: primero comercios, después administraciones, y el profesional al final,
+  cuando ya se le dio algo por lo que valga la pena pagar.</p>
+
+  <h3>Lo que nunca</h3>
+  <div class="aviso no">
+    <p><strong>Comisión por trabajo.</strong> Es lo primero que se le ocurre a cualquiera y es lo
+    que mata a estas apps en pueblos chicos: el albañil y el cliente se conocen en el primer
+    mensaje, arreglan por afuera, y vos quedás sin comisión, sin datos y con fama del que quiere
+    meter la mano en el medio. En un partido donde todos se conocen, esa fama no se despega.</p>
+    <p><strong>Cobrarle al cliente por publicar un pedido.</strong> La demanda es lo escaso. No se
+    le cobra a lo escaso.</p>
+  </div>
+</div></section>
+<section id="calendario"><div class="env">
+  <p class="rotulo">El calendario</p>
+  <h2>El año se juega en cuatro ventanas</h2>
+  <p class="grande">El Partido de la Costa vive de la temporada. Todo lo de acá está atado a esa
+  realidad y no a un calendario de oficina.</p>
+
+  <svg viewBox="0 0 720 210" role="img" aria-label="Cuánto se contrata a lo largo del año">
+    <defs>
+      <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#F0A63A" stop-opacity=".55"/>
+        <stop offset="1" stop-color="#F0A63A" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <line x1="0" y1="170" x2="720" y2="170" stroke="#24404F"/>
+    <path d="M0,158 C60,150 90,140 130,120 C170,100 200,52 250,38 C300,26 340,44 380,66
+             C420,88 460,120 520,132 C580,144 640,150 720,156 L720,170 L0,170 Z" fill="url(#g2)"/>
+    <path d="M0,158 C60,150 90,140 130,120 C170,100 200,52 250,38 C300,26 340,44 380,66
+             C420,88 460,120 520,132 C580,144 640,150 720,156"
+          fill="none" stroke="#F0A63A" stroke-width="2.5"/>
+    <line x1="130" y1="20" x2="130" y2="170" stroke="#2FB2A6" stroke-dasharray="4 4"/>
+    <text x="136" y="34" font-family="IBM Plex Mono" font-size="12" fill="#2FB2A6">1º nov · la demanda tiene que estar andando</text>
+    <line x1="250" y1="20" x2="250" y2="170" stroke="#E4574C" stroke-dasharray="4 4"/>
+    <text x="256" y="52" font-family="IBM Plex Mono" font-size="12" fill="#E4574C">15 dic · se congelan los cambios</text>
+    <g font-family="Inter Tight" font-size="13" fill="#6F818D">
+      <text x="10"  y="192">sep</text><text x="80"  y="192">oct</text>
+      <text x="150" y="192">nov</text><text x="240" y="192">dic</text>
+      <text x="330" y="192">ene</text><text x="420" y="192">feb</text>
+      <text x="510" y="192">mar</text><text x="600" y="192">abr</text>
+      <text x="670" y="192">may</text>
+    </g>
+    <text x="300" y="14" font-family="Inter Tight" font-size="12" fill="#6F818D">Cuánto se contrata en el partido a lo largo del año</text>
+  </svg>
+
+  <div class="linea">
+    <div class="hito">
+      <span class="cuando">SEPTIEMBRE · CIMIENTOS</span>
+      <b>Medir los 70 y vender los primeros casilleros</b>
+      <p>Elegir las dos localidades. Lista de comercios objetivo y precio por escalón.
+      <strong>Meta: 4 casilleros firmados.</strong></p>
+    </div>
+    <div class="hito">
+      <span class="cuando">OCTUBRE · TRAER LA DEMANDA</span>
+      <b>Inmobiliarias, administradores y hoteles, puerta por puerta</b>
+      <p>Cuentas con varias propiedades andando. Contenido útil para el dueño que alquila.
+      <strong>Meta: 8 casilleros acumulados, 4 inmobiliarias usando la app.</strong></p>
+    </div>
+    <div class="hito">
+      <span class="cuando">NOVIEMBRE · EL PICO</span>
+      <b>No romper nada y responder bien</b>
+      <p>Es el mes en que más se contrata. Congelar los cambios grandes. Seguimiento diario a mano
+      de cada pedido sin respuesta. <strong>Meta: 15 trabajos terminados y calificados por semana,
+      11 casilleros.</strong></p>
+    </div>
+    <div class="hito">
+      <span class="cuando">DICIEMBRE A FEBRERO · TEMPORADA</span>
+      <b>Cobrar lo que se sembró</b>
+      <p>Recién ahora se empuja el plan Pro, con el mazo lleno de trabajo real. Urgencias para
+      hoteles y administraciones. Renovaciones con el panel de visitas en la mano.</p>
+    </div>
+    <div class="hito suave">
+      <span class="cuando">MARZO Y ABRIL · CERRAR EL CÍRCULO</span>
+      <b>Balance y renovaciones anuales</b>
+      <p>Se arregla lo que rompió el verano. Se planifica el año siguiente con datos y no con
+      hipótesis.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="medir"><div class="env">
+  <p class="rotulo">Qué medir</p>
+  <h2>Un solo número manda</h2>
+  <div class="aviso si">
+    <p class="grande" style="margin:0"><strong>Trabajos terminados y calificados por semana.</strong>
+    Prueba que hubo un cliente, un profesional, un acuerdo, un trabajo hecho y dos personas
+    conformes. Registros, descargas y pedidos publicados son ruido al lado de esto.</p>
+  </div>
+
+  <div class="cifras">
+    <div class="cifra"><b>15</b><span>trabajos terminados y calificados por semana, meta para el 1º de diciembre</span></div>
+    <div class="cifra"><b>2</b><span>localidades donde se concentra todo al principio</span></div>
+    <div class="cifra"><b>11</b><span>casilleros vendidos para el pico de temporada</span></div>
+    <div class="cifra"><b>4</b><span>inmobiliarias usando la app antes del 31 de octubre</span></div>
+  </div>
+
+  <h3>Lo que hoy no se puede medir y hay que instrumentar</h3>
+  <table class="tabla">
+    <tr><th>Falta</th><th>Para qué</th><th>Cuánto cuesta</th></tr>
+    <tr><td><b>De dónde vino cada alta</b></td><td>Sin esto no se sabe qué canal funciona y se gasta a ciegas</td><td>Chico</td></tr>
+    <tr><td><b>Impresiones y toques de los avisos</b></td><td>Es lo que el comercio va a preguntar, y hoy no hay respuesta</td><td>Chico</td></tr>
+    <tr><td><b>Monto de la compra en el canje</b></td><td>Convierte el panel del comercio de visitas a pesos</td><td>Chico</td></tr>
+    <tr><td><b>Tiempo hasta el primer match</b></td><td>Es el reloj del profesional nuevo: cuánto aguanta antes de irse</td><td>Chico</td></tr>
+    <tr><td><b>Por qué se fue el que se fue</b></td><td>Una pregunta al dar de baja vale más que diez tableros</td><td>Chico</td></tr>
+  </table>
+
+  <p class="apunte">Cómo mirarlo: una vez por semana, el mismo día, cinco números anotados en una
+  planilla —trabajos terminados, pedidos sin respuesta, altas, casilleros vendidos, canjes—. Nada
+  de tableros en tiempo real: lo que sirve es ver la serie de las semanas al lado.</p>
+</div></section>
+
+<section id="ahora"><div class="env">
+  <p class="rotulo">Esta semana</p>
+  <h2>Las cinco cosas que hay que hacer ya</h2>
+  <ol class="pasos">
+    <li><b>Medir qué son los 70 en realidad</b><span>Una consulta a la base. Cuántos completaron el
+      perfil, cuántos volvieron, cuántos deslizaron. Es la base de todo lo demás.</span></li>
+    <li><b>Elegir dos localidades</b><span>Y poner todo ahí. San Bernardo y Santa Teresita son las
+      candidatas.</span></li>
+    <li><b>Armar la lista de comercios objetivo</b><span>Por localidad y por rubro, con el precio
+      del escalón que le toca a cada uno.</span></li>
+    <li><b>Salir a vender cuatro casilleros</b><span>Con el argumento fresco: «setenta profesionales
+      en diez días». El guión completo está en los materiales.</span></li>
+    <li><b>Darle a cada profesional su enlace</b><span>«Pedime por Contratá Ya». Cada uno tiene
+      clientes que ya lo contratan: ahí está la primera demanda real.</span></li>
+  </ol>
+
+  <div class="aviso">
+    <p><strong>Todo lo de esta presentación está desarrollado, con el detalle y las consultas, en
+    la carpeta de planificación del panel</strong> (Documentos → Planificación → marketing). Se
+    puede bajar entera en un archivo desde el mismo lugar.</p>
+  </div>
+</div></section>
+
+<div class="pie"><div class="env">
+  <p>Contratá Ya · plan comercial · septiembre de 2026<br>
+  Los precios, las conversiones y los tamaños de mercado son hipótesis para validar, no datos.
+  Los números del sistema —70 registros, 98 casilleros, $80.000 de abono, $15.000 del plan Pro,
+  14 localidades— sí salen de la base.</p>
+</div></div>
+
+</body>
+</html>

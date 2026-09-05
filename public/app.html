@@ -18,6 +18,19 @@
 
 <link rel="stylesheet" href="/css/tokens.css">
 <link rel="stylesheet" href="/css/app.css?v=84">
+<link rel="stylesheet" href="/css/app-zonas.css?v=1">
+<link rel="stylesheet" href="/css/app-escritorio.css?v=1">
+<link rel="stylesheet" href="/css/app-chat.css?v=1">
+<link rel="stylesheet" href="/css/app-mazo.css?v=1">
+<link rel="stylesheet" href="/css/app-avisos.css?v=1">
+<link rel="stylesheet" href="/css/app-carta.css?v=1">
+<link rel="stylesheet" href="/css/app-buscar.css?v=1">
+<!-- Estas dos van últimas a propósito: son las capas que mandan.
+     ui.css es el rediseño transversal y app-mazo-full.css la pantalla
+     completa del mazo. Si se cargan antes, las pisa cualquier hoja vieja. -->
+<link rel="stylesheet" href="/css/ui.css?v=2">
+<link rel="stylesheet" href="/css/app-mazo-full.css?v=22">
+<link rel="stylesheet" href="/css/app-escritorio-mazo.css?v=2">
 </head>
 <body class="app-body">
 
@@ -73,7 +86,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/js/supabase.js"></script>
 <script src="/js/jugar.js?v=5"></script>
-<script src="/js/app.js?v=91"></script>
+<script src="/js/app.js?v=92"></script>
+<script src="/js/app-mazo.js?v=1"></script>
+<script src="/js/app-zonas.js?v=1"></script>
+<script src="/js/app-buscar.js?v=2"></script>
+<script src="/js/app-nav.js?v=2"></script>
+<script src="/js/app-avisos.js?v=1"></script>
 <script src="/js/tutorial.js?v=7"></script>
 </body>
 </html>

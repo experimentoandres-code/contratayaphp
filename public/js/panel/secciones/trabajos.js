@@ -1,3 +1,17 @@
+/* ============================================================
+   CONTRATÁ YA — Panel · Matches y chats
+   El recorrido entero de un contacto: match, chat, presupuesto,
+   trabajo, inicio, fin y calificación.
+   El chat en sí lo dibuja secciones/chats.js.
+   ============================================================ */
+
+const ESTADO_TRABAJO = {
+  propuesto: ['p-ambar', 'Esperando confirmación'],
+  en_curso:  ['p-verde', 'En curso'],
+  terminado: ['p-gris', 'Terminado'],
+  cancelado: ['p-coral', 'Cancelado']
+};
+
 const COLGO_MS = 2 * 3600000;
 
 function pildoraMatch(m) {
@@ -220,7 +234,9 @@ async function verTrabajos() {
     const lista = msgsPorMatch[m.id] || [];
     const primero = lista[0] || null;
     const ultimo = lista.length ? lista[lista.length - 1] : null;
-    const proSwipe = desl.some(d => d.pedido_id === m.pedido_id && d.usuario_id === m.profesional_id && d.direccion === 'si');
+    // El deslizar a favor se guarda como 'der'; 'si' era el nombre viejo.
+    const proSwipe = desl.some(d => d.pedido_id === m.pedido_id && d.usuario_id === m.profesional_id
+      && (d.direccion === 'der' || d.direccion === 'si'));
     const inicio = proSwipe ? 'pro' : 'cliente';
     const nomCli = m.cli && m.cli.nombre || 'Cliente';
     const nomPro = m.pro && m.pro.nombre || 'Profesional';
@@ -255,3 +271,13 @@ async function verTrabajos() {
   });
   if (selId) { const m = enriquecidas.find(x => x.id === selId); if (m) { Panel.matchSel = m; verCharla(m); } }
 }
+
+
+Panel.registrar('trabajos', {
+  titulo: 'Matches y chats',
+  bajada: 'Match, chat, presupuesto, trabajo, inicio, fin y calificación',
+  pintar: () => verTrabajos(),
+  // En el refresco automático, si hay una charla abierta se recarga sólo
+  // ella: volver a pintar la tabla entera te sacaba del chat.
+  pintarVivo: () => Panel.matchSel ? verCharla(Panel.matchSel, { soloChat: true }) : verTrabajos()
+});

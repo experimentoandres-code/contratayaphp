@@ -1,0 +1,271 @@
+/* ============================================================
+   CONTRATÁ YA — Landing de revendedores
+   Misma familia que el resto del sitio (asfalto + ámbar + verde
+   marea) con lenguaje propio: fichas de obra, números grandes y
+   una sola columna que baja derecho. Todo con prefijo .rv- para
+   no pisarse con la landing ni con la app.
+   ============================================================ */
+
+.rv-body { background: var(--tinta); }
+
+/* ── Barra ──────────────────────────────────────────────── */
+.rv-nav {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: var(--s4);
+  padding: var(--s3) var(--s5);
+  background: rgba(11, 22, 32, 0.86);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--linea-soft);
+}
+.rv-marca {
+  display: flex; align-items: center; gap: 9px;
+  font-family: var(--display); font-weight: 800;
+  font-size: 14px; letter-spacing: 0.09em;
+  font-variation-settings: 'wdth' 115;
+}
+.rv-nav-sep {
+  font-family: var(--dato); font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--plomo);
+  padding-left: var(--s4); border-left: 1px solid var(--linea);
+}
+.rv-nav-links { display: flex; gap: var(--s5); margin-left: auto; }
+.rv-nav-links a { font-size: 14px; color: var(--cal-2); }
+.rv-nav-links a:hover { color: var(--plomo); }
+.rv-nav-cta { padding: 10px 18px; font-size: 13px; }
+@media (max-width: 900px) {
+  .rv-nav-links, .rv-nav-sep { display: none; }
+  .rv-nav-cta { margin-left: auto; }
+}
+
+/* ── Botones ────────────────────────────────────────────── */
+.rv-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 14px 26px; border-radius: 999px;
+  font-weight: 600; font-size: 15px; white-space: nowrap;
+  transition: transform 0.18s var(--ease), background 0.2s, border-color 0.2s;
+}
+.rv-btn:hover { transform: translateY(-2px); }
+.rv-btn-plomo { background: var(--plomo); color: #0B1620; }
+.rv-btn-plomo:hover { background: #FFBB53; }
+.rv-btn-linea { border: 1px solid var(--linea); color: var(--cal); }
+.rv-btn-linea:hover { border-color: var(--plomo); color: var(--plomo); }
+.rv-btn[disabled] { opacity: 0.5; pointer-events: none; }
+
+/* ── Portada ────────────────────────────────────────────── */
+.rv-portada {
+  max-width: 1060px; margin: 0 auto;
+  padding: var(--s8) var(--s5) var(--s7);
+  border-bottom: 1px solid var(--linea-soft);
+}
+.rv-portada h1 {
+  font-size: clamp(42px, 8.5vw, 96px);
+  margin: var(--s3) 0 var(--s4);
+}
+.rv-portada h1::after {
+  content: ''; display: block; width: 84px; height: 4px;
+  background: var(--plomo); margin-top: var(--s4);
+}
+.rv-bajada {
+  max-width: 62ch; color: var(--cal-2); font-size: 18px; line-height: 1.65;
+}
+.rv-bajada strong { color: var(--cal); font-weight: 600; }
+.rv-bajada-chica { font-size: 16px; margin-bottom: var(--s5); }
+.rv-portada-acciones { display: flex; gap: var(--s3); flex-wrap: wrap; margin-top: var(--s5); }
+
+.rv-cifras {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--s4); margin-top: var(--s7);
+}
+.rv-cifras li {
+  border-top: 2px solid var(--linea);
+  padding-top: var(--s3);
+}
+.rv-cifras li:first-child { border-color: var(--plomo); }
+.rv-cifra {
+  display: block; font-size: 40px; font-weight: 600;
+  line-height: 1; color: var(--cal);
+}
+.rv-cifras li:first-child .rv-cifra { color: var(--plomo); }
+.rv-cifra-pie {
+  display: block; margin-top: var(--s2);
+  font-size: 13px; color: var(--cal-3); line-height: 1.45; max-width: 30ch;
+}
+
+/* ── Secciones ──────────────────────────────────────────── */
+.rv-seccion {
+  max-width: 1060px; margin: 0 auto;
+  padding: var(--s7) var(--s5);
+  border-bottom: 1px solid var(--linea-soft);
+}
+.rv-seccion h2 {
+  font-size: clamp(26px, 4.2vw, 40px);
+  margin: var(--s2) 0 var(--s5);
+}
+.rv-seccion h3 { font-size: 19px; margin-bottom: var(--s2); }
+
+.rv-dos {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--s4);
+}
+.rv-carta {
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: var(--r-md); padding: var(--s5);
+}
+.rv-carta p { color: var(--cal-2); font-size: 15px; }
+.rv-carta p + p { margin-top: var(--s3); }
+.rv-carta-fuerte { border-color: var(--plomo-dim); background: var(--tinta-3); }
+.rv-rotulo {
+  display: inline-block; margin-bottom: var(--s3);
+  font-family: var(--dato); font-size: 10px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--plomo);
+}
+.rv-nota { color: var(--cal-3) !important; font-size: 13.5px !important; }
+.rv-nota .dato, .rv-carta .dato { color: var(--cal); }
+
+/* ── Pasos ──────────────────────────────────────────────── */
+.rv-pasos {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: var(--s5);
+}
+.rv-pasos li { border-top: 1px solid var(--linea); padding-top: var(--s4); }
+.rv-paso-n {
+  display: block; font-size: 13px; color: var(--plomo);
+  letter-spacing: 0.1em; margin-bottom: var(--s3);
+}
+.rv-pasos p { color: var(--cal-2); font-size: 14.5px; }
+
+/* ── Calculadora ────────────────────────────────────────── */
+.rv-calc {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--s4) var(--s5);
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: var(--r-lg); padding: var(--s5);
+}
+.rv-campo { display: flex; flex-direction: column; gap: 7px; border: 0; }
+.rv-campo > span {
+  font-family: var(--dato); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--cal-3);
+}
+.rv-campo select, .rv-campo input[type="text"], .rv-campo input:not([type]),
+.rv-campo input[type="email"], .rv-campo textarea {
+  background: var(--tinta); border: 1px solid var(--linea);
+  border-radius: var(--r-sm); padding: 12px 14px;
+  color: var(--cal); font-family: inherit; font-size: 15px; width: 100%;
+}
+.rv-campo select:focus, .rv-campo input:focus, .rv-campo textarea:focus {
+  outline: none; border-color: var(--plomo);
+}
+.rv-campo input[type="range"] { accent-color: var(--plomo); width: 100%; }
+.rv-campo output { font-size: 22px; color: var(--plomo); }
+.rv-calc-salida { grid-column: 1 / -1; }
+.rv-calc-linea {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: var(--s4); padding: 11px 0; border-top: 1px solid var(--linea-soft);
+  font-size: 15px; color: var(--cal-2);
+}
+.rv-calc-linea .dato { color: var(--cal); font-size: 17px; }
+.rv-calc-linea.rv-total { border-top: 2px solid var(--plomo); margin-top: var(--s2); }
+.rv-calc-linea.rv-total span:first-child { color: var(--cal); font-weight: 600; }
+.rv-calc-linea.rv-total .dato { color: var(--plomo); font-size: 30px; font-weight: 600; }
+.rv-calc-pie { margin-top: var(--s3); font-size: 13px; color: var(--cal-3); }
+
+/* ── Tabla de zonas ─────────────────────────────────────── */
+.rv-tabla-envase { overflow-x: auto; border: 1px solid var(--linea); border-radius: var(--r-md); }
+.rv-tabla { width: 100%; border-collapse: collapse; min-width: 720px; }
+.rv-tabla th {
+  text-align: left; padding: 12px 14px;
+  font-family: var(--dato); font-size: 9.5px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--cal-3);
+  background: var(--tinta-2); border-bottom: 1px solid var(--linea);
+  white-space: nowrap;
+}
+.rv-tabla td {
+  padding: 13px 14px; font-size: 14.5px; color: var(--cal-2);
+  border-bottom: 1px solid var(--linea-soft);
+}
+.rv-tabla tbody tr:hover td { background: rgba(47, 178, 166, 0.05); }
+.rv-tabla tr.rv-tomada td { color: var(--cal-3); }
+.rv-tabla .rv-der { text-align: right; }
+.rv-tabla .rv-loc { color: var(--cal); font-weight: 600; }
+.rv-cargando { color: var(--cal-3); text-align: center; padding: var(--s5) !important; }
+.rv-pill {
+  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  font-family: var(--dato); font-size: 10.5px; letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.rv-pill-libre  { background: rgba(47, 178, 166, 0.16); color: var(--marea); }
+.rv-pill-tomada { background: rgba(237, 231, 218, 0.07); color: var(--cal-3); }
+.rv-pill-esc { background: rgba(240, 166, 58, 0.14); color: var(--plomo); }
+
+/* ── Reglas ─────────────────────────────────────────────── */
+.rv-reglas {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--s4);
+}
+.rv-reglas .rv-carta h3 { color: var(--cal); }
+
+/* ── Para quién ─────────────────────────────────────────── */
+.rv-para-quien h3 { font-size: 22px; margin-bottom: var(--s4); }
+.rv-lista li {
+  position: relative; padding-left: 26px; margin-bottom: var(--s3);
+  color: var(--cal-2); font-size: 15px;
+}
+.rv-lista li::before {
+  position: absolute; left: 0; top: 0; font-family: var(--dato); font-size: 15px;
+}
+.rv-lista-si li::before { content: '✓'; color: var(--marea); }
+.rv-lista-no li::before { content: '✕'; color: var(--coral); }
+
+/* ── Formulario ─────────────────────────────────────────── */
+.rv-postular { border-bottom: 0; }
+.rv-form {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--s4);
+  background: var(--tinta-2); border: 1px solid var(--linea);
+  border-radius: var(--r-lg); padding: var(--s5);
+}
+.rv-campo-ancho { grid-column: 1 / -1; }
+.rv-check { flex-direction: row; align-items: center; gap: 10px; }
+.rv-check span { font-family: var(--texto); font-size: 15px;
+  letter-spacing: normal; text-transform: none; color: var(--cal-2); }
+.rv-check input { accent-color: var(--plomo); width: 17px; height: 17px; }
+.rv-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.rv-chip {
+  padding: 9px 15px; border-radius: 999px;
+  border: 1px solid var(--linea); background: var(--tinta);
+  color: var(--cal-2); font-size: 14px;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.rv-chip:hover { border-color: var(--cal-3); }
+.rv-chip[aria-pressed="true"] { background: var(--plomo); border-color: var(--plomo); color: #0B1620; font-weight: 600; }
+.rv-chip[disabled] { opacity: 0.38; pointer-events: none; text-decoration: line-through; }
+.rv-form-pie { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; }
+.rv-form-pie .rv-nota { margin: 0; }
+.rv-mal { color: var(--coral) !important; }
+.rv-bien { color: var(--marea) !important; }
+.rv-gracias {
+  background: var(--tinta-3); border: 1px solid var(--marea);
+  border-radius: var(--r-lg); padding: var(--s6);
+  text-align: center;
+}
+.rv-gracias h3 { color: var(--marea); font-size: 24px; }
+.rv-gracias p { color: var(--cal-2); margin-top: var(--s3); }
+
+/* ── Pie ────────────────────────────────────────────────── */
+.rv-pie {
+  max-width: 1060px; margin: 0 auto;
+  padding: var(--s6) var(--s5) var(--s8);
+  color: var(--cal-3); font-size: 13.5px;
+  display: flex; justify-content: space-between; gap: var(--s4); flex-wrap: wrap;
+  border-top: 1px solid var(--linea-soft);
+}
+.rv-pie a:hover { color: var(--plomo); }
+
+/* ── Brindis ────────────────────────────────────────────── */
+.rv-brindis {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+  z-index: 90; max-width: min(92vw, 480px);
+  background: var(--tinta-3); border: 1px solid var(--linea);
+  border-radius: var(--r-md); padding: 13px 20px;
+  color: var(--cal); font-size: 14.5px; box-shadow: var(--sombra);
+}

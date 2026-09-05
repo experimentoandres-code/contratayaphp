@@ -1,0 +1,371 @@
+/* ═══════════════════════════════════════════════════════════
+   LA TARJETA DEL MAZO — la foto manda
+   ───────────────────────────────────────────────────────────
+   Las fotos de la gente son verticales (640×1138, sacadas con
+   un teléfono). Estaban metidas en una franja apaisada del 42%
+   de la tarjeta con recorte al 12% de altura: lo que se veía
+   era una tira de fondo con media frente, no una cara.
+
+   Ahora la foto ocupa la tarjeta entera y los datos van encima,
+   sobre un degradado. Es como funciona cualquier app de
+   tarjetas, y es la única forma de que una foto 9:16 se vea
+   bien. Lo demás —bio, especialidades, reseñas— pasó a la
+   ficha, que se abre tocando o deslizando para arriba.
+   ═══════════════════════════════════════════════════════════ */
+
+.carta { background: var(--tinta-2); }
+
+.carta-foto {
+  position: absolute; inset: 0;
+  height: auto; min-height: 0;
+  border-radius: inherit;
+  z-index: 0;
+}
+.carta-foto img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  /* Un poco arriba del centro: en un retrato de cuerpo entero, la cara
+     está en el tercio superior. */
+  object-position: center 28%;
+}
+/* El degradado tiene que ser alto: abajo va todo el texto. */
+.carta-foto::after {
+  height: 62%;
+  background: linear-gradient(180deg,
+    transparent,
+    rgba(11, 22, 32, .55) 42%,
+    rgba(11, 22, 32, .92) 100%);
+}
+
+/* Mientras la foto no cargó, la tarjeta no es un cuadrado gris vacío. */
+.carta-foto::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, var(--tinta-3), var(--tinta-2));
+  z-index: -1;
+}
+
+.carta-cuerpo {
+  position: relative; z-index: 2;
+  margin-top: auto;
+  padding: var(--s5) var(--s4) var(--s4);
+  gap: 7px;
+  overflow: visible;
+  flex: none;
+}
+.carta-nombre h3 { font-size: 23px; line-height: 1.1; }
+.carta-meta { color: var(--cal-2); font-size: 14px; }
+/* La bio no va más en la tarjeta: dos renglones de texto chico sobre una
+   foto no los lee nadie, y para eso está la ficha. */
+.carta-bio { display: none; }
+.carta .etiquetas { gap: 6px; }
+.carta .etiqueta {
+  background: rgba(11, 22, 32, .55);
+  border: 1px solid rgba(237, 231, 218, .16);
+  backdrop-filter: blur(3px);
+}
+.carta-pie {
+  border-top: 1px solid rgba(237, 231, 218, .14);
+  padding-top: 11px; margin-top: 3px;
+}
+.carta-puntaje b, .carta-precio b { font-size: 19px; }
+.carta-puntaje span, .carta-precio span { color: var(--cal-2); }
+
+.carta-plan { top: 14px; left: 14px; background: rgba(11, 22, 32, .82); }
+.carta-glifo {
+  right: 14px; top: 14px; bottom: auto;
+  font-size: 22px; color: var(--cal); opacity: .8;
+  text-shadow: 0 2px 8px rgba(0,0,0,.5);
+}
+
+/* ── Deslizar para arriba abre la ficha ──────────────────── */
+.carta-tirador {
+  position: absolute; z-index: 3;
+  left: 0; right: 0; bottom: calc(100% - 100%);
+  bottom: 0;
+  display: none;
+}
+.carta-pista {
+  position: absolute; z-index: 3;
+  left: 50%; transform: translateX(-50%);
+  top: 12px;
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 13px;
+  border-radius: 100px;
+  background: rgba(11, 22, 32, .6);
+  backdrop-filter: blur(4px);
+  color: var(--cal-2); font-size: 11.5px;
+  pointer-events: none;
+  opacity: 0;
+  animation: pistaEntra .5s var(--ease) 1.2s forwards;
+}
+@keyframes pistaEntra { to { opacity: 1; } }
+.carta-pista .flecha { animation: sube 1.9s var(--ease) infinite; display: block; }
+@keyframes sube {
+  0%, 60%, 100% { transform: translateY(0); opacity: .75; }
+  30%           { transform: translateY(-3px); opacity: 1; }
+}
+/* Sólo la de arriba muestra la pista, y sólo la primera vez de cada sesión. */
+.carta:not(.carta-arriba) .carta-pista { display: none; }
+
+/* El tinte de "ver ficha" cuando la llevás para arriba */
+.carta-tinte[data-lado="ficha"] {
+  background: linear-gradient(0deg, rgba(240, 166, 58, .45), rgba(240, 166, 58, 0) 60%);
+}
+.carta.cerca-ficha { border-color: var(--plomo); box-shadow: 0 0 0 2px var(--plomo), var(--sombra-carta); }
+.carta-marca.marca-ficha {
+  left: 50%; top: auto; bottom: 26%;
+  transform: translateX(-50%) rotate(0deg);
+  border-color: var(--plomo); color: var(--plomo);
+}
+
+/* En pantallas bajas la tarjeta no puede comerse todo: el texto se achica
+   antes que desaparecer. */
+@media (max-height: 700px) {
+  .carta-nombre h3 { font-size: 20px; }
+  .carta-cuerpo { padding: var(--s4) var(--s4) 13px; gap: 5px; }
+  .carta-pie { padding-top: 9px; }
+}
+
+/* ── En escritorio la tarjeta no se estira ─────────────────
+   El mazo ocupaba todo el ancho disponible. Con 900 px de ancho
+   y 500 de alto, la tarjeta queda apaisada, y una foto vertical
+   metida en un rectángulo apaisado vuelve a verse como una tira:
+   el mismo problema que en el teléfono, por otro camino.
+
+   La tarjeta se queda en proporción de tarjeta —vertical, como
+   una foto de teléfono— y se centra. Lo que sobra a los costados
+   es aire, no tarjeta estirada. */
+@media (min-width: 760px) {
+  .vista-mazo .mazo-app {
+    width: 100%;
+    max-width: 430px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .vista-mazo .controles,
+  .vista-mazo .filtros-mazo,
+  .vista-mazo .mazo-voz,
+  .vista-mazo .radio-mazo {
+    max-width: 430px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* Con lugar de sobra, la tarjeta puede ser más alta que ancha de verdad. */
+  .vista-mazo .mazo-app { min-height: min(70dvh, 620px); }
+}
+
+/* Pantallas muy anchas: la tarjeta y la ficha, una al lado de la otra, no.
+   Se mantiene el mazo centrado: es una sola cosa a la vez, como en el
+   teléfono, y así el gesto es el mismo en los dos lados. */
+@media (min-width: 1280px) {
+  .vista-mazo .mazo-app { max-width: 460px; }
+  .vista-mazo .controles,
+  .vista-mazo .filtros-mazo,
+  .vista-mazo .mazo-voz,
+  .vista-mazo .radio-mazo { max-width: 460px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LA PANTALLA DEL MAZO — la tarjeta es la pantalla
+   ───────────────────────────────────────────────────────────
+   Antes, arriba de la tarjeta había tres bloques (el cartel del
+   comercio, los filtros y el aviso de radio) y abajo una fila de
+   botones. En un teléfono la tarjeta quedaba espachurrada en el
+   medio, y en escritorio los filtros se metían detrás del cartel
+   y los botones directamente se caían de la pantalla.
+
+   Ahora: los filtros arriba en una línea, la tarjeta ocupa todo
+   lo que queda, y los botones van ENCIMA de la foto. El cartel
+   del comercio pasó abajo de todo.
+   ═══════════════════════════════════════════════════════════ */
+
+.mazo-zona {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  margin-bottom: var(--s3);
+}
+.vista-mazo .mazo-zona .mazo-app {
+  position: absolute; inset: 0;
+  height: auto; min-height: 0; margin: 0;
+}
+
+/* Los botones, sobre la foto */
+.vista-mazo .mazo-zona .controles {
+  position: absolute;
+  left: 0; right: 0; bottom: 14px;
+  z-index: 8;
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px;
+  padding: 0 14px;
+  pointer-events: none;   /* el hueco entre botones no roba el arrastre */
+}
+.vista-mazo .mazo-zona .controles > * { pointer-events: auto; }
+.vista-mazo .mazo-zona .disco {
+  width: 58px; height: 58px;
+  background: rgba(11, 22, 32, .72);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(237, 231, 218, .18);
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, .6);
+}
+.vista-mazo .mazo-zona .disco-si { border-color: rgba(47, 178, 166, .5); }
+.vista-mazo .mazo-zona .disco-no { border-color: rgba(228, 87, 76, .45); }
+.vista-mazo .mazo-zona .pastilla-info {
+  background: rgba(11, 22, 32, .72);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(237, 231, 218, .18);
+  min-height: 44px;
+}
+.vista-mazo .mazo-zona .btn-deshacer {
+  position: absolute; left: 14px; bottom: 72px;
+  background: rgba(11, 22, 32, .72);
+  backdrop-filter: blur(8px);
+}
+
+/* El texto de la tarjeta se corre para arriba: abajo están los botones. */
+.carta-cuerpo { padding-bottom: 84px; }
+.carta-foto::after { height: 72%; }
+
+/* El cartel del comercio, abajo de todo y más finito: es publicidad,
+   no puede comerle la mitad de la pantalla a la tarjeta. */
+.vista-mazo .sponsor-franja {
+  margin: var(--s2) 0 0;
+  padding: 9px 12px;
+  border-radius: var(--r-md);
+}
+.vista-mazo .sponsor-franja .sponsor-texto b { font-size: 13.5px; }
+.vista-mazo .sponsor-franja .sponsor-texto span { font-size: 11.5px; }
+
+/* El aviso de radio, en una línea y sin caja: era un bloque entero. */
+.vista-mazo .radio-mazo {
+  border: 0; background: none; padding: 0 2px;
+  margin: 0 0 var(--s2);
+  font-size: 12.5px; color: var(--cal-3);
+  border-left: 2px solid var(--marea); padding-left: 9px;
+}
+
+@media (max-height: 700px) {
+  .carta-cuerpo { padding-bottom: 76px; }
+  .vista-mazo .mazo-zona .disco { width: 52px; height: 52px; }
+}
+
+/* ── Los dos tipos de imagen ───────────────────────────────
+   Los profesionales tienen foto de verdad (JPG vertical 640×1138).
+   Los clientes tienen un dibujo (SVG cuadrado). Tratarlos igual
+   hace que el dibujo se agrande tres veces y quede una cara
+   gigante cortada. La foto se recorta; el dibujo se muestra
+   entero, apoyado abajo, como un retrato. */
+/* ── La imagen ES el fondo, sin bordes ───────────────────────
+   Las imágenes no tienen la proporción de la tarjeta: las fotos de los
+   profesionales son 9:16 y los dibujos de los clientes son cuadrados.
+   Recortarlas para llenar deja una tira o una cara gigante; mostrarlas
+   enteras deja un cuadro pegado en el medio.
+
+   Se hace lo que se hace siempre en este caso: la MISMA imagen, difuminada
+   y agrandada, pinta el fondo de la tarjeta de punta a punta, y encima va la
+   imagen nítida. No queda ningún borde: el fondo y la imagen son lo mismo. */
+.carta-foto::before {
+  content: '';
+  position: absolute; inset: -10%;
+  background-image: var(--foto);
+  background-size: cover;
+  background-position: center;
+  filter: blur(26px) saturate(1.25) brightness(.62);
+  z-index: -1;
+}
+
+/* El dibujo del cliente se muestra entero, a todo el ancho, y se desvanece
+   arriba y abajo contra su propia versión difuminada. La máscara va en
+   vertical porque a los costados el dibujo ya llega al borde: lo que se veía
+   como "un cuadro pegado" eran justo esos dos bordes horizontales. */
+.carta-foto img[src$=".svg"] {
+  object-fit: contain;
+  object-position: center 10%;
+  padding: 0;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 11%, #000 58%, transparent 78%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 11%, #000 58%, transparent 78%);
+}
+
+/* ── La pista de deslizar no puede tapar los sellos ──────── */
+.carta-pista {
+  top: auto;
+  bottom: 96px;
+  font-size: 11px;
+  padding: 5px 12px;
+  background: rgba(11, 22, 32, .72);
+}
+
+/* ── Los filtros no se cortan ──────────────────────────────
+   El contador se caía del borde derecho. Va abajo, en su renglón,
+   o desaparece si no hay lugar. */
+.filtros-mazo { flex-wrap: wrap; overflow: visible; row-gap: 6px; }
+.filtro-cuenta { margin-left: 0; padding-left: 2px; }
+@media (max-width: 420px) {
+  .filtro-chip { padding: 7px 11px; font-size: 13px; }
+  .filtro-cuenta { width: 100%; margin-top: 2px; }
+}
+
+/* ── El cartel del comercio, del tamaño de un cartel ─────── */
+.vista-mazo .sponsor-franja { padding: 8px 12px; }
+.vista-mazo .sponsor-franja .sponsor-cuadro { width: 32px; height: 32px; }
+
+/* Un dato vacío no deja el rótulo solo colgado. */
+.carta-precio:empty, .carta-precio b:empty { display: none; }
+
+/* ── Ajustes finos, mirando las capturas ────────────────── */
+
+/* La pista, arriba, debajo de los sellos: abajo pisaba el puntaje. */
+.carta-pista { top: 58px; bottom: auto; }
+
+/* El dibujo del cliente ocupa la parte de arriba de la tarjeta y el texto
+   vive sobre el degradado, como con una foto. Antes quedaba flotando en el
+   medio, con aire arriba y el nombre encima de la cara. */
+
+
+/* En escritorio, la tarjeta y todo lo suyo quedan del mismo ancho y
+   centrados. Antes la tarjeta quedaba pegada a la izquierda y el cartel del
+   comercio cruzaba toda la pantalla. */
+@media (min-width: 760px) {
+  .vista-mazo .mazo-zona,
+  .vista-mazo .sponsor-franja,
+  .vista-mazo .radio-mazo,
+  .vista-mazo .filtros-mazo,
+  .vista-mazo .mazo-voz {
+    max-width: 430px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+  }
+  .vista-mazo .mazo-zona { min-height: min(72dvh, 640px); }
+  .vista-mazo .filtros-mazo { justify-content: center; }
+}
+@media (min-width: 1280px) {
+  .vista-mazo .mazo-zona,
+  .vista-mazo .sponsor-franja,
+  .vista-mazo .radio-mazo,
+  .vista-mazo .filtros-mazo,
+  .vista-mazo .mazo-voz { max-width: 460px; }
+}
+
+/* En escritorio la pantalla no está atada al alto de la ventana: la vista del
+   mazo usaba el mismo alto calculado del teléfono (100svh menos las barras) y
+   con la tarjeta más alta el contenido se salía por arriba y por abajo —los
+   filtros quedaban cortados contra la barra y el cartel del comercio no
+   entraba—. Acá el alto lo pone la tarjeta y la página fluye. */
+@media (min-width: 760px) {
+  .vista-mazo {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    padding-bottom: var(--s6);
+  }
+  .vista-mazo .mazo-zona {
+    height: min(68dvh, 600px);
+    min-height: 420px;
+    flex: none;
+  }
+}
+
+
